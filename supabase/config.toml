@@ -1,10 +1,1 @@
 project_id = "mpbwpixpuonkczxgkjks"
-
-[functions.property-analysis]
-verify_jwt = false
-
-[functions.nasa-fire-risk]
-verify_jwt = false
-
-[functions.domain-au-search]
-verify_jwt = false
