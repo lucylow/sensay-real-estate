@@ -1,0 +1,247 @@
+# PropGuard AI - Nyx OS Configuration
+# Deployable on Xnode One Edge GPU Devices
+# Security Level: CPS 230 Compliant
+
+system:
+  hostname: propguard-edge
+  kernel: xnodeos-lts-6.1.82-gpu
+  init: /sbin/openrc-init
+  timezone: Australia/Sydney
+
+hardware:
+  gpu:
+    type: nvidia-l4g
+    drivers: cuda-12.4
+    shared_memory: 24G
+  crypto:
+    module: tpm2.0
+    algorithm: sha256
+
+network:
+  interfaces:
+    - name: eth0
+      type: wired
+      ip: dhcp
+      firewall: 
+        allow: [5000, 3000, 8545, 11434]
+  wireless: disabled
+
+security:
+  iptables:
+    chains:
+      INPUT:
+        - protocol: tcp
+          ports: [5000, 3000, 11434, 8545]
+          action: ACCEPT
+      DEFAULT: DROP
+  selinux: enforcing
+  encryption:
+    rootfs: luks2
+    certificate_store: tpm-sealed
+
+services:
+  - name: propguard-backend
+    exec: /opt/propguard/venv/bin/gunicorn -w 4 -b 0.0.0.0:5000 src.main:app
+    environment:
+      OLLAMA_HOST: localhost:11434
+      TF_FORCE_GPU_ALLOW_GROWTH: "true"
+      XNODE_API_KEY: !vault env/xnode_api_key
+      FLASK_ENV: production
+      PYTHONPATH: /opt/propguard
+    gpu_access: full
+    depends_on: [redis, ollama]
+    working_dir: /opt/propguard
+
+  - name: ollama
+    exec: /usr/local/bin/ollama serve
+    environment:
+      OLLAMA_MODELS: /var/lib/ollama/.ollama/models
+      OLLAMA_NUM_PARALLEL: 2
+      OLLAMA_NUM_GPU: 50
+      OLLAMA_KEEP_ALIVE: 5m
+    gpu_access: full
+    ports: [11434]
+
+  - name: redis
+    exec: /usr/bin/redis-server --save "" --appendonly no --maxmemory 512mb
+    memory_limit: 512M
+
+  - name: blockchain-node
+    exec: /opt/propguard/blockchain/start_node.sh
+    environment:
+      CHAIN_ID: 31337
+      BLOCK_TIME: 15
+      RPC_PORT: 8545
+    ports: [8545]
+
+  - name: model-loader
+    exec: /opt/propguard/scripts/load_models.sh
+    run_once: true
+    depends_on: [ollama]
+
+storage:
+  persistent:
+    - mount: /var/lib/propguard/models
+      size: 50G
+      type: zfs
+      encryption: tpm-bound
+    - mount: /var/lib/ollama
+      size: 80G
+      type: btrfs
+      compression: zstd
+    - mount: /var/lib/propguard/data
+      size: 20G
+      type: ext4
+      encryption: luks2
+
+deployment:
+  provisioner: xnode-cli
+  config:
+    tensorflow:
+      version: 2.16.1-gpu
+      models:
+        - name: property_valuation
+          source: s3://propguard-models/prod/v3.2.1.tflite
+        - name: risk_assessment
+          source: s3://propguard-models/prod/risk_v2.1.tflite
+    ollama:
+      models:
+        - llama3.2:1b
+        - deepseek-r1:8b
+        - codellama:7b
+    blockchain:
+      contract: /opt/propguard/contracts/DynamicLVR.sol
+      network: openxai-testnet
+      gas_limit: 8000000
+
+monitoring:
+  prometheus:
+    port: 9090
+    scrape_interval: 15s
+  targets:
+    - backend:5000/metrics
+    - node_exporter:9100
+    - ollama:11434/api/ps
+  alerts:
+    - name: high_gpu_usage
+      condition: gpu_utilization > 90
+      duration: 5m
+    - name: model_inference_slow
+      condition: inference_time > 10s
+      duration: 2m
+
+compliance:
+  standards: [APRA CPS 230, SOC2, ISO27001]
+  audit_interval: 4h
+  log_dest: /var/log/propguard/audit.log
+  encryption: tpm-sealed
+  retention: 7y
+
+boot:
+  kernel_params:
+    - isolcpus=2-7
+    - nohz_full=2-7
+    - mitigations=off
+    - nvidia-drm.modeset=1
+  initrd: include_gpu_drivers
+  modules:
+    - nvidia
+    - nvidia_uvm
+    - nvidia_drm
+
+performance:
+  cpu:
+    governor: performance
+    isolated_cores: [2, 3, 4, 5, 6, 7]
+  memory:
+    huge_pages: 2048
+    swappiness: 10
+  gpu:
+    persistence_mode: enabled
+    power_limit: 300W
+    memory_clock: max
+
+backup:
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  destinations:
+    - type: s3
+      bucket: propguard-backups
+      encryption: aes256
+  retention:
+    daily: 30
+    weekly: 12
+    monthly: 12
+
+logging:
+  level: INFO
+  destinations:
+    - type: file
+      path: /var/log/propguard/app.log
+      rotation: daily
+      retention: 30d
+    - type: syslog
+      facility: local0
+    - type: remote
+      endpoint: logs.propguard.ai:514
+      protocol: tcp
+      encryption: tls
+
+# Application-specific configuration
+propguard:
+  api:
+    rate_limit: 1000/hour
+    max_concurrent: 50
+  models:
+    valuation:
+      confidence_threshold: 0.7
+      max_inference_time: 5s
+    risk:
+      update_interval: 1h
+      cache_ttl: 30m
+  blockchain:
+    gas_price: auto
+    confirmation_blocks: 3
+  compliance:
+    apra_reporting: enabled
+    audit_trail: full
+
+# Development and testing overrides
+development:
+  debug: false
+  hot_reload: false
+  test_mode: false
+  mock_services: []
+
+# Resource limits
+limits:
+  cpu: 8
+  memory: 32G
+  gpu_memory: 24G
+  disk_io: 1000MB/s
+  network: 10Gb/s
+
+# Health checks
+health_checks:
+  - name: backend_health
+    endpoint: http://localhost:5000/health
+    interval: 30s
+    timeout: 5s
+  - name: ollama_health
+    endpoint: http://localhost:11434/api/tags
+    interval: 60s
+    timeout: 10s
+  - name: gpu_health
+    command: nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits
+    interval: 30s
+    threshold: 95
+
+# Disaster recovery
+disaster_recovery:
+  backup_frequency: 6h
+  recovery_time_objective: 4h
+  recovery_point_objective: 1h
+  failover:
+    enabled: true
+    secondary_node: propguard-edge-backup
+    sync_interval: 5m
+
