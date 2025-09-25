@@ -35,6 +35,12 @@ const LandingPage = () => {
                 Sensay AI
               </button>
               <button 
+                onClick={() => navigate('/chatflow-quality')}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Chat Quality
+              </button>
+              <button 
                 onClick={handleGetStartedClick}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >

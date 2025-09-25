@@ -11,18 +11,48 @@ ai_features_bp = Blueprint('ai_features', __name__)
 OLLAMA_BASE_URL = "http://localhost:11434"
 
 class PropertyGeocoder:
-    """Property geocoding service for Australian addresses"""
+    """Property geocoding service for global addresses"""
     
     @staticmethod
     def address_to_coords(address):
         """Convert address to coordinates with mock data for demo"""
-        # Mock geocoding based on common Australian cities
+        # Mock geocoding based on global cities
         city_coords = {
+            # North America
+            'new york': {'lat': 40.7128, 'lng': -74.0060},
+            'manhattan': {'lat': 40.7831, 'lng': -73.9712},
+            'brooklyn': {'lat': 40.6782, 'lng': -73.9442},
+            'los angeles': {'lat': 34.0522, 'lng': -118.2437},
+            'hollywood': {'lat': 34.0928, 'lng': -118.3287},
+            'toronto': {'lat': 43.6532, 'lng': -79.3832},
+            'chicago': {'lat': 41.8781, 'lng': -87.6298},
+            'miami': {'lat': 25.7617, 'lng': -80.1918},
+            'seattle': {'lat': 47.6062, 'lng': -122.3321},
+            
+            # Europe
+            'london': {'lat': 51.5074, 'lng': -0.1278},
+            'westminster': {'lat': 51.4994, 'lng': -0.1245},
+            'berlin': {'lat': 52.5200, 'lng': 13.4050},
+            'paris': {'lat': 48.8566, 'lng': 2.3522},
+            'madrid': {'lat': 40.4168, 'lng': -3.7038},
+            'rome': {'lat': 41.9028, 'lng': 12.4964},
+            
+            # Asia-Pacific
             'sydney': {'lat': -33.8688, 'lng': 151.2093},
             'melbourne': {'lat': -37.8136, 'lng': 144.9631},
             'brisbane': {'lat': -27.4698, 'lng': 153.0251},
             'perth': {'lat': -31.9505, 'lng': 115.8605},
-            'adelaide': {'lat': -34.9285, 'lng': 138.6007}
+            'adelaide': {'lat': -34.9285, 'lng': 138.6007},
+            'tokyo': {'lat': 35.6762, 'lng': 139.6503},
+            'singapore': {'lat': 1.3521, 'lng': 103.8198},
+            'hong kong': {'lat': 22.3193, 'lng': 114.1694},
+            'seoul': {'lat': 37.5665, 'lng': 126.9780},
+            
+            # Other regions
+            'dubai': {'lat': 25.2048, 'lng': 55.2708},
+            'mumbai': {'lat': 19.0760, 'lng': 72.8777},
+            'sao paulo': {'lat': -23.5505, 'lng': -46.6333},
+            'mexico city': {'lat': 19.4326, 'lng': -99.1332}
         }
         
         address_lower = address.lower()
@@ -34,29 +64,65 @@ class PropertyGeocoder:
                 return {
                     'lat': coords['lat'],
                     'lng': coords['lng'],
-                    'formatted_address': address
+                    'formatted_address': address,
+                    'country': PropertyGeocoder._detect_country(city)
                 }
         
-        # Default to Sydney with variation
+        # Default to New York with variation
         return {
-            'lat': -33.8688 + (random.random() - 0.5) * 0.5,
-            'lng': 151.2093 + (random.random() - 0.5) * 0.5,
-            'formatted_address': address
+            'lat': 40.7128 + (random.random() - 0.5) * 0.5,
+            'lng': -74.0060 + (random.random() - 0.5) * 0.5,
+            'formatted_address': address,
+            'country': 'US'
         }
+    
+    @staticmethod
+    def _detect_country(city):
+        """Detect country based on city name"""
+        country_mapping = {
+            # North America
+            'new york': 'US', 'manhattan': 'US', 'brooklyn': 'US', 'los angeles': 'US', 
+            'hollywood': 'US', 'chicago': 'US', 'miami': 'US', 'seattle': 'US',
+            'toronto': 'CA',
+            
+            # Europe
+            'london': 'UK', 'westminster': 'UK', 'berlin': 'DE', 'paris': 'FR',
+            'madrid': 'ES', 'rome': 'IT',
+            
+            # Asia-Pacific
+            'sydney': 'AU', 'melbourne': 'AU', 'brisbane': 'AU', 'perth': 'AU', 'adelaide': 'AU',
+            'tokyo': 'JP', 'singapore': 'SG', 'hong kong': 'HK', 'seoul': 'KR',
+            
+            # Other
+            'dubai': 'AE', 'mumbai': 'IN', 'sao paulo': 'BR', 'mexico city': 'MX'
+        }
+        return country_mapping.get(city, 'US')
 
 class CoreLogicClient:
-    """CoreLogic API client for property data"""
+    """Global Property Data API client"""
     
     @staticmethod
     def get_property_data(address):
         """Get property features and data"""
         coords = PropertyGeocoder.address_to_coords(address)
+        country = coords.get('country', 'US')
         
-        # Determine property characteristics based on address
-        is_apartment = any(word in address.lower() for word in ['apt', 'unit', '/'])
-        is_premium = any(word in address.lower() for word in ['sydney', 'melbourne'])
+        # Determine property characteristics based on address and location
+        is_apartment = any(word in address.lower() for word in ['apt', 'unit', 'apartment', 'condo', '/'])
+        is_premium = any(word in address.lower() for word in [
+            'manhattan', 'westminster', 'beverly hills', 'tokyo', 'singapore', 'sydney'
+        ])
         
-        base_price = 1200000 if is_premium else 600000
+        # Base pricing by country and premium status
+        base_prices = {
+            'US': 450000, 'CA': 650000, 'UK': 400000, 'DE': 350000, 'FR': 400000,
+            'AU': 750000, 'JP': 45000000, 'SG': 1200000, 'HK': 12000000,
+            'AE': 800000, 'IN': 8000000, 'BR': 800000, 'MX': 400000
+        }
+        
+        base_price = base_prices.get(country, 450000)
+        if is_premium:
+            base_price *= 1.5
         variation = (random.random() - 0.5) * 0.4
         
         return {

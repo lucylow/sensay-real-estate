@@ -1,6 +1,7 @@
 export interface MarketData {
-  nationalTrends: {
+  globalTrends: {
     medianPrice: number;
+    currency: string;
     priceGrowth: {
       quarterly: number;
       annual: number;
@@ -12,7 +13,7 @@ export interface MarketData {
       change: number;
     };
     daysOnMarket: number;
-    auctionClearanceRate: number;
+    clearanceRate: number;
     rentalYield: number;
     vacancyRate: number;
   };
@@ -23,6 +24,8 @@ export interface MarketData {
 
 export interface RegionalData {
   region: string;
+  country: string;
+  currency: string;
   medianPrice: number;
   growth: number;
   riskFactors: {
@@ -54,9 +57,11 @@ export interface ClimateProjections {
     projection2050: number;
   };
   extremeEvents: {
-    bushfires: { frequency: string; intensity: string };
+    wildfires: { frequency: string; intensity: string };
     floods: { frequency: string; severity: string };
-    cyclones: { frequency: string; intensity: string };
+    hurricanes: { frequency: string; intensity: string };
+    earthquakes: { frequency: string; intensity: string };
+    typhoons: { frequency: string; intensity: string };
   };
 }
 
@@ -69,33 +74,129 @@ export interface InvestmentMetrics {
 }
 
 export const mockMarketData: MarketData = {
-  nationalTrends: {
-    medianPrice: 750000,
+  globalTrends: {
+    medianPrice: 450000,
+    currency: 'USD',
     priceGrowth: { 
-      quarterly: 2.3, 
-      annual: 8.7, 
-      fiveYear: 45.2 
+      quarterly: 1.8, 
+      annual: 6.2, 
+      fiveYear: 32.1 
     },
     salesVolume: {
-      current: 12450,
-      previousQuarter: 11890,
-      change: 4.7
+      current: 245000,
+      previousQuarter: 238000,
+      change: 2.9
     },
-    daysOnMarket: 32,
-    auctionClearanceRate: 68.5,
-    rentalYield: 4.2,
-    vacancyRate: 2.8
+    daysOnMarket: 28,
+    clearanceRate: 65.2,
+    rentalYield: 4.8,
+    vacancyRate: 3.2
   },
   
   regionalBreakdown: [
+    // North America
+    {
+      region: "New York",
+      country: "United States",
+      currency: "USD",
+      medianPrice: 750000,
+      growth: 4.2,
+      riskFactors: {
+        climate: "Hurricane and flooding exposure",
+        market: "High demand, limited supply",
+        regulatory: "Tax reform impacts"
+      },
+      topSuburbs: [
+        { name: "Manhattan", median: 1200000, growth: 3.8 },
+        { name: "Brooklyn", median: 850000, growth: 5.2 },
+        { name: "Queens", median: 650000, growth: 6.1 },
+        { name: "Bronx", median: 480000, growth: 7.3 }
+      ]
+    },
+    {
+      region: "Los Angeles",
+      country: "United States",
+      currency: "USD",
+      medianPrice: 850000,
+      growth: 3.8,
+      riskFactors: {
+        climate: "Wildfire and earthquake risks",
+        market: "Tech industry influence",
+        regulatory: "Prop 13 tax limitations"
+      },
+      topSuburbs: [
+        { name: "Beverly Hills", median: 2800000, growth: 2.1 },
+        { name: "Santa Monica", median: 1800000, growth: 4.5 },
+        { name: "Hollywood", median: 1200000, growth: 5.8 },
+        { name: "Venice", median: 1500000, growth: 3.9 }
+      ]
+    },
+    {
+      region: "Toronto",
+      country: "Canada",
+      currency: "CAD",
+      medianPrice: 950000,
+      growth: 8.7,
+      riskFactors: {
+        climate: "Winter weather and flooding",
+        market: "Immigration-driven demand",
+        regulatory: "Foreign buyer taxes"
+      },
+      topSuburbs: [
+        { name: "Yorkville", median: 1800000, growth: 7.2 },
+        { name: "Distillery District", median: 1200000, growth: 9.1 },
+        { name: "Liberty Village", median: 850000, growth: 10.3 },
+        { name: "King West", median: 950000, growth: 8.8 }
+      ]
+    },
+    // Europe
+    {
+      region: "London",
+      country: "United Kingdom",
+      currency: "GBP",
+      medianPrice: 650000,
+      growth: 2.1,
+      riskFactors: {
+        climate: "Flooding and heat island effects",
+        market: "Brexit uncertainty",
+        regulatory: "Stamp duty changes"
+      },
+      topSuburbs: [
+        { name: "Westminster", median: 1200000, growth: 1.8 },
+        { name: "Camden", median: 850000, growth: 2.5 },
+        { name: "Islington", median: 750000, growth: 3.1 },
+        { name: "Hackney", median: 650000, growth: 4.2 }
+      ]
+    },
+    {
+      region: "Berlin",
+      country: "Germany",
+      currency: "EUR",
+      medianPrice: 450000,
+      growth: 12.5,
+      riskFactors: {
+        climate: "Heat waves and flooding",
+        market: "Tech hub development",
+        regulatory: "Rent control measures"
+      },
+      topSuburbs: [
+        { name: "Mitte", median: 680000, growth: 10.8 },
+        { name: "Prenzlauer Berg", median: 520000, growth: 13.2 },
+        { name: "Kreuzberg", median: 480000, growth: 14.1 },
+        { name: "Friedrichshain", median: 450000, growth: 15.3 }
+      ]
+    },
+    // Asia-Pacific
     {
       region: "Sydney",
+      country: "Australia",
+      currency: "AUD",
       medianPrice: 1250000,
       growth: 6.2,
       riskFactors: {
-        climate: "High coastal exposure",
-        market: "Overvaluation concerns",
-        regulatory: "Stamp duty changes pending"
+        climate: "Coastal flooding and bushfires",
+        market: "Interest rate sensitivity",
+        regulatory: "Foreign buyer restrictions"
       },
       topSuburbs: [
         { name: "Bondi", median: 2100000, growth: 8.1 },
@@ -105,67 +206,39 @@ export const mockMarketData: MarketData = {
       ]
     },
     {
-      region: "Melbourne",
-      medianPrice: 920000,
-      growth: 8.4,
+      region: "Tokyo",
+      country: "Japan",
+      currency: "JPY",
+      medianPrice: 65000000,
+      growth: 4.8,
       riskFactors: {
-        climate: "Bushfire and flood risks",
-        market: "Strong population growth",
-        regulatory: "Foreign buyer restrictions"
+        climate: "Typhoons and earthquakes",
+        market: "Aging population",
+        regulatory: "Olympics legacy effects"
       },
       topSuburbs: [
-        { name: "South Yarra", median: 1450000, growth: 6.8 },
-        { name: "Richmond", median: 1180000, growth: 9.2 },
-        { name: "Carlton", median: 1050000, growth: 7.9 },
-        { name: "Fitzroy", median: 980000, growth: 8.8 }
+        { name: "Minato", median: 120000000, growth: 3.2 },
+        { name: "Shibuya", median: 95000000, growth: 5.1 },
+        { name: "Shinjuku", median: 85000000, growth: 4.7 },
+        { name: "Ginza", median: 150000000, growth: 2.8 }
       ]
     },
     {
-      region: "Brisbane",
-      medianPrice: 680000,
-      growth: 12.8,
+      region: "Singapore",
+      country: "Singapore",
+      currency: "SGD",
+      medianPrice: 1200000,
+      growth: 3.2,
       riskFactors: {
-        climate: "Flood and cyclone exposure",
-        market: "Interstate migration surge",
-        regulatory: "Infrastructure investment"
+        climate: "Sea level rise and flooding",
+        market: "Government cooling measures",
+        regulatory: "Additional buyer stamp duty"
       },
       topSuburbs: [
-        { name: "New Farm", median: 890000, growth: 15.2 },
-        { name: "West End", median: 750000, growth: 14.1 },
-        { name: "Paddington", median: 720000, growth: 13.8 },
-        { name: "Woolloongabba", median: 680000, growth: 16.3 }
-      ]
-    },
-    {
-      region: "Perth",
-      medianPrice: 520000,
-      growth: 15.6,
-      riskFactors: {
-        climate: "Bushfire and heat exposure",
-        market: "Mining boom recovery",
-        regulatory: "Land release programs"
-      },
-      topSuburbs: [
-        { name: "Cottesloe", median: 1250000, growth: 12.4 },
-        { name: "Subiaco", median: 780000, growth: 18.7 },
-        { name: "Fremantle", median: 650000, growth: 16.9 },
-        { name: "Mount Lawley", median: 620000, growth: 17.2 }
-      ]
-    },
-    {
-      region: "Adelaide",
-      medianPrice: 485000,
-      growth: 10.2,
-      riskFactors: {
-        climate: "Bushfire and drought risks",
-        market: "Affordable alternative market",
-        regulatory: "First home buyer incentives"
-      },
-      topSuburbs: [
-        { name: "North Adelaide", median: 720000, growth: 8.9 },
-        { name: "Unley", median: 680000, growth: 11.5 },
-        { name: "Norwood", median: 650000, growth: 9.7 },
-        { name: "Prospect", median: 580000, growth: 12.3 }
+        { name: "Orchard", median: 2800000, growth: 2.1 },
+        { name: "Marina Bay", median: 2200000, growth: 3.5 },
+        { name: "Sentosa", median: 3500000, growth: 1.8 },
+        { name: "Holland Village", median: 1800000, growth: 4.2 }
       ]
     }
   ],
@@ -187,9 +260,11 @@ export const mockMarketData: MarketData = {
       projection2050: 28 
     },
     extremeEvents: {
-      bushfires: { frequency: "+25%", intensity: "+40%" },
-      floods: { frequency: "+15%", severity: "+30%" },
-      cyclones: { frequency: "No change", intensity: "+20%" }
+      wildfires: { frequency: "+30%", intensity: "+45%" },
+      floods: { frequency: "+20%", severity: "+35%" },
+      hurricanes: { frequency: "+15%", intensity: "+25%" },
+      earthquakes: { frequency: "No change", intensity: "+10%" },
+      typhoons: { frequency: "+18%", intensity: "+22%" }
     }
   },
 
@@ -208,6 +283,12 @@ export const mockMarketData: MarketData = {
 export const getRegionalData = (region: string): RegionalData | undefined => {
   return mockMarketData.regionalBreakdown.find(
     data => data.region.toLowerCase() === region.toLowerCase()
+  );
+};
+
+export const getRegionalDataByCountry = (country: string): RegionalData[] => {
+  return mockMarketData.regionalBreakdown.filter(
+    data => data.country.toLowerCase() === country.toLowerCase()
   );
 };
 

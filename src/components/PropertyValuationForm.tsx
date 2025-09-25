@@ -21,37 +21,58 @@ interface PropertyValuationFormProps {
   onValuation: (data: PropertyData) => void;
 }
 
-// Demo data for Australian properties with compelling stories
+// Demo data for global properties with compelling stories
 const DEMO_PROPERTIES = {
+  // North America
+  '123 Park Avenue, Manhattan, NY 10022': {
+    baseValue: 2800000,
+    riskScore: 0.35,
+    story: 'Prime Manhattan location with hurricane exposure',
+    sentiment: 'Market showing resilience despite climate concerns',
+  },
+  '456 Sunset Boulevard, West Hollywood, CA 90069': {
+    baseValue: 1850000,
+    riskScore: 0.75,
+    story: 'Wildfire and earthquake risk in Hollywood Hills',
+    sentiment: 'Insurance premiums rising due to climate risks',
+  },
+  '789 Bay Street, Toronto, ON M5G 1M5': {
+    baseValue: 1200000,
+    riskScore: 0.45,
+    story: 'Downtown Toronto with flooding concerns',
+    sentiment: 'Strong market despite climate challenges',
+  },
+  // Europe
+  '10 Downing Street, Westminster, London SW1A 2AA': {
+    baseValue: 4500000,
+    riskScore: 0.25,
+    story: 'Historic London location with flood risk',
+    sentiment: 'Political uncertainty affecting values',
+  },
+  '25 Unter den Linden, Berlin 10117': {
+    baseValue: 850000,
+    riskScore: 0.55,
+    story: 'Historic Berlin with heat wave exposure',
+    sentiment: 'Tech boom driving demand despite climate risks',
+  },
+  // Asia-Pacific
   '28 Mountain View Rd, Katoomba NSW 2780': {
     baseValue: 1250000,
     riskScore: 0.75,
     story: 'Recent landslide concerns in Blue Mountains area',
     sentiment: 'Local forums mention geological instability',
   },
-  '42 Collins Street, Melbourne VIC 3000': {
-    baseValue: 890000,
-    riskScore: 0.25,
-    story: 'Prime CBD location with low climate risk',
-    sentiment: 'Strong market confidence in area',
-  },
-  '156 Riverside Dr, Lismore NSW 2480': {
-    baseValue: 650000,
-    riskScore: 0.85,
-    story: 'Northern Rivers flood zone - high risk',
-    sentiment: 'Community groups discussing flood insurance',
-  },
-  '88 Coastal Ave, Byron Bay NSW 2481': {
-    baseValue: 2100000,
+  '1-1-1 Marunouchi, Chiyoda City, Tokyo 100-0005': {
+    baseValue: 45000000,
     riskScore: 0.65,
-    story: 'Sea level rise concerns affecting coastal values',
-    sentiment: 'Property forums mentioning erosion risks',
+    story: 'Tokyo business district with earthquake and typhoon risks',
+    sentiment: 'Olympics legacy effects on property values',
   },
-  '23 Adelaide Terrace, Perth WA 6000': {
-    baseValue: 750000,
-    riskScore: 0.35,
-    story: 'Moderate bushfire risk in surrounding areas',
-    sentiment: 'Insurance premiums increasing gradually',
+  '68 Orchard Road, Singapore 238839': {
+    baseValue: 2800000,
+    riskScore: 0.45,
+    story: 'Prime Singapore location with sea level rise concerns',
+    sentiment: 'Government cooling measures affecting demand',
   }
 };
 

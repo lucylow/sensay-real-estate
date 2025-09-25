@@ -83,7 +83,14 @@ export const API_CONFIG = {
     HEYGEN_GENERATE: '/heygen/generate',
     HEYGEN_STATUS: '/heygen/status',
     HEYGEN_AVATARS: '/heygen/avatars',
-    HEYGEN_CONFIG: '/heygen/config'
+    HEYGEN_CONFIG: '/heygen/config',
+    
+    // Eleven Labs Text-to-Speech endpoints
+    ELEVENLABS_HEALTH: '/elevenlabs/health',
+    ELEVENLABS_GENERATE: '/elevenlabs/generate',
+    ELEVENLABS_ALEX: '/elevenlabs/alex',
+    ELEVENLABS_VOICES: '/elevenlabs/voices',
+    ELEVENLABS_CONFIG: '/elevenlabs/config'
   }
 };
 
@@ -202,15 +209,43 @@ export class PropGuardAPI {
     return this.request(API_CONFIG.ENDPOINTS.HEYGEN_HEALTH);
   }
 
+  // Eleven Labs Text-to-Speech Methods
+  async generateSpeech(text: string, voiceId?: string, modelId?: string) {
+    return this.request(API_CONFIG.ENDPOINTS.ELEVENLABS_GENERATE, {
+      method: 'POST',
+      body: JSON.stringify({ text, voice_id: voiceId, model_id: modelId })
+    });
+  }
+
+  async generateAlexSpeech(text: string) {
+    return this.request(API_CONFIG.ENDPOINTS.ELEVENLABS_ALEX, {
+      method: 'POST',
+      body: JSON.stringify({ text })
+    });
+  }
+
+  async getAvailableVoices() {
+    return this.request(API_CONFIG.ENDPOINTS.ELEVENLABS_VOICES);
+  }
+
+  async getElevenLabsConfig() {
+    return this.request(API_CONFIG.ENDPOINTS.ELEVENLABS_CONFIG);
+  }
+
+  async checkElevenLabsHealth() {
+    return this.request(API_CONFIG.ENDPOINTS.ELEVENLABS_HEALTH);
+  }
+
   // Health check methods
   async checkSystemHealth() {
-    const [propguardHealth, llmHealth, blockchainHealth, xnodeHealth, pipelineHealth, heygenHealth] = await Promise.allSettled([
+    const [propguardHealth, llmHealth, blockchainHealth, xnodeHealth, pipelineHealth, heygenHealth, elevenlabsHealth] = await Promise.allSettled([
       this.request(API_CONFIG.ENDPOINTS.HEALTH_CHECK),
       this.request(API_CONFIG.ENDPOINTS.LLM_HEALTH),
       this.request(API_CONFIG.ENDPOINTS.BLOCKCHAIN_HEALTH),
       this.request(API_CONFIG.ENDPOINTS.XNODE_HEALTH),
       this.request(API_CONFIG.ENDPOINTS.PIPELINE_HEALTH),
-      this.request(API_CONFIG.ENDPOINTS.HEYGEN_HEALTH)
+      this.request(API_CONFIG.ENDPOINTS.HEYGEN_HEALTH),
+      this.request(API_CONFIG.ENDPOINTS.ELEVENLABS_HEALTH)
     ]);
 
     return {
@@ -219,7 +254,8 @@ export class PropGuardAPI {
       blockchain: blockchainHealth.status === 'fulfilled' ? blockchainHealth.value : null,
       xnode: xnodeHealth.status === 'fulfilled' ? xnodeHealth.value : null,
       pipeline: pipelineHealth.status === 'fulfilled' ? pipelineHealth.value : null,
-      heygen: heygenHealth.status === 'fulfilled' ? heygenHealth.value : null
+      heygen: heygenHealth.status === 'fulfilled' ? heygenHealth.value : null,
+      elevenlabs: elevenlabsHealth.status === 'fulfilled' ? elevenlabsHealth.value : null
     };
   }
 }

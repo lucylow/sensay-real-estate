@@ -1,10 +1,15 @@
-# HeyGen Interactive Avatar Integration
+# Multimodal AI Integration - HeyGen Avatar + Eleven Labs Voice
 
-This document provides comprehensive information about the HeyGen Interactive Avatar integration in the Sensay Real Estate platform.
+This document provides comprehensive information about the multimodal AI integration combining HeyGen Interactive Avatar and Eleven Labs Text-to-Speech in the Sensay Real Estate platform.
 
 ## Overview
 
-The HeyGen integration provides interactive video avatars that can respond to user queries about property analysis, market trends, and investment insights. The avatar uses the Marianne_CasualLook_public model to create engaging video responses.
+The multimodal AI integration provides an engaging AI assistant named "Alex" that combines:
+- **HeyGen Interactive Avatar**: Video avatars with lip-sync and expressions
+- **Eleven Labs Voice**: Natural AI speech with professional Australian accent
+- **Sensay Platform**: Chatbot logic and multi-channel deployment
+
+This creates a lifelike real estate expert that can provide property analysis, market insights, and investment guidance through natural conversation.
 
 ## Configuration
 
@@ -17,9 +22,15 @@ You need to set the following environment variables:
 VITE_HEYGEN_API_KEY=your-heygen-api-key
 VITE_HEYGEN_AVATAR_ID=Marianne_CasualLook_public
 
+# Eleven Labs API Configuration
+VITE_ELEVENLABS_API_KEY=your-elevenlabs-api-key
+VITE_ELEVENLABS_VOICE_ID=alex-professional-australian
+
 # Backend Configuration (for Python backend)
 HEYGEN_API_KEY=your-heygen-api-key
 HEYGEN_AVATAR_ID=Marianne_CasualLook_public
+ELEVENLABS_API_KEY=your-elevenlabs-api-key
+ELEVENLABS_VOICE_ID=alex-professional-australian
 ```
 
 ### Getting Your HeyGen API Key

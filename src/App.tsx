@@ -13,7 +13,14 @@ import { MarketAnalysisPage } from "@/pages/MarketAnalysisPage";
 import { ValuationReportPage } from "@/pages/ValuationReportPage";
 import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
 import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
+import { MultimodalTestPage } from "@/pages/MultimodalTestPage";
 import NotFound from "./pages/NotFound";
+import { EnhancedChatWidget } from "@/components/EnhancedChatWidget";
+import { PropertyShowcase } from "@/components/PropertyShowcase";
+import { SmartFAQ } from "@/components/SmartFAQ";
+import { VirtualTourBooking } from "@/components/VirtualTourBooking";
+import { LeadDashboard } from "@/components/LeadDashboard";
+import { AppointmentManager } from "@/components/AppointmentManager";
 
 const queryClient = new QueryClient();
 
@@ -33,9 +40,18 @@ const App = () => (
             <Route path="/report/:reportId" element={<ValuationReportPage />} />
             <Route path="/sensay" element={<SensayIntegrationPage />} />
             <Route path="/heygen-test" element={<HeyGenTestPage />} />
+            <Route path="/multimodal-test" element={<MultimodalTestPage />} />
+            <Route path="/property-showcase" element={<PropertyShowcase />} />
+            <Route path="/smart-faq" element={<SmartFAQ />} />
+            <Route path="/virtual-tours" element={<VirtualTourBooking />} />
+            <Route path="/leads" element={<LeadDashboard />} />
+            <Route path="/appointments" element={<AppointmentManager />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          
+          {/* Enhanced Chat Widget - Available on all pages */}
+          <EnhancedChatWidget />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

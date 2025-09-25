@@ -3,12 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Bot, Key, Sparkles, TrendingUp, Shield, FileText } from 'lucide-react';
+import { Bot, Key, Sparkles, TrendingUp, Shield, FileText, Search, Database, Globe, MessageCircle, Users, BarChart3 } from 'lucide-react';
 import { SensaySetup } from '@/components/SensaySetup';
 import { SensayAssistant } from '@/components/SensayAssistant';
 import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
 import { MultiChannelDeployment } from '@/components/MultiChannelDeployment';
 import { LeadQualificationAutomation } from '@/components/LeadQualificationAutomation';
+import { PersonalizedSearchEngine } from '@/components/PersonalizedSearchEngine';
+import { RealTimeDataIntegration } from '@/components/RealTimeDataIntegration';
+import { CRMIntegrationWorkflows } from '@/components/CRMIntegrationWorkflows';
+import { PropGuardDemo } from '@/components/PropGuardDemo';
 import { sensayAPI, SensayCredentials } from '@/services/api/sensay';
 
 export const SensayIntegrationPage: React.FC = () => {
@@ -83,7 +87,7 @@ export const SensayIntegrationPage: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="setup" className="flex items-center gap-2">
             <Key className="h-4 w-4" />
             Setup
@@ -92,13 +96,21 @@ export const SensayIntegrationPage: React.FC = () => {
             <Bot className="h-4 w-4" />
             AI Assistant
           </TabsTrigger>
-          <TabsTrigger value="channels" className="flex items-center gap-2">
-            <MessageCircle className="h-4 w-4" />
-            Multi-Channel
+          <TabsTrigger value="search" className="flex items-center gap-2">
+            <Search className="h-4 w-4" />
+            Search
           </TabsTrigger>
-          <TabsTrigger value="leads" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Lead Management
+          <TabsTrigger value="data" className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            Live Data
+          </TabsTrigger>
+          <TabsTrigger value="crm" className="flex items-center gap-2">
+            <Database className="h-4 w-4" />
+            CRM
+          </TabsTrigger>
+          <TabsTrigger value="deployment" className="flex items-center gap-2">
+            <Globe className="h-4 w-4" />
+            Deploy
           </TabsTrigger>
           <TabsTrigger value="demo" className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
@@ -209,6 +221,26 @@ export const SensayIntegrationPage: React.FC = () => {
               </Card>
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="search" className="mt-6">
+          <PersonalizedSearchEngine />
+        </TabsContent>
+
+        <TabsContent value="data" className="mt-6">
+          <RealTimeDataIntegration />
+        </TabsContent>
+
+        <TabsContent value="crm" className="mt-6">
+          <CRMIntegrationWorkflows />
+        </TabsContent>
+
+        <TabsContent value="deployment" className="mt-6">
+          <MultiChannelDeployment />
+        </TabsContent>
+
+        <TabsContent value="demo" className="mt-6">
+          <PropGuardDemo />
         </TabsContent>
       </Tabs>
 

@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# HeyGen Integration Setup Script for Sensay Real Estate
-# This script helps configure the HeyGen API integration
+# Multimodal AI Setup Script for Sensay Real Estate
+# This script helps configure HeyGen Avatar and Eleven Labs Voice integration
 
-echo "🎬 HeyGen Interactive Avatar Setup for Sensay Real Estate"
-echo "=================================================="
+echo "🤖 Multimodal AI Setup for Sensay Real Estate"
+echo "=============================================="
+echo "Configuring HeyGen Interactive Avatar + Eleven Labs Voice"
 echo ""
 
 # Check if .env file exists
@@ -18,7 +19,7 @@ else
 fi
 
 echo ""
-echo "🔧 HeyGen Configuration"
+echo "🔧 HeyGen Avatar Configuration"
 echo "Please provide the following information:"
 echo ""
 
@@ -45,19 +46,56 @@ echo "VITE_HEYGEN_AVATAR_ID=$HEYGEN_AVATAR_ID" >> .env
 echo "✅ Avatar ID set to: $HEYGEN_AVATAR_ID"
 
 echo ""
+echo "🎤 Eleven Labs Voice Configuration"
+echo "Please provide the following information:"
+echo ""
+
+# Get Eleven Labs API Key
+read -p "Enter your Eleven Labs API Key: " ELEVENLABS_API_KEY
+if [ -n "$ELEVENLABS_API_KEY" ]; then
+    # Remove existing ELEVENLABS_API_KEY if it exists
+    grep -v "^VITE_ELEVENLABS_API_KEY=" .env > .env.tmp && mv .env.tmp .env
+    echo "VITE_ELEVENLABS_API_KEY=$ELEVENLABS_API_KEY" >> .env
+    echo "✅ Eleven Labs API Key added to .env"
+else
+    echo "⚠️  No Eleven Labs API key provided. You can add it later to .env file"
+fi
+
+# Get Voice ID
+read -p "Enter your Voice ID for Alex persona (or press Enter for default): " ELEVENLABS_VOICE_ID
+if [ -z "$ELEVENLABS_VOICE_ID" ]; then
+    ELEVENLABS_VOICE_ID="alex-professional-australian"
+fi
+
+# Remove existing ELEVENLABS_VOICE_ID if it exists
+grep -v "^VITE_ELEVENLABS_VOICE_ID=" .env > .env.tmp && mv .env.tmp .env
+echo "VITE_ELEVENLABS_VOICE_ID=$ELEVENLABS_VOICE_ID" >> .env
+echo "✅ Voice ID set to: $ELEVENLABS_VOICE_ID"
+
+echo ""
 echo "🐍 Backend Configuration"
 echo "Adding backend environment variables..."
 
 # Add backend variables
 grep -v "^HEYGEN_API_KEY=" .env > .env.tmp && mv .env.tmp .env
 grep -v "^HEYGEN_AVATAR_ID=" .env > .env.tmp && mv .env.tmp .env
+grep -v "^ELEVENLABS_API_KEY=" .env > .env.tmp && mv .env.tmp .env
+grep -v "^ELEVENLABS_VOICE_ID=" .env > .env.tmp && mv .env.tmp .env
 
 if [ -n "$HEYGEN_API_KEY" ]; then
     echo "HEYGEN_API_KEY=$HEYGEN_API_KEY" >> .env
     echo "HEYGEN_AVATAR_ID=$HEYGEN_AVATAR_ID" >> .env
-    echo "✅ Backend environment variables added"
+    echo "✅ HeyGen backend variables added"
 else
-    echo "⚠️  Backend variables not added (no API key provided)"
+    echo "⚠️  HeyGen backend variables not added (no API key provided)"
+fi
+
+if [ -n "$ELEVENLABS_API_KEY" ]; then
+    echo "ELEVENLABS_API_KEY=$ELEVENLABS_API_KEY" >> .env
+    echo "ELEVENLABS_VOICE_ID=$ELEVENLABS_VOICE_ID" >> .env
+    echo "✅ Eleven Labs backend variables added"
+else
+    echo "⚠️  Eleven Labs backend variables not added (no API key provided)"
 fi
 
 echo ""
@@ -66,17 +104,22 @@ echo "======================="
 echo "Frontend Variables:"
 echo "  - VITE_HEYGEN_API_KEY: $(if [ -n "$HEYGEN_API_KEY" ]; then echo "✅ Set"; else echo "❌ Not set"; fi)"
 echo "  - VITE_HEYGEN_AVATAR_ID: $HEYGEN_AVATAR_ID"
+echo "  - VITE_ELEVENLABS_API_KEY: $(if [ -n "$ELEVENLABS_API_KEY" ]; then echo "✅ Set"; else echo "❌ Not set"; fi)"
+echo "  - VITE_ELEVENLABS_VOICE_ID: $ELEVENLABS_VOICE_ID"
 echo ""
 echo "Backend Variables:"
 echo "  - HEYGEN_API_KEY: $(if [ -n "$HEYGEN_API_KEY" ]; then echo "✅ Set"; else echo "❌ Not set"; fi)"
 echo "  - HEYGEN_AVATAR_ID: $HEYGEN_AVATAR_ID"
+echo "  - ELEVENLABS_API_KEY: $(if [ -n "$ELEVENLABS_API_KEY" ]; then echo "✅ Set"; else echo "❌ Not set"; fi)"
+echo "  - ELEVENLABS_VOICE_ID: $ELEVENLABS_VOICE_ID"
 
 echo ""
 echo "🚀 Next Steps"
 echo "============="
 echo "1. Restart your development server to load the new environment variables"
-echo "2. Visit /heygen-test to test the integration"
-echo "3. Check the browser console for any configuration errors"
+echo "2. Visit /multimodal-test to test the full integration"
+echo "3. Visit /heygen-test to test HeyGen avatar only"
+echo "4. Check the browser console for any configuration errors"
 echo ""
 echo "📚 Documentation"
 echo "==============="
@@ -85,13 +128,21 @@ echo ""
 echo "🔗 Useful Links"
 echo "==============="
 echo "- HeyGen Dashboard: https://app.heygen.com"
-echo "- Interactive Avatar: https://labs.heygen.com/interactive-avatar"
-echo "- API Documentation: https://docs.heygen.com"
+echo "- HeyGen Interactive Avatar: https://labs.heygen.com/interactive-avatar"
+echo "- HeyGen API Documentation: https://docs.heygen.com"
+echo "- Eleven Labs Dashboard: https://elevenlabs.io"
+echo "- Eleven Labs API Documentation: https://docs.elevenlabs.io"
+echo "- Sensay Platform: https://sensay.io"
 echo ""
 
-if [ -z "$HEYGEN_API_KEY" ]; then
-    echo "⚠️  IMPORTANT: You still need to add your HeyGen API key to the .env file"
-    echo "   Edit .env and set VITE_HEYGEN_API_KEY=your-actual-api-key"
+if [ -z "$HEYGEN_API_KEY" ] || [ -z "$ELEVENLABS_API_KEY" ]; then
+    echo "⚠️  IMPORTANT: You still need to add your API keys to the .env file"
+    if [ -z "$HEYGEN_API_KEY" ]; then
+        echo "   Edit .env and set VITE_HEYGEN_API_KEY=your-actual-api-key"
+    fi
+    if [ -z "$ELEVENLABS_API_KEY" ]; then
+        echo "   Edit .env and set VITE_ELEVENLABS_API_KEY=your-actual-api-key"
+    fi
 fi
 
 echo "✅ Setup complete!"
