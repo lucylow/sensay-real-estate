@@ -2,10 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User, Send, Sparkles, TrendingUp, AlertCircle } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Bot, User, Send, Sparkles, TrendingUp, AlertCircle, Volume2, VolumeX, Settings } from 'lucide-react';
 import { llmAPI } from '@/services/api/llm';
+import { elevenLabsService } from '@/config/elevenlabs';
+import { audioService } from '@/services/audioService';
 
 interface Message {
   id: string;
@@ -14,6 +17,7 @@ interface Message {
   timestamp: Date;
   suggestions?: string[];
   data?: any;
+  audioUrl?: string;
 }
 
 interface AIAssistantProps {
@@ -43,6 +47,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
+  const [isVoiceConfigured, setIsVoiceConfigured] = useState(false);
+  const [showVoiceSettings, setShowVoiceSettings] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,6 +58,24 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    // Initialize ElevenLabs service
+    const initVoice = async () => {
+      const configured = elevenLabsService.isConfigured();
+      setIsVoiceConfigured(configured);
+      
+      if (configured) {
+        await elevenLabsService.initialize();
+        const voices = elevenLabsService.getVoices();
+        if (voices.length > 0) {
+          setSelectedVoiceId(voices[0].voice_id);
+        }
+      }
+    };
+    
+    initVoice();
+  }, []);
 
   const handleSendMessage = async (message: string) => {
     if (!message.trim() || isLoading) return;
@@ -116,6 +142,30 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Generate voice if enabled and configured
+      if (isVoiceEnabled && isVoiceConfigured && selectedVoiceId) {
+        try {
+          const audioUrl = await elevenLabsService.speak(aiResponse, selectedVoiceId);
+          if (audioUrl) {
+            // Update the message with audio URL
+            setMessages(prev => prev.map(msg => 
+              msg.id === assistantMessage.id 
+                ? { ...msg, audioUrl }
+                : msg
+            ));
+            
+            // Add to audio queue for playback
+            audioService.addTrack({
+              text: aiResponse,
+              audioUrl,
+              voiceId: selectedVoiceId
+            });
+          }
+        } catch (error) {
+          console.error('Voice synthesis failed:', error);
+        }
+      }
     } catch (error) {
       console.error('AI Assistant error:', error);
       const errorMessage: Message = {
@@ -192,14 +242,60 @@ What specific area would you like to explore?`;
   return (
     <Card className={`flex flex-col h-[600px] ${className}`}>
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2">
-          <Bot className="h-5 w-5 text-primary" />
-          AI Property Assistant
-          <Badge variant="secondary" className="ml-auto">
-            <Sparkles className="h-3 w-3 mr-1" />
-            Live
-          </Badge>
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Bot className="h-5 w-5 text-primary" />
+            AI Property Assistant
+          </CardTitle>
+          
+          <div className="flex items-center gap-2">
+            {isVoiceConfigured && (
+              <>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="voice-toggle" className="text-sm">
+                    Voice
+                  </Label>
+                  <Switch
+                    id="voice-toggle"
+                    checked={isVoiceEnabled}
+                    onCheckedChange={setIsVoiceEnabled}
+                  />
+                </div>
+                
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowVoiceSettings(!showVoiceSettings)}
+                  title="Voice Settings"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </>
+            )}
+            
+            <div className="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Live
+            </div>
+          </div>
+        </div>
+        
+        {showVoiceSettings && isVoiceConfigured && (
+          <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Voice Settings</span>
+              <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">
+                {selectedVoiceId ? 'Configured' : 'Not Selected'}
+              </div>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {selectedVoiceId 
+                ? `Voice ID: ${selectedVoiceId}` 
+                : 'Please select a voice in the voice settings panel'
+              }
+            </div>
+          </div>
+        )}
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col p-0">
@@ -233,6 +329,30 @@ What specific area would you like to explore?`;
                       <div className="text-sm whitespace-pre-wrap">
                         {message.content}
                       </div>
+                      
+                      {/* Audio playback for assistant messages */}
+                      {message.type === 'assistant' && message.audioUrl && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              const audio = new Audio(message.audioUrl);
+                              audio.play().catch(console.error);
+                            }}
+                            className="h-6 px-2"
+                          >
+                            {isVoiceEnabled ? (
+                              <Volume2 className="h-3 w-3" />
+                            ) : (
+                              <VolumeX className="h-3 w-3" />
+                            )}
+                          </Button>
+                          <span className="text-xs text-muted-foreground">
+                            Click to play audio
+                          </span>
+                        </div>
+                      )}
                     </div>
                     
                     <div className="text-xs text-muted-foreground">

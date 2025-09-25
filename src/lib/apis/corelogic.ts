@@ -1,27 +1,30 @@
 export interface PropertyFeatures {
   id: string;
   address: string;
-  propertyType: 'House' | 'Apartment' | 'Townhouse' | 'Villa';
+  propertyType: 'House' | 'Apartment' | 'Townhouse' | 'Villa' | 'Condo' | 'Townhome' | 'Duplex';
   bedrooms: number;
   bathrooms: number;
   carSpaces: number;
-  landSize: number; // 0 for apartments
+  landSize: number; // 0 for apartments/condos
   buildYear: number;
   lastSaleDate?: string;
   lastSalePrice?: number;
   estimatedValue: number;
   pricePerSqm?: number;
-  suburb: string;
-  postcode: string;
-  state: string;
+  currency: string;
+  city: string;
+  region: string;
+  country: string;
+  postalCode: string;
   zoning: string;
-  councilArea: string;
-  schoolCatchment: string[];
+  jurisdiction: string;
+  schoolDistrict: string[];
   nearbyAmenities: {
-    trainStations: number;
-    shoppingCentres: number;
+    publicTransport: number;
+    shoppingCenters: number;
     hospitals: number;
     schools: number;
+    parks: number;
   };
   marketTrends: {
     medianPrice: number;
@@ -33,7 +36,7 @@ export interface PropertyFeatures {
 
 export class CoreLogicClient {
   private readonly MOCK_MODE = true; // Set to true for hackathon
-  private readonly API_BASE = 'https://api.corelogic.com.au/v1';
+  private readonly API_BASE = 'https://api.globalpropertydata.com/v1';
 
   async getPropertyData(address: string): Promise<PropertyFeatures> {
     // Force mock mode for hackathon demo
@@ -66,30 +69,22 @@ export class CoreLogicClient {
   private generateMockPropertyData(address: string): PropertyFeatures {
     // Analyze address for realistic patterns
     const addressLower = address.toLowerCase();
-    const isApartment = /(apt|unit|flat|\/|\d+\/)/i.test(address);
-    const isTownhouse = /(townhouse|tce|terrace)/i.test(address);
+    const isApartment = /(apt|unit|flat|apartment|condo|\/|\d+\/)/i.test(address);
+    const isTownhouse = /(townhouse|tce|terrace|townhome)/i.test(address);
     
-    // Australian city detection
-    const isSydney = /(sydney|nsw|200\d|201\d|202\d|203\d|204\d|205\d)/i.test(address);
-    const isMelbourne = /(melbourne|vic|300\d|301\d|302\d|303\d|304\d|305\d|306\d|307\d|308\d)/i.test(address);
-    const isBrisbane = /(brisbane|qld|400\d|401\d|402\d|403\d|404\d|405\d)/i.test(address);
-    const isPerth = /(perth|wa|600\d|601\d|602\d|603\d|604\d|605\d|606\d)/i.test(address);
-    const isAdelaide = /(adelaide|sa|500\d|501\d|502\d|503\d|504\d|505\d)/i.test(address);
+    // Global location detection
+    const location = this.detectLocation(address);
     
-    // Extract suburb and postcode from address
-    const postcodeMatch = address.match(/(\d{4})/);
-    const postcode = postcodeMatch ? postcodeMatch[1] : this.generatePostcode(isSydney, isMelbourne, isBrisbane, isPerth, isAdelaide);
+    // Extract city and postal code from address
+    const postalCodeMatch = address.match(/(\d{4,6}|\w{2,3}\s?\d{1,2}\w{2})/);
+    const postalCode = postalCodeMatch ? postalCodeMatch[1] : this.generatePostalCode(location);
     
-    const suburbMatch = address.match(/,\s*([^,\d]+)\s+[A-Z]{2,3}/);
-    const suburb = suburbMatch ? suburbMatch[1].trim() : this.generateSuburb(isSydney, isMelbourne, isBrisbane, isPerth, isAdelaide);
+    const cityMatch = address.match(/,\s*([^,\d]+?)(?:\s*,\s*[A-Z]{2,3}|\s+\d{4,6})/);
+    const city = cityMatch ? cityMatch[1].trim() : this.generateCity(location);
     
-    // Base pricing by city (median house prices as of 2024)
-    let basePrice = 650000; // Default regional
-    if (isSydney) basePrice = 1350000;
-    else if (isMelbourne) basePrice = 950000;
-    else if (isBrisbane) basePrice = 750000;
-    else if (isPerth) basePrice = 620000;
-    else if (isAdelaide) basePrice = 580000;
+    // Base pricing by location (median house prices as of 2024)
+    let basePrice = location.basePrice;
+    let currency = location.currency;
     
     // Property type adjustments
     let propertyType: PropertyFeatures['propertyType'] = 'House';

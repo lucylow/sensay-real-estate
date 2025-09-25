@@ -11,6 +11,8 @@ import { PropertySearchPage } from "@/pages/PropertySearchPage";
 import { PropertyDetailPage } from "@/pages/PropertyDetailPage";
 import { MarketAnalysisPage } from "@/pages/MarketAnalysisPage";
 import { ValuationReportPage } from "@/pages/ValuationReportPage";
+import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
+import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +31,8 @@ const App = () => (
             <Route path="/property/:id" element={<PropertyDetailPage />} />
             <Route path="/market-analysis" element={<MarketAnalysisPage />} />
             <Route path="/report/:reportId" element={<ValuationReportPage />} />
+            <Route path="/sensay" element={<SensayIntegrationPage />} />
+            <Route path="/heygen-test" element={<HeyGenTestPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

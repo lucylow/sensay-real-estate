@@ -13,6 +13,7 @@ from src.routes.blockchain import blockchain_bp
 from src.routes.xnode_simple import xnode_bp
 from src.routes.data_pipeline import data_pipeline_bp
 from src.routes.llm_integration import llm_bp
+from src.routes.heygen import heygen_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
@@ -27,6 +28,7 @@ app.register_blueprint(blockchain_bp, url_prefix='/api/blockchain')
 app.register_blueprint(xnode_bp, url_prefix='/api/xnode')
 app.register_blueprint(data_pipeline_bp, url_prefix='/api/pipeline')
 app.register_blueprint(llm_bp, url_prefix='/api/llm')
+app.register_blueprint(heygen_bp, url_prefix='/api/heygen')
 
 # uncomment if you need to use database
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"

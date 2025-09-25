@@ -76,7 +76,14 @@ export const API_CONFIG = {
     // Enhanced AI features
     ENHANCED_ANALYSIS: '/ai/enhanced-analysis',
     CLIMATE_RISK: '/ai/climate-risk-calculator',
-    MARKET_SENTIMENT_AI: '/ai/market-sentiment-analysis'
+    MARKET_SENTIMENT_AI: '/ai/market-sentiment-analysis',
+    
+    // HeyGen Interactive Avatar endpoints
+    HEYGEN_HEALTH: '/heygen/health',
+    HEYGEN_GENERATE: '/heygen/generate',
+    HEYGEN_STATUS: '/heygen/status',
+    HEYGEN_AVATARS: '/heygen/avatars',
+    HEYGEN_CONFIG: '/heygen/config'
   }
 };
 
@@ -171,14 +178,39 @@ export class PropGuardAPI {
     });
   }
 
+  // HeyGen Interactive Avatar Methods
+  async generateAvatarVideo(text: string, voice: string = 'en_us_female_001') {
+    return this.request(API_CONFIG.ENDPOINTS.HEYGEN_GENERATE, {
+      method: 'POST',
+      body: JSON.stringify({ text, voice })
+    });
+  }
+
+  async getAvatarTaskStatus(taskId: string) {
+    return this.request(`${API_CONFIG.ENDPOINTS.HEYGEN_STATUS}/${taskId}`);
+  }
+
+  async getAvailableAvatars() {
+    return this.request(API_CONFIG.ENDPOINTS.HEYGEN_AVATARS);
+  }
+
+  async getHeyGenConfig() {
+    return this.request(API_CONFIG.ENDPOINTS.HEYGEN_CONFIG);
+  }
+
+  async checkHeyGenHealth() {
+    return this.request(API_CONFIG.ENDPOINTS.HEYGEN_HEALTH);
+  }
+
   // Health check methods
   async checkSystemHealth() {
-    const [propguardHealth, llmHealth, blockchainHealth, xnodeHealth, pipelineHealth] = await Promise.allSettled([
+    const [propguardHealth, llmHealth, blockchainHealth, xnodeHealth, pipelineHealth, heygenHealth] = await Promise.allSettled([
       this.request(API_CONFIG.ENDPOINTS.HEALTH_CHECK),
       this.request(API_CONFIG.ENDPOINTS.LLM_HEALTH),
       this.request(API_CONFIG.ENDPOINTS.BLOCKCHAIN_HEALTH),
       this.request(API_CONFIG.ENDPOINTS.XNODE_HEALTH),
-      this.request(API_CONFIG.ENDPOINTS.PIPELINE_HEALTH)
+      this.request(API_CONFIG.ENDPOINTS.PIPELINE_HEALTH),
+      this.request(API_CONFIG.ENDPOINTS.HEYGEN_HEALTH)
     ]);
 
     return {
@@ -186,7 +218,8 @@ export class PropGuardAPI {
       llm: llmHealth.status === 'fulfilled' ? llmHealth.value : null,
       blockchain: blockchainHealth.status === 'fulfilled' ? blockchainHealth.value : null,
       xnode: xnodeHealth.status === 'fulfilled' ? xnodeHealth.value : null,
-      pipeline: pipelineHealth.status === 'fulfilled' ? pipelineHealth.value : null
+      pipeline: pipelineHealth.status === 'fulfilled' ? pipelineHealth.value : null,
+      heygen: heygenHealth.status === 'fulfilled' ? heygenHealth.value : null
     };
   }
 }
