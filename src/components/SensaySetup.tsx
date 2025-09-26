@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Key, CheckCircle, AlertCircle, ExternalLink, Copy, Globe } from 'lucide-react';
 import { sensayAPI, SensayCredentials } from '@/services/api/sensay';
+import { SensayAPI } from '@/services/api/sensay';
 import { useTranslation } from '@/lib/i18n';
 import { LanguageSelector } from '@/components/ui/language-selector';
 
@@ -81,7 +82,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
     try {
       // Create a temporary SensayAPI instance with the provided credentials
       const credentials: SensayCredentials = { apiKey, organizationId };
-      const testAPI = new (sensayAPI.constructor as typeof sensayAPI)(credentials);
+      const testAPI = new SensayAPI(credentials);
       const result = await testAPI.healthCheck();
       
       setTestResult(result);

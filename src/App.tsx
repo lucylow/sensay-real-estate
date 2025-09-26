@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Dashboard } from "@/components/dashboard/Dashboard";
 import { EnhancedDashboard } from "@/components/propguard/EnhancedDashboard";
 import LandingPage from "@/components/LandingPage";
+import Index from "@/pages/Index";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { PropertySearchPage } from "@/pages/PropertySearchPage";
 import { PropertyDetailPage } from "@/pages/PropertyDetailPage";
@@ -36,7 +37,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/landing" element={<LandingPage />} />
             <Route path="/dashboard" element={<EnhancedDashboard />} />
             <Route path="/search" element={<PropertySearchPage />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
