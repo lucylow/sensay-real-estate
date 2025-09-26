@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, Database, RefreshCw, CheckCircle, AlertCircle, 
-  Zap, Settings, ArrowRight, ArrowLeft, Sync, 
+  Zap, Settings, ArrowRight, ArrowLeft, 
   UserPlus, Mail, Phone, Calendar, FileText, 
   TrendingUp, BarChart3, Target, Shield
 } from 'lucide-react';
@@ -302,7 +302,7 @@ export const CRMIntegrationWorkflows: React.FC<CRMWorkflowProps> = ({
             onClick={() => handleSyncCRM(integration.id)}
             disabled={isSyncing}
           >
-            {isSyncing ? <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> : <Sync className="h-3 w-3 mr-1" />}
+            {isSyncing ? <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> : <RefreshCw className="h-3 w-3 mr-1" />}
             Sync Now
           </Button>
           <Button size="sm" variant="outline">
@@ -446,7 +446,7 @@ export const CRMIntegrationWorkflows: React.FC<CRMWorkflowProps> = ({
                 Add Lead
               </Button>
               <Button size="sm">
-                <Sync className="h-4 w-4 mr-1" />
+                <RefreshCw className="h-4 w-4 mr-1" />
                 Sync All
               </Button>
             </div>
@@ -565,7 +565,7 @@ export const CRMIntegrationWorkflows: React.FC<CRMWorkflowProps> = ({
             
             <div className="text-center space-y-2">
               <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
-                <Sync className="h-6 w-6 text-primary" />
+                <RefreshCw className="h-6 w-6 text-primary" />
               </div>
               <h3 className="font-semibold">Automated Sync</h3>
               <p className="text-sm text-muted-foreground">
