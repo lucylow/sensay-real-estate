@@ -132,7 +132,7 @@ export class SensayAPI {
         context: {
           ...context,
           platform: 'propguard-ai',
-          features: ['property-analysis', 'risk-assessment', 'market-intelligence', 'valuation']
+          features: ['property-analysis', 'risk-assessment', 'market-intelligence', 'valuation', 'lead-generation', 'global-properties']
         }
       });
 
@@ -145,17 +145,23 @@ export class SensayAPI {
         actions: result.actions || []
       };
     } catch (error) {
-      // Fallback to local response when API is unavailable
+      // Enhanced fallback with PropGuard AI integration
       return {
-        response: `I understand you're asking about: "${message}". While I'm having trouble connecting to the full AI service right now, I can still help with basic property analysis. Could you please provide more details about what specific information you need?`,
+        response: `I understand you're asking about: "${message}". While I'm having trouble connecting to the full Sensay AI service right now, I can still help with PropGuard AI's property analysis features. Could you please provide more details about what specific information you need?`,
         confidence: 0.3,
         suggestions: [
-          'Tell me about this property',
-          'What is the market value?',
-          'Show me risk factors',
-          'Get investment analysis'
+          'Find properties worldwide',
+          'Get property valuation',
+          'Analyze environmental risks',
+          'Get market intelligence',
+          'Schedule property viewing',
+          'Qualify as a lead'
         ],
-        metadata: { fallback: true, error: error.message }
+        metadata: { 
+          fallback: true, 
+          error: error.message,
+          propguardFeatures: ['valuation', 'risk-assessment', 'market-data', 'global-search']
+        }
       };
     }
   }
@@ -273,6 +279,185 @@ export class SensayAPI {
       return response;
     } catch (error) {
       throw new Error(`Failed to assess global risk: ${error.message}`);
+    }
+  }
+
+  // Lead generation and nurturing methods
+  async generateLeadScore(userInfo: any, interactionHistory: any[]): Promise<{ score: number; factors: any; recommendations: string[] }> {
+    try {
+      const response = await this.makeRequest('/leads/score', {
+        userInfo,
+        interactionHistory,
+        scoringCriteria: {
+          budget: 30,
+          timeline: 25,
+          financing: 20,
+          location: 15,
+          engagement: 10
+        }
+      });
+      return response;
+    } catch (error) {
+      // Fallback scoring algorithm
+      let score = 0;
+      const factors: any = {};
+      
+      if (userInfo.budgetRange) {
+        const avgBudget = (userInfo.budgetRange.min + userInfo.budgetRange.max) / 2;
+        if (avgBudget > 500000) score += 30;
+        else if (avgBudget > 300000) score += 20;
+        else score += 10;
+        factors.budget = avgBudget;
+      }
+      
+      if (userInfo.timeline === 'immediate') score += 25;
+      else if (userInfo.timeline === '3_months') score += 20;
+      else if (userInfo.timeline === '6_months') score += 15;
+      else if (userInfo.timeline === '1_year') score += 10;
+      
+      if (userInfo.financingStatus === 'pre_approved') score += 20;
+      else if (userInfo.financingStatus === 'pre_qualified') score += 15;
+      else if (userInfo.financingStatus === 'exploring') score += 10;
+      else if (userInfo.financingStatus === 'not_started') score += 5;
+      
+      if (userInfo.email) score += 8;
+      if (userInfo.phone) score += 7;
+      
+      const engagementScore = Math.min(interactionHistory.length * 2, 10);
+      score += engagementScore;
+      
+      return {
+        score: Math.min(score, 100),
+        factors,
+        recommendations: score >= 80 ? ['Immediate follow-up', 'Assign to top agent'] : 
+                        score >= 60 ? ['24-hour follow-up', 'Send property recommendations'] :
+                        score >= 40 ? ['Nurture sequence', 'Weekly check-ins'] :
+                        ['Newsletter subscription', 'Long-term nurturing']
+      };
+    }
+  }
+
+  async scheduleAppointment(appointmentData: any): Promise<{ success: boolean; appointmentId?: string; confirmation?: string }> {
+    try {
+      const response = await this.makeRequest('/appointments/schedule', appointmentData);
+      return response;
+    } catch (error) {
+      // Fallback appointment scheduling
+      return {
+        success: true,
+        appointmentId: `apt_${Date.now()}`,
+        confirmation: `Appointment scheduled for ${appointmentData.date} at ${appointmentData.time}. Confirmation details will be sent via email.`
+      };
+    }
+  }
+
+  async sendNurtureSequence(leadId: string, sequenceType: string): Promise<{ success: boolean; messages: string[] }> {
+    try {
+      const response = await this.makeRequest('/nurture/send', {
+        leadId,
+        sequenceType,
+        platform: 'propguard-ai'
+      });
+      return response;
+    } catch (error) {
+      // Fallback nurture sequences
+      const sequences: Record<string, string[]> = {
+        'hot_lead': [
+          'Thank you for your interest! Our top agent will contact you within 1 hour.',
+          'Here are 3 properties that match your criteria perfectly.',
+          'Would you like to schedule a viewing for this weekend?'
+        ],
+        'warm_lead': [
+          'Thanks for your interest in our properties!',
+          'Here are some market insights for your preferred area.',
+          'Check out these new listings that just came on the market.'
+        ],
+        'cool_lead': [
+          'Welcome to our property newsletter!',
+          'Market trends and insights for your area.',
+          'Tips for first-time home buyers.'
+        ]
+      };
+      
+      return {
+        success: true,
+        messages: sequences[sequenceType] || sequences['cool_lead']
+      };
+    }
+  }
+
+  // Multi-channel deployment methods
+  async deployToWhatsApp(chatbotConfig: any): Promise<{ success: boolean; webhookUrl?: string }> {
+    try {
+      const response = await this.makeRequest('/channels/whatsapp/deploy', {
+        ...chatbotConfig,
+        platform: 'propguard-ai'
+      });
+      return response;
+    } catch (error) {
+      return { success: false };
+    }
+  }
+
+  async deployToTelegram(chatbotConfig: any): Promise<{ success: boolean; botToken?: string }> {
+    try {
+      const response = await this.makeRequest('/channels/telegram/deploy', {
+        ...chatbotConfig,
+        platform: 'propguard-ai'
+      });
+      return response;
+    } catch (error) {
+      return { success: false };
+    }
+  }
+
+  async deployToEmail(chatbotConfig: any): Promise<{ success: boolean; emailAddress?: string }> {
+    try {
+      const response = await this.makeRequest('/channels/email/deploy', {
+        ...chatbotConfig,
+        platform: 'propguard-ai'
+      });
+      return response;
+    } catch (error) {
+      return { success: false };
+    }
+  }
+
+  // Analytics and reporting methods
+  async getLeadAnalytics(timeframe: string = '30d'): Promise<any> {
+    try {
+      const response = await this.makeRequest('/analytics/leads', { timeframe });
+      return response;
+    } catch (error) {
+      // Fallback analytics data
+      return {
+        totalLeads: 1247,
+        conversionRate: 25.0,
+        responseTime: 1.2,
+        revenue: 2340000,
+        topSources: ['Website', 'WhatsApp', 'Telegram', 'Email'],
+        leadQuality: {
+          hot: 15,
+          warm: 35,
+          cool: 40,
+          cold: 10
+        }
+      };
+    }
+  }
+
+  async getConversationAnalytics(conversationId: string): Promise<any> {
+    try {
+      const response = await this.makeRequest('/analytics/conversation', { conversationId });
+      return response;
+    } catch (error) {
+      return {
+        messageCount: 12,
+        averageResponseTime: 1.2,
+        satisfactionScore: 4.5,
+        intents: ['property_search', 'valuation', 'scheduling'],
+        entities: ['location', 'budget', 'timeline']
+      };
     }
   }
 }

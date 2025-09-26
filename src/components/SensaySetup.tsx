@@ -6,8 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Key, CheckCircle, AlertCircle, ExternalLink, Copy, Globe } from 'lucide-react';
-import { sensayAPI, SensayCredentials } from '@/services/api/sensay';
-import { SensayAPI } from '@/services/api/sensay';
+import { SensayAPI, SensayCredentials } from '@/services/api/sensay';
 import { useTranslation } from '@/lib/i18n';
 import { LanguageSelector } from '@/components/ui/language-selector';
 
@@ -42,7 +41,8 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
     setMessage(t('sensaySetup.redeemingButton'));
 
     try {
-      const result = await sensayAPI.redeemInviteCode(inviteCode);
+      const api = new SensayAPI();
+      const result = await api.redeemInviteCode(inviteCode);
       setApiKey(result.apiKey);
       setOrganizationId(result.organizationId);
       setMessage(result.message);
@@ -54,9 +54,6 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
         organizationId: result.organizationId
       };
       localStorage.setItem('sensay_credentials', JSON.stringify(credentials));
-      
-      // Update the API instance with new credentials
-      sensayAPI.updateCredentials(credentials);
       
       // Notify parent component
       if (onCredentialsSet) {
@@ -92,9 +89,6 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
       if (result.status === 'healthy') {
         // Store credentials in localStorage
         localStorage.setItem('sensay_credentials', JSON.stringify(credentials));
-        
-        // Update the main API instance
-        sensayAPI.updateCredentials(credentials);
         
         // Notify parent component
         if (onCredentialsSet) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Shield, TrendingUp, Users, CheckCircle, Star, Play, BarChart3, Zap, Globe, Menu, X, MessageCircle, Search, Building, FileText, Map } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp, Users, CheckCircle, Star, Play, BarChart3, Zap, Globe, Menu, X, MessageCircle, Search, Building, FileText, Map, Bot, Video, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
@@ -73,11 +73,32 @@ const LandingPage = () => {
                       Sensay AI Chatbot
                     </button>
                     <button 
+                      onClick={() => navigate('/sensay-features')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Zap className="mr-2 h-4 w-4" />
+                      Sensay Features
+                    </button>
+                    <button 
                       onClick={() => navigate('/dashboard')}
                       className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
                       <TrendingUp className="mr-2 h-4 w-4" />
                       Risk Assessment
+                    </button>
+                    <button 
+                      onClick={() => navigate('/heygen-test')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Video className="mr-2 h-4 w-4" />
+                      Video Avatars
+                    </button>
+                    <button 
+                      onClick={() => navigate('/multimodal-test')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Mic className="mr-2 h-4 w-4" />
+                      Voice & Audio
                     </button>
                     <button 
                       onClick={() => navigate('/blockchain')}
@@ -170,12 +191,30 @@ const LandingPage = () => {
               </button>
               <button 
                 onClick={() => {
-                  navigate('/sensay');
+                  navigate('/sensay-features');
                   setIsMobileMenuOpen(false);
                 }}
                 className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
               >
-                Sensay Chatbot
+                Sensay Features
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/heygen-test');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Video Avatars
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/multimodal-test');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Voice & Audio
               </button>
               <button 
                 onClick={() => {

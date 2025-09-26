@@ -52,10 +52,18 @@ export class ElevenLabsService {
 
   constructor() {
     this.config = {
-      apiKey: import.meta.env.VITE_ELEVENLABS_API_KEY || '',
+      apiKey: import.meta.env.VITE_ELEVENLABS_API_KEY || localStorage.getItem('elevenlabs_api_key') || '',
       baseUrl: 'https://api.elevenlabs.io/v1',
       defaultVoiceId: import.meta.env.VITE_ELEVENLABS_VOICE_ID || 'alex-professional-australian'
     };
+  }
+
+  /**
+   * Update API key dynamically
+   */
+  updateApiKey(apiKey: string) {
+    this.config.apiKey = apiKey;
+    localStorage.setItem('elevenlabs_api_key', apiKey);
   }
 
   /**

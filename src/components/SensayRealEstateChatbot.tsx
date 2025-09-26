@@ -134,6 +134,127 @@ const SensayRealEstateChatbot: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversationHistory]);
 
+  // Enhanced AI Features
+  useEffect(() => {
+    // Initialize voice recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = language;
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setCurrentMessage(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = () => {
+        setIsListening(false);
+      };
+    }
+  }, [language]);
+
+  // Analyze sentiment and emotion
+  const analyzeSentiment = (text: string) => {
+    const positiveWords = ['love', 'great', 'amazing', 'perfect', 'excellent', 'wonderful', 'fantastic', 'excited', 'happy'];
+    const negativeWords = ['hate', 'terrible', 'awful', 'bad', 'disappointed', 'frustrated', 'angry', 'worried', 'stressed'];
+    
+    const words = text.toLowerCase().split(' ');
+    const positiveCount = words.filter(word => positiveWords.includes(word)).length;
+    const negativeCount = words.filter(word => negativeWords.includes(word)).length;
+    
+    if (positiveCount > negativeCount) {
+      setSentiment('positive');
+      setUserEmotion('excited');
+    } else if (negativeCount > positiveCount) {
+      setSentiment('negative');
+      setUserEmotion('stressed');
+    } else {
+      setSentiment('neutral');
+      setUserEmotion('neutral');
+    }
+  };
+
+  // Generate AI insights
+  const generateAIInsights = (conversation: ConversationMessage[]) => {
+    const insights = [];
+    
+    if (conversation.length > 5) {
+      insights.push('User is highly engaged - consider advanced property options');
+    }
+    
+    if (sentiment === 'positive') {
+      insights.push('User shows strong buying intent - prioritize high-value properties');
+    }
+    
+    if (userEmotion === 'stressed') {
+      insights.push('User may need reassurance - focus on risk mitigation and support');
+    }
+    
+    if (leadData && leadData.leadScore > 80) {
+      insights.push('High-quality lead detected - schedule immediate follow-up');
+    }
+    
+    setAiInsights(insights);
+  };
+
+  // Generate predictive suggestions
+  const generatePredictiveSuggestions = (context: any) => {
+    const suggestions = [];
+    
+    if (context.budgetRange) {
+      suggestions.push(`Properties in $${context.budgetRange.min}K-$${context.budgetRange.max}K range`);
+    }
+    
+    if (context.preferredLocations) {
+      suggestions.push(`Properties in ${context.preferredLocations.join(', ')}`);
+    }
+    
+    if (context.propertyTypes) {
+      suggestions.push(`${context.propertyTypes.join(' or ')} properties`);
+    }
+    
+    if (context.timeline === 'immediate') {
+      suggestions.push('Available properties for immediate viewing');
+    }
+    
+    setPredictiveSuggestions(suggestions);
+  };
+
+  // Voice interaction
+  const toggleVoiceInput = () => {
+    if (!isVoiceEnabled) {
+      setIsVoiceEnabled(true);
+      return;
+    }
+    
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current?.start();
+      setIsListening(true);
+    }
+  };
+
+  // Language detection and switching
+  const detectLanguage = (text: string) => {
+    const spanishWords = ['hola', 'gracias', 'por favor', 'casa', 'propiedad'];
+    const chineseWords = ['你好', '谢谢', '房子', '房产'];
+    
+    const words = text.toLowerCase().split(' ');
+    
+    if (words.some(word => spanishWords.includes(word))) {
+      setLanguage('es');
+    } else if (words.some(word => chineseWords.includes(word))) {
+      setLanguage('zh');
+    } else {
+      setLanguage('en');
+    }
+  };
+
   const getWelcomeMessage = (): string => {
     const messages = {
       en: `Hi! I'm your AI real estate assistant powered by PropGuard AI and Sensay. I can help you:
@@ -171,6 +292,10 @@ What brings you here today?`,
   const handleSendMessage = async () => {
     if (!currentMessage.trim()) return;
 
+    // Enhanced AI Processing
+    analyzeSentiment(currentMessage);
+    detectLanguage(currentMessage);
+
     // Initialize user profile if not exists
     if (!userId) {
       const newUserId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -182,7 +307,12 @@ What brings you here today?`,
       id: `msg_${Date.now()}`,
       type: 'user',
       content: currentMessage,
-      timestamp: new Date()
+      timestamp: new Date(),
+      metadata: {
+        sentiment,
+        emotion: userEmotion,
+        language
+      }
     };
 
     setConversationHistory(prev => [...prev, userMessage]);
@@ -234,6 +364,14 @@ What brings you here today?`,
       };
 
       setConversationHistory(prev => [...prev, assistantMessage]);
+      
+      // Generate AI insights and suggestions
+      generateAIInsights([...conversationHistory, userMessage, assistantMessage]);
+      generatePredictiveSuggestions(leadData);
+      
+      // Update conversation quality score
+      const qualityScore = calculateConversationQuality([...conversationHistory, userMessage, assistantMessage]);
+      setConversationQuality(qualityScore);
       
       // Trigger follow-up actions
       await handleFollowUpActions(intent, entities, assistantResponse.actions);
@@ -600,12 +738,16 @@ This helps me match you with the perfect properties and agent!`;
 
   const handleQuickAction = (action: string) => {
     const quickMessages: Record<string, string> = {
-      'find_properties': 'I\'m looking for properties to buy',
-      'get_valuation': 'I need a property valuation',
-      'risk_analysis': 'I want to analyze environmental risks for a property',
-      'pricing_intelligence': 'I need pricing intelligence for optimal listing price',
-      'schedule_viewing': 'I want to schedule a property viewing',
-      'ask_questions': 'I have questions about real estate'
+      'find_properties': 'I\'m looking for properties to buy worldwide',
+      'get_valuation': 'I need a property valuation with risk assessment',
+      'risk_analysis': 'I want to analyze environmental and climate risks for a property',
+      'pricing_intelligence': 'I need pricing intelligence for optimal listing price globally',
+      'schedule_viewing': 'I want to schedule a property viewing or virtual tour',
+      'ask_questions': 'I have questions about real estate investment globally',
+      'lead_qualification': 'I\'d like to be qualified as a potential buyer',
+      'market_analysis': 'Show me market trends and investment opportunities',
+      'financing_options': 'What financing options are available for international buyers?',
+      'legal_compliance': 'What legal requirements do I need to know for buying property?'
     };
 
     setCurrentMessage(quickMessages[action] || '');
@@ -659,6 +801,32 @@ This helps me match you with the perfect properties and agent!`;
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              {/* AI Status Indicators */}
+              <div className="flex items-center space-x-1">
+                {sentiment === 'positive' && <Smile className="h-4 w-4 text-green-300" />}
+                {sentiment === 'negative' && <Frown className="h-4 w-4 text-red-300" />}
+                {sentiment === 'neutral' && <Meh className="h-4 w-4 text-yellow-300" />}
+                {conversationQuality > 80 && <Star className="h-4 w-4 text-yellow-300" />}
+              </div>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleVoiceInput}
+                className={`text-white hover:bg-white/20 ${isListening ? 'bg-red-500' : ''}`}
+              >
+                {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAdvancedFeatures(!showAdvancedFeatures)}
+                className="text-white hover:bg-white/20"
+              >
+                <Brain className="h-4 w-4" />
+              </Button>
+              
               <Button
                 variant="ghost"
                 size="sm"
@@ -667,6 +835,7 @@ This helps me match you with the perfect properties and agent!`;
               >
                 <Globe className="h-4 w-4" />
               </Button>
+              
               <Button
                 variant="ghost"
                 size="sm"
@@ -675,6 +844,7 @@ This helps me match you with the perfect properties and agent!`;
               >
                 {isMinimized ? '↑' : '↓'}
               </Button>
+              
               <Button
                 variant="ghost"
                 size="sm"
@@ -790,6 +960,24 @@ This helps me match you with the perfect properties and agent!`;
                     >
                       <MessageCircle className="h-3 w-3 mr-1" />
                       Ask Questions
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleQuickAction('lead_qualification')}
+                      className="text-xs"
+                    >
+                      <Target className="h-3 w-3 mr-1" />
+                      Get Qualified
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleQuickAction('market_analysis')}
+                      className="text-xs"
+                    >
+                      <BarChart3 className="h-3 w-3 mr-1" />
+                      Market Analysis
                     </Button>
                   </div>
 

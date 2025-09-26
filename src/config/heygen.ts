@@ -27,10 +27,20 @@ export class HeyGenService {
 
   constructor() {
     this.config = {
-      apiKey: import.meta.env.VITE_HEYGEN_API_KEY || '',
-      avatarId: import.meta.env.VITE_HEYGEN_AVATAR_ID || 'Marianne_CasualLook_public',
+      apiKey: import.meta.env.VITE_HEYGEN_API_KEY || localStorage.getItem('heygen_api_key') || '',
+      avatarId: import.meta.env.VITE_HEYGEN_AVATAR_ID || localStorage.getItem('heygen_avatar_id') || 'Marianne_CasualLook_public',
       baseUrl: 'https://api.heygen.com/v1'
     };
+  }
+
+  /**
+   * Update API configuration dynamically
+   */
+  updateConfig(apiKey: string, avatarId: string) {
+    this.config.apiKey = apiKey;
+    this.config.avatarId = avatarId;
+    localStorage.setItem('heygen_api_key', apiKey);
+    localStorage.setItem('heygen_avatar_id', avatarId);
   }
 
   /**

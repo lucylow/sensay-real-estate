@@ -26,6 +26,7 @@ import { AppointmentManager } from "@/components/AppointmentManager";
 import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
 import { SensayHackathonShowcase } from "@/components/SensayHackathonShowcase";
 import { KnowledgeMonitoringDashboard } from "@/components/KnowledgeMonitoringDashboard";
+import SensayFeaturesPage from "@/pages/SensayFeaturesPage";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="/propguard-chatbot" element={<PropGuardAIChatbot />} />
             <Route path="/sensay-showcase" element={<SensayHackathonShowcase />} />
             <Route path="/knowledge-dashboard" element={<KnowledgeMonitoringDashboard />} />
+            <Route path="/sensay-features" element={<SensayFeaturesPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
