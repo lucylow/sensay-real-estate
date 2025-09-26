@@ -1,66 +1,200 @@
-import React from 'react';
-import { ArrowRight, Shield, TrendingUp, Users, CheckCircle, Star, Play, BarChart3, Zap, Globe } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, Shield, TrendingUp, Users, CheckCircle, Star, Play, BarChart3, Zap, Globe, Menu, X, MessageCircle, Search, Building, FileText, Map } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleDemoClick = () => {
-    navigate('/dashboard');
+    navigate('/app');
   };
 
   const handleGetStartedClick = () => {
-    navigate('/dashboard');
+    navigate('/app');
   };
 
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Logo */}
             <div className="flex items-center">
-              <Shield className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">PropGuard AI</span>
-              <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">APRA Compliant</span>
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <Shield className="h-5 w-5 text-white" />
+              </div>
+              <span className="ml-3 text-xl font-bold text-gray-900">PropGuard AI</span>
+              <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full font-medium">Powered by Sensay</span>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900">Pricing</a>
-              <a href="#demo" className="text-gray-600 hover:text-gray-900">Demo</a>
-               <button 
-                 onClick={() => navigate('/sensay-leads')}
-                 className="text-gray-600 hover:text-gray-900"
-               >
-                 Sensay AI
-               </button>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-1">
+              <a href="#features" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                Features
+              </a>
+              <a href="#pricing" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                Pricing
+              </a>
+              <div className="relative group">
+                <button className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center">
+                  Products
+                  <ArrowRight className="ml-1 h-3 w-3 rotate-90 group-hover:rotate-180 transition-transform" />
+                </button>
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="py-2">
+                    <button 
+                      onClick={() => navigate('/app')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Search className="mr-2 h-4 w-4" />
+                      Property Intelligence
+                    </button>
+                    <button 
+                      onClick={() => navigate('/search')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Building className="mr-2 h-4 w-4" />
+                      Property Search
+                    </button>
+                    <button 
+                      onClick={() => navigate('/market-analysis')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      Market Analysis
+                    </button>
+                    <button 
+                      onClick={() => navigate('/sensay')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Sensay Chatbot
+                    </button>
+                  </div>
+                </div>
+              </div>
               <button 
-                onClick={() => navigate('/virtual-tours')}
-                className="text-gray-600 hover:text-gray-900"
+                onClick={handleDemoClick}
+                className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               >
-                Tours
+                Demo
               </button>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="hidden md:flex items-center space-x-3">
               <button 
-                onClick={() => navigate('/smart-faq')}
-                className="text-gray-600 hover:text-gray-900"
+                onClick={() => navigate('/app')}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
               >
-                FAQ
-              </button>
-              <button 
-                onClick={() => navigate('/leads')}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Leads
+                Sign In
               </button>
               <button 
                 onClick={handleGetStartedClick}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all font-medium text-sm shadow-sm"
               >
                 Get Started Free
               </button>
             </div>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div className="px-4 py-4 space-y-2">
+              <a 
+                href="#features" 
+                className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Features
+              </a>
+              <a 
+                href="#pricing" 
+                className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pricing
+              </a>
+              <button 
+                onClick={() => {
+                  navigate('/app');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Property Intelligence
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/search');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Property Search
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/market-analysis');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Market Analysis
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/sensay');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Sensay Chatbot
+              </button>
+              <button 
+                onClick={() => {
+                  handleDemoClick();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Demo
+              </button>
+              <div className="pt-4 border-t border-gray-200 space-y-2">
+                <button 
+                  onClick={() => {
+                    navigate('/app');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => {
+                    handleGetStartedClick();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-2 rounded-lg font-medium text-base"
+                >
+                  Get Started Free
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}

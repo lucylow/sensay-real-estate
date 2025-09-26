@@ -37,8 +37,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/app" element={<Index />} />
             <Route path="/dashboard" element={<EnhancedDashboard />} />
             <Route path="/search" element={<PropertySearchPage />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
