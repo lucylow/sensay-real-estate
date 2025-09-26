@@ -38,7 +38,6 @@ import {
 } from 'lucide-react';
 
 // Import Sensay components
-import { SensaySetup } from '@/components/SensaySetup';
 import SensayRealEstateChatbot from '@/components/SensayRealEstateChatbot';
 
 export const SensayWisdomPage: React.FC = () => {
@@ -82,41 +81,34 @@ export const SensayWisdomPage: React.FC = () => {
   const integrationSteps = [
     {
       step: 1,
-      title: 'Setup',
-      description: 'Configure your Sensay API credentials',
-      icon: Settings,
-      component: 'SensaySetup'
-    },
-    {
-      step: 2,
       title: 'AI Assistant',
       description: 'Deploy intelligent conversation engine',
       icon: MessageCircle,
       component: 'SensayRealEstateChatbot'
     },
     {
-      step: 3,
+      step: 2,
       title: 'Search',
       description: 'Enable personalized property search',
       icon: Search,
       component: 'PersonalizedSearchEngine'
     },
     {
-      step: 4,
+      step: 3,
       title: 'Live Data',
       description: 'Integrate real-time market data',
       icon: Database,
       component: 'RealTimeDataIntegration'
     },
     {
-      step: 5,
+      step: 4,
       title: 'CRM',
       description: 'Connect with CRM systems',
       icon: Users,
       component: 'CRMIntegrationWorkflows'
     },
     {
-      step: 6,
+      step: 5,
       title: 'Deploy',
       description: 'Deploy across multiple channels',
       icon: Rocket,
@@ -156,14 +148,6 @@ export const SensayWisdomPage: React.FC = () => {
         </p>
 
         <div className="flex items-center justify-center gap-6 mt-8">
-          <Button 
-            size="lg" 
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg"
-            onClick={() => setActiveDemo('setup')}
-          >
-            <Settings className="w-5 h-5 mr-2" />
-            Get Started
-          </Button>
           <Button 
             size="lg" 
             variant="outline" 
@@ -422,11 +406,12 @@ export const SensayWisdomPage: React.FC = () => {
         <div className="flex items-center justify-center gap-4">
           <Button 
             size="lg" 
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold"
-            onClick={() => setActiveDemo('setup')}
+            variant="outline" 
+            className="px-8 py-4 text-lg font-semibold border-2"
+            onClick={() => setActiveDemo('demo')}
           >
-            <Rocket className="w-5 h-5 mr-2" />
-            Start Integration
+            <Play className="w-5 h-5 mr-2" />
+            Try Live Demo
           </Button>
           <Button 
             size="lg" 
@@ -444,8 +429,6 @@ export const SensayWisdomPage: React.FC = () => {
 
   const renderComponent = (componentName: string) => {
     switch (componentName) {
-      case 'sensaysetup':
-        return <SensaySetup />;
       case 'sensayrealestatechatbot':
         return <SensayRealEstateChatbot />;
       case 'demo':
@@ -496,14 +479,6 @@ export const SensayWisdomPage: React.FC = () => {
                 Overview
               </Button>
               <Button
-                variant={activeDemo === 'setup' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setActiveDemo('setup')}
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Setup
-              </Button>
-              <Button
                 variant={activeDemo === 'demo' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setActiveDemo('demo')}
@@ -526,13 +501,11 @@ export const SensayWisdomPage: React.FC = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-2xl">
                   <Sparkles className="w-6 h-6 text-blue-600" />
-                  {activeDemo === 'setup' ? 'Sensay Wisdom API Setup' : 
-                   activeDemo === 'demo' ? 'Live AI Assistant Demo' : 
+                  {activeDemo === 'demo' ? 'Live AI Assistant Demo' : 
                    'Sensay Integration'}
                 </CardTitle>
                 <p className="text-gray-600">
-                  {activeDemo === 'setup' ? 'Configure your Sensay API credentials to get started' :
-                   activeDemo === 'demo' ? 'Experience the power of Sensay\'s Wisdom Engine' :
+                  {activeDemo === 'demo' ? 'Experience the power of Sensay\'s Wisdom Engine' :
                    'Integrate Sensay features into your application'}
                 </p>
               </CardHeader>

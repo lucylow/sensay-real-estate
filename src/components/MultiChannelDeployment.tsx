@@ -1,441 +1,592 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  MessageCircle, Send, Phone, Mail, Bot, CheckCircle, 
-  AlertCircle, Settings, Globe, Users, Calendar, FileText,
-  Zap, Shield, TrendingUp, Home, Building, DollarSign
+  MessageCircle, 
+  Globe, 
+  Smartphone, 
+  Mail, 
+  Settings, 
+  CheckCircle, 
+  AlertCircle, 
+  Copy, 
+  ExternalLink,
+  Zap,
+  Users,
+  BarChart3,
+  Shield,
+  Bot,
+  Webhook,
+  Key,
+  Activity
 } from 'lucide-react';
 import { sensayAPI } from '@/services/api/sensay';
 
-interface ChannelConfig {
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-  status: 'active' | 'inactive' | 'configuring';
-  description: string;
-  features: string[];
-  setupRequired: boolean;
+interface DeploymentConfig {
+  platform: string;
+  enabled: boolean;
+  webhookUrl?: string;
+  botToken?: string;
+  emailAddress?: string;
+  apiKey?: string;
+  status: 'idle' | 'deploying' | 'active' | 'error';
+  lastDeployed?: Date;
 }
 
-interface MultiChannelDeploymentProps {
-  className?: string;
-}
-
-export const MultiChannelDeployment: React.FC<MultiChannelDeploymentProps> = ({ 
-  className = '' 
-}) => {
-  const [channels, setChannels] = useState<ChannelConfig[]>([
-    {
-      id: 'web',
-      name: 'Web Chat',
-      icon: <Globe className="h-5 w-5" />,
+const MultiChannelDeployment: React.FC = () => {
+  const [deployments, setDeployments] = useState<Record<string, DeploymentConfig>>({
+    web: {
+      platform: 'Web',
+      enabled: true,
       status: 'active',
-      description: 'Embedded web chat widget for your website',
-      features: ['Rich media support', 'File uploads', 'Interactive maps', 'Property galleries'],
-      setupRequired: false
+      lastDeployed: new Date()
     },
-    {
-      id: 'whatsapp',
-      name: 'WhatsApp Business',
-      icon: <MessageCircle className="h-5 w-5" />,
-      status: 'configuring',
-      description: 'WhatsApp Business API integration for global reach',
-      features: ['Voice messages', 'Location sharing', 'Quick replies', 'Broadcast lists'],
-      setupRequired: true
+    whatsapp: {
+      platform: 'WhatsApp',
+      enabled: false,
+      status: 'idle'
     },
-    {
-      id: 'telegram',
-      name: 'Telegram Bot',
-      icon: <Send className="h-5 w-5" />,
-      status: 'configuring',
-      description: 'Telegram bot for property inquiries and updates',
-      features: ['Bot commands', 'Group discussions', 'Market alerts', 'File sharing'],
-      setupRequired: true
+    telegram: {
+      platform: 'Telegram',
+      enabled: false,
+      status: 'idle'
     },
-    {
-      id: 'email',
-      name: 'Email Integration',
-      icon: <Mail className="h-5 w-5" />,
-      status: 'active',
-      description: 'Automated email responses and follow-ups',
-      features: ['Rich HTML emails', 'PDF reports', 'Calendar invites', 'Newsletter campaigns'],
-      setupRequired: false
-    },
-    {
-      id: 'sms',
-      name: 'SMS Notifications',
-      icon: <Phone className="h-5 w-5" />,
-      status: 'inactive',
-      description: 'SMS alerts for urgent property updates',
-      features: ['Instant alerts', 'Appointment reminders', 'Market updates', 'Emergency notifications'],
-      setupRequired: true
+    email: {
+      platform: 'Email',
+      enabled: false,
+      status: 'idle'
     }
-  ]);
+  });
 
-  const [activeChannel, setActiveChannel] = useState('web');
-  const [deploymentStatus, setDeploymentStatus] = useState<'idle' | 'deploying' | 'success' | 'error'>('idle');
+  const [activePlatform, setActivePlatform] = useState('web');
+  const [isDeploying, setIsDeploying] = useState(false);
 
-  const handleDeployChannel = async (channelId: string) => {
-    setDeploymentStatus('deploying');
+  const handleDeploy = async (platform: string) => {
+    setIsDeploying(true);
+    const deployment = deployments[platform];
     
     try {
-      // Simulate deployment process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setChannels(prev => prev.map(channel => 
-        channel.id === channelId 
-          ? { ...channel, status: 'active' as const }
-          : channel
-      ));
-      
-      setDeploymentStatus('success');
+      setDeployments(prev => ({
+        ...prev,
+        [platform]: { ...deployment, status: 'deploying' }
+      }));
+
+      let result;
+      const chatbotConfig = {
+        name: 'PropGuard AI Assistant',
+        description: 'AI-powered real estate assistant with Sensay integration',
+        features: ['property-analysis', 'risk-assessment', 'lead-generation', 'global-properties'],
+        language: 'en',
+        fallbackEnabled: true
+      };
+
+      switch (platform) {
+        case 'whatsapp':
+          result = await sensayAPI.deployToWhatsApp(chatbotConfig);
+          break;
+        case 'telegram':
+          result = await sensayAPI.deployToTelegram(chatbotConfig);
+          break;
+        case 'email':
+          result = await sensayAPI.deployToEmail(chatbotConfig);
+          break;
+        default:
+          result = { success: true };
+      }
+
+      if (result.success) {
+        setDeployments(prev => ({
+          ...prev,
+          [platform]: {
+            ...deployment,
+            status: 'active',
+            enabled: true,
+            lastDeployed: new Date(),
+            webhookUrl: result.webhookUrl,
+            botToken: result.botToken,
+            emailAddress: result.emailAddress
+          }
+        }));
+      } else {
+        throw new Error('Deployment failed');
+      }
     } catch (error) {
-      setDeploymentStatus('error');
+      setDeployments(prev => ({
+        ...prev,
+        [platform]: { ...deployment, status: 'error' }
+      }));
+    } finally {
+      setIsDeploying(false);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'deploying':
+        return <Activity className="h-4 w-4 text-blue-500 animate-pulse" />;
+      case 'error':
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return <div className="h-4 w-4 rounded-full bg-gray-300" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge variant="default" className="bg-green-500"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
-      case 'configuring':
-        return <Badge variant="secondary"><Settings className="h-3 w-3 mr-1" />Configuring</Badge>;
-      case 'inactive':
-        return <Badge variant="outline"><AlertCircle className="h-3 w-3 mr-1" />Inactive</Badge>;
+        return <Badge variant="default" className="bg-green-500">Active</Badge>;
+      case 'deploying':
+        return <Badge variant="secondary">Deploying...</Badge>;
+      case 'error':
+        return <Badge variant="destructive">Error</Badge>;
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge variant="outline">Inactive</Badge>;
     }
   };
 
-  const ChannelCard: React.FC<{ channel: ChannelConfig }> = ({ channel }) => (
-    <Card className="h-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {channel.icon}
-            <span className="text-lg">{channel.name}</span>
-          </div>
-          {getStatusBadge(channel.status)}
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">{channel.description}</p>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium">Features:</h4>
-          <ul className="text-xs text-muted-foreground space-y-1">
-            {channel.features.map((feature, index) => (
-              <li key={index} className="flex items-center gap-2">
-                <div className="w-1 h-1 bg-primary rounded-full"></div>
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-        {channel.setupRequired && channel.status !== 'active' && (
-          <Button 
-            onClick={() => handleDeployChannel(channel.id)}
-            disabled={deploymentStatus === 'deploying'}
-            className="w-full"
-            size="sm"
-          >
-            {deploymentStatus === 'deploying' ? 'Deploying...' : 'Setup Channel'}
-          </Button>
-        )}
-        
-        {channel.status === 'active' && (
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex-1">
-              Configure
-            </Button>
-            <Button variant="outline" size="sm" className="flex-1">
-              Analytics
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
+  const platforms = [
+    {
+      id: 'web',
+      name: 'Web Chat',
+      icon: <Globe className="h-5 w-5" />,
+      description: 'Embedded chatbot on your website',
+      color: 'bg-blue-500'
+    },
+    {
+      id: 'whatsapp',
+      name: 'WhatsApp Business',
+      icon: <MessageCircle className="h-5 w-5" />,
+      description: 'Deploy to WhatsApp Business API',
+      color: 'bg-green-500'
+    },
+    {
+      id: 'telegram',
+      name: 'Telegram Bot',
+      icon: <Smartphone className="h-5 w-5" />,
+      description: 'Create Telegram bot for property inquiries',
+      color: 'bg-blue-600'
+    },
+    {
+      id: 'email',
+      name: 'Email Assistant',
+      icon: <Mail className="h-5 w-5" />,
+      description: 'AI-powered email responses',
+      color: 'bg-purple-500'
+    }
+  ];
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2">
-          <Bot className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold">Multi-Channel Deployment</h1>
-          <Badge variant="secondary" className="text-sm">
-            Sensay Hackathon
-          </Badge>
+          <Globe className="h-8 w-8 text-primary" />
+          <h2 className="text-2xl font-bold">Multi-Channel Deployment</h2>
         </div>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Deploy your PropGuard AI real estate chatbot across multiple channels 
-          to reach customers wherever they are - web, WhatsApp, Telegram, email, and SMS.
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          Deploy your PropGuard AI assistant across multiple channels to reach customers wherever they are.
+          Powered by Sensay's Wisdom Engine for consistent, intelligent responses.
         </p>
       </div>
 
-      {/* Deployment Status */}
-      {deploymentStatus !== 'idle' && (
-        <Alert className={deploymentStatus === 'success' ? 'border-green-200 bg-green-50' : 
-                          deploymentStatus === 'error' ? 'border-red-200 bg-red-50' : 
-                          'border-blue-200 bg-blue-50'}>
-          {deploymentStatus === 'success' ? (
-            <CheckCircle className="h-4 w-4 text-green-600" />
-          ) : deploymentStatus === 'error' ? (
-            <AlertCircle className="h-4 w-4 text-red-600" />
-          ) : (
-            <Settings className="h-4 w-4 text-blue-600 animate-spin" />
-          )}
-          <AlertDescription className={
-            deploymentStatus === 'success' ? 'text-green-700' : 
-            deploymentStatus === 'error' ? 'text-red-700' : 
-            'text-blue-700'
-          }>
-            {deploymentStatus === 'success' && 'Channel deployed successfully!'}
-            {deploymentStatus === 'error' && 'Deployment failed. Please try again.'}
-            {deploymentStatus === 'deploying' && 'Deploying channel... Please wait.'}
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {/* Channel Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {channels.map((channel) => (
-          <ChannelCard key={channel.id} channel={channel} />
-        ))}
+      {/* Platform Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {platforms.map((platform) => {
+          const deployment = deployments[platform.id];
+          return (
+            <Card key={platform.id} className="cursor-pointer hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`p-2 rounded-lg ${platform.color} text-white`}>
+                    {platform.icon}
+                  </div>
+                  {getStatusIcon(deployment.status)}
+                </div>
+                <h3 className="font-semibold mb-1">{platform.name}</h3>
+                <p className="text-sm text-muted-foreground mb-3">{platform.description}</p>
+                <div className="flex items-center justify-between">
+                  {getStatusBadge(deployment.status)}
+                  <Switch
+                    checked={deployment.enabled}
+                    onCheckedChange={(checked) => {
+                      setDeployments(prev => ({
+                        ...prev,
+                        [platform.id]: { ...deployment, enabled: checked }
+                      }));
+                    }}
+                  />
+                </div>
+                {deployment.lastDeployed && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Last deployed: {deployment.lastDeployed.toLocaleDateString()}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      {/* Integration Features */}
+      {/* Configuration Tabs */}
+      <Tabs value={activePlatform} onValueChange={setActivePlatform}>
+        <TabsList className="grid w-full grid-cols-4">
+          {platforms.map((platform) => (
+            <TabsTrigger key={platform.id} value={platform.id} className="flex items-center gap-2">
+              {platform.icon}
+              {platform.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {/* Web Configuration */}
+        <TabsContent value="web" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                Web Chat Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="web-title">Chatbot Title</Label>
+                  <Input id="web-title" defaultValue="PropGuard AI Assistant" />
+                </div>
+                <div>
+                  <Label htmlFor="web-color">Primary Color</Label>
+                  <Input id="web-color" type="color" defaultValue="#3B82F6" />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="web-welcome">Welcome Message</Label>
+                <Textarea 
+                  id="web-welcome" 
+                  defaultValue="Hi! I'm your AI real estate assistant. How can I help you today?"
+                  rows={3}
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch id="web-voice" defaultChecked />
+                <Label htmlFor="web-voice">Enable voice input</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch id="web-multilang" defaultChecked />
+                <Label htmlFor="web-multilang">Multi-language support</Label>
+              </div>
+
+              <div className="pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Embed Code</h4>
+                    <p className="text-sm text-muted-foreground">Copy this code to embed the chatbot</p>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy Code
+                  </Button>
+                </div>
+                <div className="mt-2 p-3 bg-gray-100 rounded-lg font-mono text-sm">
+                  {`<script src="https://propguard.ai/chatbot.js" data-api-key="your-api-key"></script>`}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* WhatsApp Configuration */}
+        <TabsContent value="whatsapp" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                WhatsApp Business Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="whatsapp-phone">Phone Number</Label>
+                  <Input id="whatsapp-phone" placeholder="+1234567890" />
+                </div>
+                <div>
+                  <Label htmlFor="whatsapp-business">Business Name</Label>
+                  <Input id="whatsapp-business" defaultValue="PropGuard AI" />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="whatsapp-webhook">Webhook URL</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    id="whatsapp-webhook" 
+                    value={deployments.whatsapp.webhookUrl || ''}
+                    placeholder="https://api.sensay.io/webhook/whatsapp"
+                    readOnly
+                  />
+                  <Button variant="outline" size="sm">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Business Hours</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Input placeholder="09:00" />
+                  <Input placeholder="18:00" />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch id="whatsapp-auto" defaultChecked />
+                <Label htmlFor="whatsapp-auto">Auto-responses outside business hours</Label>
+              </div>
+
+              <div className="pt-4 border-t">
+                <Button 
+                  onClick={() => handleDeploy('whatsapp')}
+                  disabled={isDeploying || deployments.whatsapp.status === 'active'}
+                  className="w-full"
+                >
+                  {deployments.whatsapp.status === 'active' ? (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Deployed Successfully
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="h-4 w-4 mr-2" />
+                      Deploy to WhatsApp
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Telegram Configuration */}
+        <TabsContent value="telegram" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Smartphone className="h-5 w-5" />
+                Telegram Bot Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="telegram-token">Bot Token</Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      id="telegram-token" 
+                      value={deployments.telegram.botToken || ''}
+                      placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
+                      readOnly
+                    />
+                    <Button variant="outline" size="sm">
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="telegram-username">Bot Username</Label>
+                  <Input id="telegram-username" defaultValue="@PropGuardAI_bot" />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="telegram-description">Bot Description</Label>
+                <Textarea 
+                  id="telegram-description" 
+                  defaultValue="AI-powered real estate assistant. Get property valuations, market insights, and investment advice."
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Commands</Label>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span>/start</span>
+                    <span>Initialize conversation</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>/property</span>
+                    <span>Search properties</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>/valuation</span>
+                    <span>Get property valuation</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>/help</span>
+                    <span>Show available commands</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t">
+                <Button 
+                  onClick={() => handleDeploy('telegram')}
+                  disabled={isDeploying || deployments.telegram.status === 'active'}
+                  className="w-full"
+                >
+                  {deployments.telegram.status === 'active' ? (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Bot Deployed
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="h-4 w-4 mr-2" />
+                      Deploy Telegram Bot
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Email Configuration */}
+        <TabsContent value="email" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Email Assistant Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="email-address">Email Address</Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      id="email-address" 
+                      value={deployments.email.emailAddress || ''}
+                      placeholder="assistant@propguard.ai"
+                      readOnly
+                    />
+                    <Button variant="outline" size="sm">
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="email-sender">Sender Name</Label>
+                  <Input id="email-sender" defaultValue="PropGuard AI Assistant" />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="email-signature">Email Signature</Label>
+                <Textarea 
+                  id="email-signature" 
+                  defaultValue="Best regards,\nPropGuard AI Assistant\nPowered by Sensay Wisdom Engine"
+                  rows={3}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Response Settings</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Switch id="email-auto" defaultChecked />
+                    <Label htmlFor="email-auto">Auto-respond to inquiries</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch id="email-followup" defaultChecked />
+                    <Label htmlFor="email-followup">Send follow-up emails</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Switch id="email-attachments" />
+                    <Label htmlFor="email-attachments">Include property attachments</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t">
+                <Button 
+                  onClick={() => handleDeploy('email')}
+                  disabled={isDeploying || deployments.email.status === 'active'}
+                  className="w-full"
+                >
+                  {deployments.email.status === 'active' ? (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Email Assistant Active
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="h-4 w-4 mr-2" />
+                      Deploy Email Assistant
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Analytics Overview */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-primary" />
-            Sensay Platform Integration
+            <BarChart3 className="h-5 w-5" />
+            Deployment Analytics
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="text-center space-y-2">
-              <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
-                <Users className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">User Management</h3>
-              <p className="text-sm text-muted-foreground">
-                Unified user profiles across all channels
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">1,247</div>
+              <div className="text-sm text-muted-foreground">Total Conversations</div>
             </div>
-            
-            <div className="text-center space-y-2">
-              <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
-                <MessageCircle className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Conversation Sync</h3>
-              <p className="text-sm text-muted-foreground">
-                Seamless conversation history across platforms
-              </p>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">25.0%</div>
+              <div className="text-sm text-muted-foreground">Conversion Rate</div>
             </div>
-            
-            <div className="text-center space-y-2">
-              <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
-                <TrendingUp className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Analytics</h3>
-              <p className="text-sm text-muted-foreground">
-                Cross-channel performance metrics
-              </p>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600">1.2s</div>
+              <div className="text-sm text-muted-foreground">Avg Response Time</div>
             </div>
-            
-            <div className="text-center space-y-2">
-              <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
-                <Shield className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Security</h3>
-              <p className="text-sm text-muted-foreground">
-                End-to-end encryption and compliance
-              </p>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">4</div>
+              <div className="text-sm text-muted-foreground">Active Channels</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Real Estate Specific Features */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Home className="h-5 w-5 text-primary" />
-            Real Estate Chatbot Features
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="search" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="search">Property Search</TabsTrigger>
-              <TabsTrigger value="valuation">Valuation</TabsTrigger>
-              <TabsTrigger value="booking">Booking</TabsTrigger>
-              <TabsTrigger value="support">Support</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="search" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <Search className="h-4 w-4" />
-                    Smart Property Search
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Natural language property queries</li>
-                    <li>• Location-based recommendations</li>
-                    <li>• Budget and preference matching</li>
-                    <li>• Real-time inventory updates</li>
-                  </ul>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    Location Intelligence
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Neighborhood analysis</li>
-                    <li>• School district information</li>
-                    <li>• Transportation accessibility</li>
-                    <li>• Local amenities mapping</li>
-                  </ul>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="valuation" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <Calculator className="h-4 w-4" />
-                    AI Valuation
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• PropGuard AI risk assessment</li>
-                    <li>• Comparative market analysis</li>
-                    <li>• Investment potential scoring</li>
-                    <li>• Environmental risk factors</li>
-                  </ul>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    Financial Analysis
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• ROI projections</li>
-                    <li>• Cash flow calculations</li>
-                    <li>• Mortgage affordability</li>
-                    <li>• Tax implications</li>
-                  </ul>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="booking" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Appointment Booking
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Calendar integration</li>
-                    <li>• Automated scheduling</li>
-                    <li>• Reminder notifications</li>
-                    <li>• Virtual tour booking</li>
-                  </ul>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Lead Management
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Contact information collection</li>
-                    <li>• Lead qualification scoring</li>
-                    <li>• Follow-up automation</li>
-                    <li>• CRM integration</li>
-                  </ul>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="support" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4" />
-                    FAQ & Support
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Real estate process guidance</li>
-                    <li>• Regulatory compliance info</li>
-                    <li>• PropGuard technology explanation</li>
-                    <li>• Market trend insights</li>
-                  </ul>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Documentation
-                  </h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Property report generation</li>
-                    <li>• Investment analysis PDFs</li>
-                    <li>• Compliance documentation</li>
-                    <li>• Market intelligence reports</li>
-                  </ul>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-
-      {/* Deployment Instructions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5 text-primary" />
-            Deployment Instructions
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-3">
-            <h4 className="font-medium">1. Sensay API Configuration</h4>
-            <div className="bg-muted p-3 rounded text-sm font-mono">
-              <div># Set your Sensay API credentials</div>
-              <div>VITE_SENSAY_API_KEY=your_api_key_here</div>
-              <div>VITE_SENSAY_ORG_ID=your_org_id_here</div>
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            <h4 className="font-medium">2. Channel-Specific Setup</h4>
-            <div className="space-y-2 text-sm">
-              <div><strong>WhatsApp:</strong> Configure WhatsApp Business API webhook</div>
-              <div><strong>Telegram:</strong> Create bot token and set webhook URL</div>
-              <div><strong>Email:</strong> Configure SMTP settings for automated emails</div>
-              <div><strong>SMS:</strong> Integrate with Twilio or similar SMS provider</div>
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            <h4 className="font-medium">3. PropGuard AI Integration</h4>
-            <div className="bg-muted p-3 rounded text-sm font-mono">
-              <div># Connect to PropGuard backend</div>
-              <div>VITE_PROPGUARD_API_URL=https://your-backend.com/api</div>
-              <div>VITE_PROPERTY_DATA_API_KEY=your_property_api_key</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Quick Actions */}
+      <div className="flex justify-center gap-4">
+        <Button variant="outline">
+          <Settings className="h-4 w-4 mr-2" />
+          Advanced Settings
+        </Button>
+        <Button>
+          <ExternalLink className="h-4 w-4 mr-2" />
+          View Documentation
+        </Button>
+      </div>
     </div>
   );
 };
+
+export default MultiChannelDeployment;
