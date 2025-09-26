@@ -40,16 +40,6 @@ import {
 // Import Sensay components
 import { SensaySetup } from '@/components/SensaySetup';
 import SensayRealEstateChatbot from '@/components/SensayRealEstateChatbot';
-import { MultilingualChatInterface } from '@/components/MultilingualChatInterface';
-import VoiceSelector from '@/components/VoiceSelector';
-import VideoAvatar from '@/components/VideoAvatar';
-import MultimodalAIAssistant from '@/components/MultimodalAIAssistant';
-import { ConversationAnalyticsDashboard } from '@/components/ConversationAnalyticsDashboard';
-import { LeadQualificationAutomation } from '@/components/LeadQualificationAutomation';
-import { PersonalizedSearchEngine } from '@/components/PersonalizedSearchEngine';
-import { RealTimeDataIntegration } from '@/components/RealTimeDataIntegration';
-import { CRMIntegrationWorkflows } from '@/components/CRMIntegrationWorkflows';
-import { MultiChannelDeployment } from '@/components/MultiChannelDeployment';
 
 export const SensayWisdomPage: React.FC = () => {
   const [activeDemo, setActiveDemo] = useState('overview');
@@ -458,18 +448,21 @@ export const SensayWisdomPage: React.FC = () => {
         return <SensaySetup />;
       case 'sensayrealestatechatbot':
         return <SensayRealEstateChatbot />;
-      case 'personalizedsearchengine':
-        return <PersonalizedSearchEngine />;
-      case 'realtimedataintegration':
-        return <RealTimeDataIntegration />;
-      case 'crmintegrationworkflows':
-        return <CRMIntegrationWorkflows />;
-      case 'multichanneldeployment':
-        return <MultiChannelDeployment />;
       case 'demo':
         return <SensayRealEstateChatbot />;
       default:
-        return <div>Component not found</div>;
+        return (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Component Coming Soon</h3>
+            <p className="text-gray-600 mb-6">
+              This component is being integrated and will be available soon.
+            </p>
+            <Button onClick={() => setActiveDemo('overview')} variant="outline">
+              <ArrowRight className="w-4 h-4 mr-2" />
+              Back to Overview
+            </Button>
+          </div>
+        );
     }
   };
 
