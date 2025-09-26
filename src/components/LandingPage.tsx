@@ -45,11 +45,11 @@ const LandingPage = () => {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="py-2">
                     <button 
-                      onClick={() => navigate('/sensay-leads')}
+                      onClick={() => navigate('/app')}
                       className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
                       <Search className="mr-2 h-4 w-4" />
-                      Sensay AI Chatbot
+                      Property Intelligence
                     </button>
                     <button 
                       onClick={() => navigate('/search')}
@@ -70,7 +70,21 @@ const LandingPage = () => {
                       className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Sensay Lead Generation
+                      Sensay AI Chatbot
+                    </button>
+                    <button 
+                      onClick={() => navigate('/dashboard')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Risk Assessment
+                    </button>
+                    <button 
+                      onClick={() => navigate('/blockchain')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Shield className="mr-2 h-4 w-4" />
+                      Blockchain NFTs
                     </button>
                   </div>
                 </div>
@@ -92,7 +106,7 @@ const LandingPage = () => {
                 Sign In
               </button>
               <button 
-                onClick={() => navigate('/sensay-leads')}
+                onClick={() => navigate('/app')}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all font-medium text-sm shadow-sm"
               >
                 Get Started Free
@@ -218,7 +232,7 @@ const LandingPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <button 
-                  onClick={() => navigate('/sensay-leads')}
+                  onClick={() => navigate('/app')}
                   className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center"
                 >
                   Try Demo: 123 Collins Street
@@ -480,7 +494,7 @@ const LandingPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => navigate('/sensay-leads')}
+              onClick={() => navigate('/app')}
               className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition"
             >
               Try Demo: 123 Collins Street
