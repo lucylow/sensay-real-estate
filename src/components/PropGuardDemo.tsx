@@ -14,7 +14,7 @@ import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
 import { PersonalizedSearchEngine } from '@/components/PersonalizedSearchEngine';
 import { RealTimeDataIntegration } from '@/components/RealTimeDataIntegration';
 import { CRMIntegrationWorkflows } from '@/components/CRMIntegrationWorkflows';
-import { MultiChannelDeployment } from '@/components/MultiChannelDeployment';
+import MultiChannelDeployment from '@/components/MultiChannelDeployment';
 
 interface DemoStep {
   id: string;

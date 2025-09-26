@@ -7,7 +7,7 @@ import { Bot, Key, Sparkles, TrendingUp, Shield, FileText, Search, Database, Glo
 import { SensaySetup } from '@/components/SensaySetup';
 import { SensayAssistant } from '@/components/SensayAssistant';
 import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
-import { MultiChannelDeployment } from '@/components/MultiChannelDeployment';
+import MultiChannelDeployment from '@/components/MultiChannelDeployment';
 import { LeadQualificationAutomation } from '@/components/LeadQualificationAutomation';
 import { PersonalizedSearchEngine } from '@/components/PersonalizedSearchEngine';
 import { RealTimeDataIntegration } from '@/components/RealTimeDataIntegration';

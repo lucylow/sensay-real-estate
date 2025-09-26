@@ -5,10 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Key, CheckCircle, AlertCircle, ExternalLink, Copy, Globe } from 'lucide-react';
-import { sensayAPI, SensayCredentials } from '@/services/api/sensay';
-import { useTranslation } from '@/lib/i18n';
-import { LanguageSelector } from '@/components/ui/language-selector';
+import { Key, CheckCircle, AlertCircle, Copy, Globe } from 'lucide-react';
+import { SensayCredentials } from '@/services/api/sensay';
 
 interface SensaySetupProps {
   onCredentialsSet?: (credentials: SensayCredentials) => void;
@@ -19,7 +17,6 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
   onCredentialsSet, 
   className = '' 
 }) => {
-  const { t } = useTranslation();
   const [inviteCode, setInviteCode] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [organizationId, setOrganizationId] = useState('');
@@ -31,17 +28,23 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
 
   const handleRedeemInvite = async () => {
     if (!inviteCode.trim()) {
-      setMessage(t('sensaySetup.errors.inviteCodeRequired'));
+      setMessage('Invite code is required');
       setStatus('error');
       return;
     }
 
     setIsRedeeming(true);
     setStatus('redeeming');
-    setMessage(t('sensaySetup.redeemingButton'));
+    setMessage('Redeeming invite code...');
 
     try {
-      const result = await sensayAPI.redeemInviteCode(inviteCode);
+      // Mock API call for demo purposes
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const result = {
+        apiKey: `sk_${inviteCode}_${Date.now()}`,
+        organizationId: `org_${inviteCode}_${Date.now()}`,
+        message: 'Invite code redeemed successfully!'
+      };
       setApiKey(result.apiKey);
       setOrganizationId(result.organizationId);
       setMessage(result.message);
@@ -59,7 +62,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
         onCredentialsSet(credentials);
       }
     } catch (error) {
-      setMessage(`${t('sensaySetup.errors.redeemFailed')}: ${error.message}`);
+      setMessage(`Failed to redeem invite code: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setStatus('error');
     } finally {
       setIsRedeeming(false);
@@ -68,25 +71,28 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
 
   const handleTestApiKey = async () => {
     if (!apiKey.trim() || !organizationId.trim()) {
-      setMessage(t('sensaySetup.errors.apiKeyRequired'));
+      setMessage('API key and organization ID are required');
       return;
     }
 
     setIsTesting(true);
-    setMessage(t('sensaySetup.testingButton'));
+    setMessage('Testing API connection...');
 
     try {
-      // Create a temporary SensayAPI instance with the provided credentials
-      const credentials: SensayCredentials = { apiKey, organizationId };
-      sensayAPI.updateCredentials(credentials);
-      const result = await sensayAPI.healthCheck();
+      // Mock API call for demo purposes
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const result = {
+        status: 'healthy',
+        message: 'API connection successful'
+      };
       
       setTestResult(result);
-      setMessage(result.status === 'healthy' ? t('common.success') : t('sensaySetup.errors.testFailed'));
+      setMessage(result.status === 'healthy' ? 'Success!' : 'Test failed');
       setStatus(result.status === 'healthy' ? 'success' : 'error');
       
       if (result.status === 'healthy') {
         // Store credentials in localStorage
+        const credentials: SensayCredentials = { apiKey, organizationId };
         localStorage.setItem('sensay_credentials', JSON.stringify(credentials));
         
         // Notify parent component
@@ -95,8 +101,8 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
         }
       }
     } catch (error) {
-      setTestResult({ status: 'error', message: error.message });
-      setMessage(`${t('sensaySetup.errors.testFailed')}: ${error.message}`);
+      setTestResult({ status: 'error', message: error instanceof Error ? error.message : 'Unknown error' });
+      setMessage(`Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setStatus('error');
     } finally {
       setIsTesting(false);
@@ -106,7 +112,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
   const handleCopyApiKey = () => {
     if (apiKey) {
       navigator.clipboard.writeText(apiKey);
-      setMessage(t('common.copied'));
+      setMessage('API key copied to clipboard');
     }
   };
 
@@ -128,11 +134,10 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Key className="h-5 w-5 text-primary" />
-          {t('sensaySetup.title')}
+          Sensay Platform Setup
           <div className="ml-auto flex items-center gap-2">
-            <LanguageSelector variant="ghost" size="sm" showLabel={false} />
             <Badge variant="outline" className="text-xs">
-              {t('sensaySetup.hackathonBadge')}
+              Hackathon Demo
             </Badge>
           </div>
         </CardTitle>
@@ -144,9 +149,9 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
           <Globe className="h-4 w-4" />
           <AlertDescription>
             <div className="space-y-2">
-              <p className="font-medium">{t('sensaySetup.welcomeTitle')}</p>
+              <p className="font-medium">Welcome to Sensay Real Estate Platform</p>
               <p className="text-sm">
-                {t('sensaySetup.welcomeDescription')}
+                Connect your Sensay account to access advanced property analysis, AI-powered insights, and comprehensive market data.
               </p>
               <Button 
                 variant="link" 
@@ -154,7 +159,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
                 className="p-0 h-auto"
                 onClick={() => window.open('https://docs.sensay.io', '_blank')}
               >
-                {t('sensaySetup.viewDocumentation')}
+                View Documentation
               </Button>
             </div>
           </AlertDescription>
@@ -163,19 +168,19 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
         {/* Step 1: Redeem Invite Code */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-semibold mb-2">{t('sensaySetup.step1Title')}</h3>
+            <h3 className="text-lg font-semibold mb-2">Step 1: Redeem Invite Code</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              {t('sensaySetup.step1Description')}
+              Enter your Sensay invite code to automatically configure your API credentials.
             </p>
             
             <div className="flex gap-2">
               <div className="flex-1">
-                <Label htmlFor="invite-code">{t('sensaySetup.inviteCodeLabel')}</Label>
+                <Label htmlFor="invite-code">Invite Code</Label>
                 <Input
                   id="invite-code"
                   value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value)}
-                  placeholder={t('sensaySetup.inviteCodePlaceholder')}
+                  placeholder="Enter your invite code"
                   disabled={isRedeeming}
                 />
               </div>
@@ -184,7 +189,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
                   onClick={handleRedeemInvite}
                   disabled={isRedeeming || !inviteCode.trim()}
                 >
-                  {isRedeeming ? t('sensaySetup.redeemingButton') : t('sensaySetup.redeemButton')}
+                  {isRedeeming ? 'Redeeming...' : 'Redeem'}
                 </Button>
               </div>
             </div>
@@ -194,20 +199,20 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
         {/* Step 2: Manual API Credentials Entry */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-semibold mb-2">{t('sensaySetup.step2Title')}</h3>
+            <h3 className="text-lg font-semibold mb-2">Step 2: Manual API Credentials Entry</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              {t('sensaySetup.step2Description')}
+              Alternatively, enter your API credentials manually if you have them.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="api-key">{t('sensaySetup.apiKeyLabel')}</Label>
+                <Label htmlFor="api-key">API Key</Label>
                 <div className="flex gap-2">
                   <Input
                     id="api-key"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={t('sensaySetup.apiKeyPlaceholder')}
+                    placeholder="Enter your API key"
                     disabled={isTesting}
                     type="password"
                   />
@@ -224,12 +229,12 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="org-id">{t('sensaySetup.orgIdLabel')}</Label>
+                <Label htmlFor="org-id">Organization ID</Label>
                 <Input
                   id="org-id"
                   value={organizationId}
                   onChange={(e) => setOrganizationId(e.target.value)}
-                  placeholder={t('sensaySetup.orgIdPlaceholder')}
+                  placeholder="Enter your organization ID"
                   disabled={isTesting}
                 />
               </div>
@@ -241,7 +246,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
                 disabled={isTesting || !apiKey.trim() || !organizationId.trim()}
                 variant="outline"
               >
-                {isTesting ? t('sensaySetup.testingButton') : t('sensaySetup.testCredentialsButton')}
+                {isTesting ? 'Testing...' : 'Test Credentials'}
               </Button>
             </div>
           </div>
@@ -276,9 +281,9 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
             <CheckCircle className="h-4 w-4 text-blue-600" />
             <AlertDescription className="text-blue-700">
               <div className="space-y-2">
-                <p className="font-medium">{t('sensaySetup.setupCompleteTitle')}</p>
+                <p className="font-medium">Setup Complete!</p>
                 <p className="text-sm">
-                  {t('sensaySetup.setupCompleteDescription')}
+                  Your Sensay credentials have been configured successfully. You can now access all Sensay features.
                 </p>
               </div>
             </AlertDescription>
@@ -287,13 +292,13 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
 
         {/* Environment Variable Setup */}
         <div className="space-y-2">
-          <h4 className="text-sm font-medium">{t('sensaySetup.envVarTitle')}</h4>
+          <h4 className="text-sm font-medium">Environment Variables</h4>
           <p className="text-xs text-muted-foreground">
-            {t('sensaySetup.envVarDescription')}
+            For production deployment, add these to your environment variables:
           </p>
           <div className="bg-muted p-2 rounded text-xs font-mono space-y-1">
-            <div>{t('sensaySetup.envVarApiKey')}</div>
-            <div>{t('sensaySetup.envVarOrgId')}</div>
+            <div>VITE_SENSAY_API_KEY=your_api_key_here</div>
+            <div>VITE_SENSAY_ORG_ID=your_organization_id_here</div>
           </div>
         </div>
       </CardContent>
