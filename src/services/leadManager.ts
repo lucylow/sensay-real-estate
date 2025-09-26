@@ -194,7 +194,7 @@ export class LeadManager {
   }
 
   private calculateSpecificityScore(entities: Record<string, any>): number {
-    let score = 0;
+    const score = 0;
     const specificFields = ['location', 'propertyType', 'bedrooms', 'bathrooms', 'features'];
     const providedFields = specificFields.filter(field => entities[field]);
     return providedFields.length / specificFields.length;

@@ -288,7 +288,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: any = translations[language];
+    let value: string | Translation = translations[language];
     
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {

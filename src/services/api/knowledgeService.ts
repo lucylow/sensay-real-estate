@@ -417,7 +417,7 @@ class KnowledgeManagementService {
     } = {}
   ): Promise<QueryResult & { context_used: boolean; suggestions?: string[] }> {
     // First try standard query
-    let result = await this.queryKnowledge(query, context.domain_focus);
+    const result = await this.queryKnowledge(query, context.domain_focus);
     
     // If no good match and we have context, try to enhance the query
     if (!result.success && context.conversation_history) {

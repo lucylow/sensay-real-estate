@@ -91,8 +91,8 @@ export class CoreLogicClient {
     const city = cityMatch ? cityMatch[1].trim() : this.generateCity(location);
     
     // Base pricing by location (median house prices as of 2024)
-    let basePrice = location.basePrice;
-    let currency = location.currency;
+    const basePrice = location.basePrice;
+    const currency = location.currency;
     
     // Property type adjustments
     let propertyType: PropertyFeatures['propertyType'] = 'House';
@@ -271,7 +271,7 @@ export class CoreLogicClient {
 
   private generateMarketTrends(location: LocationData) {
     // Realistic market data based on global property trends
-    let medianPrice = location.basePrice;
+    const medianPrice = location.basePrice;
     let priceGrowth12m = Math.random() * 15 - 5; // -5% to +10%
     let daysOnMarket = Math.floor(Math.random() * 60) + 15; // 15-75 days
     let clearanceRate = 0.5 + Math.random() * 0.4; // 50%-90%

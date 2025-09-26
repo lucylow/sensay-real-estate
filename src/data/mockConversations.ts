@@ -258,13 +258,7 @@ All properties are in excellent neighborhoods with strong market growth. Would y
       {
         id: 'msg-007',
         role: 'assistant',
-        content: "Perfect! What date and time work best for you? Here are some available slots this week:
-
-📅 **Wednesday 3 PM**
-📅 **Friday 10 AM** 
-📅 **Saturday 1 PM**
-
-Which option works for you?",
+        content: "Perfect! What date and time work best for you? Here are some available slots this week:\n\n📅 **Wednesday 3 PM**\n📅 **Friday 10 AM**\n📅 **Saturday 1 PM**\n\nWhich option works for you?",
         timestamp: new Date('2024-01-15T10:03:30Z'),
         metadata: {
           intent: 'viewing_slots',

@@ -512,7 +512,7 @@ export class ChatFlowQualityEngine {
     userContext: UserContext,
     messageAnalysis: MessageAnalysis
   ): Promise<QualityResponse> {
-    let response: QualityResponse = {
+    const response: QualityResponse = {
       message: template.message,
       quickActions: template.quickActions || template.actionButtons,
       metadata: {

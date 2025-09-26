@@ -81,7 +81,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
     try {
       // Create a temporary SensayAPI instance with the provided credentials
       const credentials: SensayCredentials = { apiKey, organizationId };
-      const testAPI = new (sensayAPI.constructor as any)(credentials);
+      const testAPI = new (sensayAPI.constructor as typeof sensayAPI)(credentials);
       const result = await testAPI.healthCheck();
       
       setTestResult(result);
