@@ -5,15 +5,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Bot, Key, Sparkles, TrendingUp, Shield, FileText, Search, Database, Globe, MessageCircle, Users, BarChart3 } from 'lucide-react';
 import { SensaySetup } from '@/components/SensaySetup';
-import { SensayAssistant } from '@/components/SensayAssistant';
-import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
-import MultiChannelDeployment from '@/components/MultiChannelDeployment';
-import { LeadQualificationAutomation } from '@/components/LeadQualificationAutomation';
-import { PersonalizedSearchEngine } from '@/components/PersonalizedSearchEngine';
+import { SensayAssistantFixed } from '@/components/SensayAssistantFixed';
 import { RealTimeDataIntegration } from '@/components/RealTimeDataIntegration';
-import { CRMIntegrationWorkflows } from '@/components/CRMIntegrationWorkflows';
-import { PropGuardDemo } from '@/components/PropGuardDemo';
-import { sensayAPI, SensayCredentials } from '@/services/api/sensay';
+import { SensayCredentials } from '@/services/api/sensay';
 
 export const SensayIntegrationPage: React.FC = () => {
   const [credentials, setCredentials] = useState<SensayCredentials | null>(null);
@@ -87,7 +81,7 @@ export const SensayIntegrationPage: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="setup" className="flex items-center gap-2">
             <Key className="h-4 w-4" />
             Setup
@@ -96,21 +90,9 @@ export const SensayIntegrationPage: React.FC = () => {
             <Bot className="h-4 w-4" />
             AI Assistant
           </TabsTrigger>
-          <TabsTrigger value="search" className="flex items-center gap-2">
-            <Search className="h-4 w-4" />
-            Search
-          </TabsTrigger>
           <TabsTrigger value="data" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             Live Data
-          </TabsTrigger>
-          <TabsTrigger value="crm" className="flex items-center gap-2">
-            <Database className="h-4 w-4" />
-            CRM
-          </TabsTrigger>
-          <TabsTrigger value="deployment" className="flex items-center gap-2">
-            <Globe className="h-4 w-4" />
-            Deploy
           </TabsTrigger>
           <TabsTrigger value="demo" className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
@@ -127,7 +109,7 @@ export const SensayIntegrationPage: React.FC = () => {
             {/* AI Assistant */}
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Enhanced AI Assistant</h2>
-              <SensayAssistant className="h-[600px]" />
+              <SensayAssistantFixed className="h-[600px]" />
             </div>
 
             {/* Features and Capabilities */}
@@ -223,24 +205,70 @@ export const SensayIntegrationPage: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="search" className="mt-6">
-          <PersonalizedSearchEngine />
-        </TabsContent>
-
         <TabsContent value="data" className="mt-6">
           <RealTimeDataIntegration />
         </TabsContent>
 
-        <TabsContent value="crm" className="mt-6">
-          <CRMIntegrationWorkflows />
-        </TabsContent>
-
-        <TabsContent value="deployment" className="mt-6">
-          <MultiChannelDeployment />
-        </TabsContent>
-
         <TabsContent value="demo" className="mt-6">
-          <PropGuardDemo />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Sensay Platform Demo
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-center space-y-4">
+                <h3 className="text-xl font-semibold">Welcome to Sensay Real Estate Platform</h3>
+                <p className="text-muted-foreground">
+                  Experience the power of AI-driven property analysis and market intelligence.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">AI Assistant</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Get instant property analysis, market insights, and investment advice from our AI assistant.
+                    </p>
+                    <Button 
+                      onClick={() => setActiveTab('assistant')}
+                      className="w-full"
+                    >
+                      Try AI Assistant
+                    </Button>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Live Data</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Access real-time market data, price trends, and AI-powered market insights.
+                    </p>
+                    <Button 
+                      onClick={() => setActiveTab('data')}
+                      className="w-full"
+                    >
+                      View Live Data
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <div className="text-center">
+                <Badge variant="outline" className="text-sm">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Powered by Sensay AI
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 
