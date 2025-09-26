@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import AppProgressive from './AppProgressive.tsx'
+import AppFinal from './AppFinal.tsx'
 import './index.css'
 
-createRoot(document.getElementById("root")!).render(<AppProgressive />);
+createRoot(document.getElementById("root")!).render(<AppFinal />);
