@@ -519,3 +519,4 @@ Market impact: ${riskAnalysis.marketImpact.buyerAppetite} buyer appetite with ${
 
 // Export singleton instance
 export const aiRiskPredictionEngine = new AIRiskPredictionEngine();
+

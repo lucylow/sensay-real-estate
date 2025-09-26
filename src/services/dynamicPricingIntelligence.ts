@@ -548,3 +548,4 @@ This analysis combines real-time market sentiment, seasonal patterns, neighborho
 
 // Export singleton instance
 export const dynamicPricingIntelligence = new DynamicPricingIntelligence();
+

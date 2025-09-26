@@ -590,3 +590,4 @@ Make the response more personalized and contextually appropriate.`;
 
 // Export singleton instance
 export const contextualMemorySystem = new ContextualMemorySystem();
+
