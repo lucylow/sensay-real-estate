@@ -7,8 +7,6 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Bot, User, Send, Sparkles, TrendingUp, AlertCircle, Volume2, VolumeX, Settings } from 'lucide-react';
 import { llmAPI } from '@/services/api/llm';
-import { elevenLabsService } from '@/config/elevenlabs';
-import { audioService } from '@/services/audioService';
 
 interface Message {
   id: string;
@@ -60,21 +58,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
   }, [messages]);
 
   useEffect(() => {
-    // Initialize ElevenLabs service
-    const initVoice = async () => {
-      const configured = elevenLabsService.isConfigured();
-      setIsVoiceConfigured(configured);
-      
-      if (configured) {
-        await elevenLabsService.initialize();
-        const voices = elevenLabsService.getVoices();
-        if (voices.length > 0) {
-          setSelectedVoiceId(voices[0].voice_id);
-        }
-      }
-    };
-    
-    initVoice();
+    // Voice service initialization removed
+    setIsVoiceConfigured(false);
   }, []);
 
   const handleSendMessage = async (message: string) => {
@@ -143,29 +128,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Generate voice if enabled and configured
-      if (isVoiceEnabled && isVoiceConfigured && selectedVoiceId) {
-        try {
-          const audioUrl = await elevenLabsService.speak(aiResponse, selectedVoiceId);
-          if (audioUrl) {
-            // Update the message with audio URL
-            setMessages(prev => prev.map(msg => 
-              msg.id === assistantMessage.id 
-                ? { ...msg, audioUrl }
-                : msg
-            ));
-            
-            // Add to audio queue for playback
-            audioService.addTrack({
-              text: aiResponse,
-              audioUrl,
-              voiceId: selectedVoiceId
-            });
-          }
-        } catch (error) {
-          console.error('Voice synthesis failed:', error);
-        }
-      }
+      // Voice generation disabled
     } catch (error) {
       console.error('AI Assistant error:', error);
       const errorMessage: Message = {

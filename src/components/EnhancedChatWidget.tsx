@@ -1,572 +1,488 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { ScrollArea } from './ui/scroll-area';
+import { Input } from './ui/input';
 import { 
   MessageCircle, 
-  Send, 
-  Mic, 
-  MicOff, 
-  Paperclip, 
   X, 
-  Minimize2,
-  Maximize2,
-  Phone,
-  Video,
+  Send, 
+  Bot, 
+  User, 
+  MapPin, 
+  DollarSign, 
   Calendar,
-  MapPin,
-  DollarSign,
+  Phone,
+  Mail,
   Home,
-  Settings,
-  Globe,
-  Volume2,
-  VolumeX,
-  User,
-  Bot
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  Minimize2,
+  Maximize2
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { sensayService, SensayAction } from '@/services/sensayService';
-import { sensayTheme } from '@/config/sensay';
+import { MultimodalAIAssistant } from './MultimodalAIAssistant';
 
 interface ChatMessage {
   id: string;
+  type: 'user' | 'assistant' | 'system';
   content: string;
-  role: 'user' | 'assistant';
   timestamp: Date;
-  type: 'text' | 'voice' | 'file' | 'action';
-  metadata?: Record<string, any>;
-  actions?: SensayAction[];
-  language?: string;
+  metadata?: {
+    leadScore?: number;
+    propertyMatches?: any[];
+    quickActions?: QuickAction[];
+    isTyping?: boolean;
+  };
 }
 
 interface QuickAction {
   id: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  message: string;
-  category: 'search' | 'tour' | 'valuation' | 'financing' | 'support';
+  action: string;
+  icon?: React.ReactNode;
 }
 
-const quickActions: QuickAction[] = [
-  {
-    id: '1',
-    label: 'Show Listings',
-    icon: Home,
-    message: 'Show me available properties',
-    category: 'search'
-  },
-  {
-    id: '2',
-    label: 'Book Tour',
-    icon: Calendar,
-    message: 'I want to book a property tour',
-    category: 'tour'
-  },
-  {
-    id: '3',
-    label: 'Get Valuation',
-    icon: DollarSign,
-    message: 'I need a property valuation',
-    category: 'valuation'
-  },
-  {
-    id: '4',
-    label: 'Financing Help',
-    icon: Phone,
-    message: 'Tell me about financing options',
-    category: 'financing'
-  },
-  {
-    id: '5',
-    label: 'Market Report',
-    icon: MapPin,
-    message: 'What are the current market trends?',
-    category: 'search'
-  }
-];
+interface LeadData {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  budget: { min: number; max: number };
+  locations: string[];
+  propertyType: string;
+  timeline: string;
+  qualificationScore: number;
+  status: 'new' | 'qualified' | 'contacted' | 'scheduled' | 'converted';
+}
 
-const supportedLanguages = [
-  { code: 'en', name: 'English' },
-  { code: 'es', name: 'Spanish' },
-  { code: 'fr', name: 'French' },
-  { code: 'de', name: 'German' },
-  { code: 'it', name: 'Italian' },
-  { code: 'pt', name: 'Portuguese' },
-  { code: 'zh', name: 'Chinese' },
-  { code: 'ja', name: 'Japanese' },
-  { code: 'ko', name: 'Korean' }
-];
+interface PropertyMatch {
+  id: string;
+  address: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  squareFeet: number;
+  image: string;
+  matchScore: number;
+  riskScore: number;
+  features: string[];
+}
 
 export const EnhancedChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      type: 'assistant',
+      content: "Hi! I'm Alex, your AI-powered real estate assistant. I can help you find properties, get valuations, schedule viewings, and answer any real estate questions. How can I assist you today?",
+      timestamp: new Date(),
+      metadata: {
+        quickActions: [
+          { id: 'find-properties', label: 'Find Properties', action: 'find-properties', icon: <Home className="h-4 w-4" /> },
+          { id: 'get-valuation', label: 'Get Valuation', action: 'get-valuation', icon: <DollarSign className="h-4 w-4" /> },
+          { id: 'schedule-viewing', label: 'Schedule Viewing', action: 'schedule-viewing', icon: <Calendar className="h-4 w-4" /> },
+          { id: 'market-analysis', label: 'Market Analysis', action: 'market-analysis', icon: <TrendingUp className="h-4 w-4" /> }
+        ]
+      }
+    }
+  ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [showQuickActions, setShowQuickActions] = useState(true);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
-  
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [currentLead, setCurrentLead] = useState<LeadData | null>(null);
+  const [propertyMatches, setPropertyMatches] = useState<PropertyMatch[]>([]);
+  const [showMultimodal, setShowMultimodal] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    scrollToBottom();
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+    }
   }, [messages]);
 
-  useEffect(() => {
-    if (isOpen) {
-      setUnreadCount(0);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    // Initialize with welcome message
-    const welcomeMessage: ChatMessage = {
-      id: 'welcome',
-      content: "Hi! I'm your PropGuard AI assistant. I can help you find properties, book tours, get valuations, and answer questions about real estate. How can I help you today?",
-      role: 'assistant',
-      timestamp: new Date(),
-      type: 'text',
-      language: selectedLanguage
-    };
-    setMessages([welcomeMessage]);
-  }, []);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleSendMessage = async (messageContent?: string) => {
-    const content = messageContent || inputValue.trim();
-    if (!content) return;
+  const handleSendMessage = async (message: string) => {
+    if (!message.trim() || isLoading) return;
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
-      content,
-      role: 'user',
-      timestamp: new Date(),
-      type: 'text',
-      language: selectedLanguage
+      type: 'user',
+      content: message,
+      timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
-    setIsTyping(true);
 
     try {
-      const response = await sensayService.sendMessage(content);
+      // Simulate AI processing
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      setTimeout(() => {
-        const assistantMessage: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          content: response.message,
-          role: 'assistant',
-          timestamp: new Date(),
-          type: 'text',
-          actions: response.actions,
-          language: selectedLanguage
-        };
-
-        setMessages(prev => [...prev, assistantMessage]);
-        
-        if (!isOpen) {
-          setUnreadCount(prev => prev + 1);
-        }
-
-        // Text-to-speech for assistant messages
-        if (voiceEnabled && isOpen) {
-          speakMessage(response.message);
-        }
-        
-        setIsTyping(false);
-      }, 1000); // Simulate typing delay
+      const response = await processUserMessage(message);
       
+      const assistantMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: response.content,
+        timestamp: new Date(),
+        metadata: {
+          leadScore: response.leadScore,
+          propertyMatches: response.propertyMatches,
+          quickActions: response.quickActions
+        }
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+
+      // Update lead data if provided
+      if (response.leadData) {
+        setCurrentLead(response.leadData);
+      }
+
+      // Update property matches if provided
+      if (response.propertyMatches) {
+        setPropertyMatches(response.propertyMatches);
+      }
+
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error processing message:', error);
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        content: "I'm sorry, I'm having trouble processing your request right now. Please try again.",
-        role: 'assistant',
-        timestamp: new Date(),
-        type: 'text',
-        language: selectedLanguage
+        type: 'assistant',
+        content: 'I apologize, but I encountered an issue processing your request. Please try again.',
+        timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
-      setIsTyping(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleVoiceRecord = async () => {
-    if (!isRecording) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorderRef.current = mediaRecorder;
+  const processUserMessage = async (message: string): Promise<any> => {
+    // Simulate AI processing based on message content
+    const lowerMessage = message.toLowerCase();
 
-        const audioChunks: BlobPart[] = [];
-        
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            audioChunks.push(event.data);
-          }
-        };
-
-        mediaRecorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-          
-          // Here you would typically send the audio to a speech-to-text service
-          // For now, we'll simulate it
-          const transcribedText = "I'm looking for a 3 bedroom house in Melbourne"; // Mock transcription
-          
-          const voiceMessage: ChatMessage = {
-            id: Date.now().toString(),
-            content: transcribedText,
-            role: 'user',
-            timestamp: new Date(),
-            type: 'voice',
-            metadata: { audioUrl: URL.createObjectURL(audioBlob) }
-          };
-
-          setMessages(prev => [...prev, voiceMessage]);
-          await handleSendMessage(transcribedText);
-        };
-
-        mediaRecorder.start();
-        setIsRecording(true);
-      } catch (error) {
-        console.error('Error accessing microphone:', error);
-      }
-    } else {
-      mediaRecorderRef.current?.stop();
-      setIsRecording(false);
+    if (lowerMessage.includes('looking for') || lowerMessage.includes('find') || lowerMessage.includes('property')) {
+      return {
+        content: "Great! I'd be happy to help you find properties. To provide the best matches, could you tell me:\n\n• Your budget range\n• Preferred locations\n• Property type (house, apartment, etc.)\n• Timeline for purchase\n• Number of bedrooms/bathrooms needed",
+        leadScore: 75,
+        quickActions: [
+          { id: 'budget-500k', label: 'Under $500K', action: 'set-budget-500k' },
+          { id: 'budget-1m', label: '$500K - $1M', action: 'set-budget-1m' },
+          { id: 'budget-2m', label: '$1M - $2M', action: 'set-budget-2m' },
+          { id: 'budget-2m+', label: 'Over $2M', action: 'set-budget-2m+' }
+        ]
+      };
     }
+
+    if (lowerMessage.includes('valuation') || lowerMessage.includes('worth') || lowerMessage.includes('value')) {
+      return {
+        content: "I can help you get an instant property valuation using PropGuard AI's advanced analytics. Please provide the property address or I can analyze a property you're interested in.",
+        quickActions: [
+          { id: 'valuation-form', label: 'Enter Address', action: 'valuation-form' },
+          { id: 'valuation-upload', label: 'Upload Details', action: 'valuation-upload' }
+        ]
+      };
+    }
+
+    if (lowerMessage.includes('schedule') || lowerMessage.includes('viewing') || lowerMessage.includes('tour')) {
+      return {
+        content: "I can help you schedule property viewings! I'll find available time slots and coordinate with the property owner. Which property would you like to view?",
+        quickActions: [
+          { id: 'select-property', label: 'Select Property', action: 'select-property' },
+          { id: 'virtual-tour', label: 'Virtual Tour', action: 'virtual-tour' }
+        ]
+      };
+    }
+
+    if (lowerMessage.includes('market') || lowerMessage.includes('trends') || lowerMessage.includes('analysis')) {
+      return {
+        content: "I can provide comprehensive market analysis for any area! This includes price trends, inventory levels, neighborhood insights, and investment potential. Which location interests you?",
+        quickActions: [
+          { id: 'market-sf', label: 'San Francisco', action: 'market-sf' },
+          { id: 'market-la', label: 'Los Angeles', action: 'market-la' },
+          { id: 'market-sd', label: 'San Diego', action: 'market-sd' }
+        ]
+      };
+    }
+
+    // Default response
+    return {
+      content: "I understand you're interested in real estate. I can help you with property search, valuations, market analysis, scheduling viewings, and more. What would you like to explore?",
+      quickActions: [
+        { id: 'find-properties', label: 'Find Properties', action: 'find-properties', icon: <Home className="h-4 w-4" /> },
+        { id: 'get-valuation', label: 'Get Valuation', action: 'get-valuation', icon: <DollarSign className="h-4 w-4" /> },
+        { id: 'market-analysis', label: 'Market Analysis', action: 'market-analysis', icon: <TrendingUp className="h-4 w-4" /> }
+      ]
+    };
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const fileMessage: ChatMessage = {
-      id: Date.now().toString(),
-      content: `Uploaded file: ${file.name}`,
-      role: 'user',
-      timestamp: new Date(),
-      type: 'file',
-      metadata: { fileName: file.name, fileSize: file.size, fileType: file.type }
+  const handleQuickAction = (action: string) => {
+    const actionMessages: Record<string, string> = {
+      'find-properties': 'I\'m looking for properties in my area',
+      'get-valuation': 'I need a property valuation',
+      'schedule-viewing': 'I\'d like to schedule a property viewing',
+      'market-analysis': 'Show me market analysis for my area',
+      'set-budget-500k': 'My budget is under $500,000',
+      'set-budget-1m': 'My budget is $500,000 to $1,000,000',
+      'set-budget-2m': 'My budget is $1,000,000 to $2,000,000',
+      'set-budget-2m+': 'My budget is over $2,000,000'
     };
 
-    setMessages(prev => [...prev, fileMessage]);
-    
-    // Simulate file processing
-    handleSendMessage(`I've uploaded a file: ${file.name}. Can you help me with this?`);
+    const message = actionMessages[action] || `I want to ${action.replace('-', ' ')}`;
+    handleSendMessage(message);
   };
 
-  const speakMessage = (text: string) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = selectedLanguage === 'en' ? 'en-US' : selectedLanguage;
-      utterance.rate = 0.8;
-      utterance.pitch = 1;
-      speechSynthesis.speak(utterance);
+  const toggleWidget = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen) {
+      setIsMinimized(false);
     }
   };
 
-  const handleActionClick = (action: SensayAction) => {
-    // Handle different action types
-    switch (action.type) {
-      case 'viewProperty':
-        window.location.href = `/property/${action.data.propertyId}`;
-        break;
-      case 'scheduleShowing':
-        // Open scheduling modal or navigate to booking page
-        break;
-      case 'downloadReport':
-        window.open(action.data.reportUrl, '_blank');
-        break;
-      case 'bookTour':
-        // Open tour booking component
-        break;
-      case 'getValuation':
-        // Open valuation form
-        break;
-      default:
-        console.log('Unknown action:', action);
-    }
-  };
-
-  const renderMessage = (message: ChatMessage) => {
-    return (
-      <div
-        key={message.id}
-        className={cn(
-          "flex gap-3 p-4",
-          message.role === 'user' ? 'justify-end' : 'justify-start'
-        )}
-      >
-        {message.role === 'assistant' && (
-          <div className="flex-shrink-0">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <Bot className="h-4 w-4 text-blue-600" />
-            </div>
-          </div>
-        )}
-        
-        <div className={cn(
-          "max-w-[80%] rounded-lg p-3",
-          message.role === 'user' 
-            ? "bg-blue-600 text-white" 
-            : "bg-gray-100 text-gray-900"
-        )}>
-          <p className="text-sm">{message.content}</p>
-          
-          {message.type === 'voice' && message.metadata?.audioUrl && (
-            <audio controls className="mt-2 w-full">
-              <source src={message.metadata.audioUrl} type="audio/wav" />
-            </audio>
-          )}
-          
-          {message.type === 'file' && (
-            <div className="mt-2 text-xs opacity-75">
-              📎 {message.metadata?.fileName} ({(message.metadata?.fileSize / 1024).toFixed(1)} KB)
-            </div>
-          )}
-          
-          {message.actions && message.actions.length > 0 && (
-            <div className="mt-3 space-x-2">
-              {message.actions.map((action, index) => (
-                <Button
-                  key={index}
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleActionClick(action)}
-                  className="text-xs"
-                >
-                  {action.label}
-                </Button>
-              ))}
-            </div>
-          )}
-          
-          <div className="text-xs opacity-50 mt-1">
-            {message.timestamp.toLocaleTimeString()}
-          </div>
-        </div>
-        
-        {message.role === 'user' && (
-          <div className="flex-shrink-0">
-            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-gray-600" />
-            </div>
-          </div>
-        )}
-      </div>
-    );
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
   };
 
   if (!isOpen) {
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <Button
-          onClick={() => setIsOpen(true)}
-          className="rounded-full w-16 h-16 shadow-lg hover:shadow-xl transition-shadow"
-          style={{ backgroundColor: sensayTheme.primaryColor }}
+          onClick={toggleWidget}
+          className="h-14 w-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg"
+          size="lg"
         >
           <MessageCircle className="h-6 w-6" />
-          {unreadCount > 0 && (
-            <Badge className="absolute -top-2 -right-2 bg-red-500 text-white min-w-[20px] h-5 rounded-full text-xs flex items-center justify-center">
-              {unreadCount}
-            </Badge>
-          )}
         </Button>
+        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          1
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      <Card className={cn(
-        "w-96 shadow-2xl transition-all duration-300",
-        isMinimized ? "h-16" : "h-[600px]"
-      )}>
-        {/* Header */}
-        <CardHeader className="p-4 border-b bg-blue-600 text-white rounded-t-lg">
+    <div className="fixed bottom-6 right-6 z-50 w-96">
+      <Card className={`shadow-2xl border-2 ${isMinimized ? 'h-16' : 'h-[600px]'} transition-all duration-300`}>
+        <CardHeader className="pb-2 bg-primary text-primary-foreground">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <Bot className="h-4 w-4" />
-              </div>
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="/avatars/alex.jpg" />
+                <AvatarFallback>AX</AvatarFallback>
+              </Avatar>
               <div>
-                <CardTitle className="text-sm">PropGuard AI Assistant</CardTitle>
-                <p className="text-xs opacity-75">
-                  {isTyping ? 'Typing...' : 'Online'}
-                </p>
+                <CardTitle className="text-sm">Alex - PropGuard AI</CardTitle>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-xs">Online</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Button
-                size="sm"
                 variant="ghost"
-                onClick={() => setVoiceEnabled(!voiceEnabled)}
-                className="text-white hover:bg-white/20"
+                size="sm"
+                onClick={toggleMinimize}
+                className="h-6 w-6 p-0 text-primary-foreground hover:bg-primary-foreground/20"
               >
-                {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                {isMinimized ? <Maximize2 className="h-3 w-3" /> : <Minimize2 className="h-3 w-3" />}
               </Button>
               <Button
-                size="sm"
                 variant="ghost"
-                onClick={() => setIsMinimized(!isMinimized)}
-                className="text-white hover:bg-white/20"
-              >
-                {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
-              </Button>
-              <Button
                 size="sm"
-                variant="ghost"
-                onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-white/20"
+                onClick={toggleWidget}
+                className="h-6 w-6 p-0 text-primary-foreground hover:bg-primary-foreground/20"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3" />
               </Button>
             </div>
           </div>
         </CardHeader>
 
         {!isMinimized && (
-          <CardContent className="p-0 flex flex-col h-[calc(600px-80px)]">
-            {/* Quick Actions */}
-            {showQuickActions && messages.length <= 1 && (
-              <div className="p-4 border-b bg-gray-50">
-                <div className="grid grid-cols-2 gap-2">
-                  {quickActions.slice(0, 4).map((action) => {
-                    const IconComponent = action.icon;
-                    return (
-                      <Button
-                        key={action.id}
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleSendMessage(action.message)}
-                        className="justify-start"
-                      >
-                        <IconComponent className="h-4 w-4 mr-2" />
-                        {action.label}
-                      </Button>
-                    );
-                  })}
+          <CardContent className="flex flex-col h-full p-0">
+            {/* Lead Status Bar */}
+            {currentLead && (
+              <div className="p-3 bg-muted border-b">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span className="text-sm font-medium">{currentLead.name}</span>
+                    <Badge variant={currentLead.qualificationScore > 70 ? "default" : "secondary"}>
+                      Score: {currentLead.qualificationScore}
+                    </Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {currentLead.status}
+                  </div>
                 </div>
               </div>
             )}
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto">
-              {messages.map(renderMessage)}
-              
-              {isTyping && (
-                <div className="flex justify-start p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Bot className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <div className="bg-gray-100 p-3 rounded-lg">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`flex gap-2 max-w-[80%] ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <Avatar className="h-6 w-6">
+                        {message.type === 'user' ? (
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            <User className="h-3 w-3" />
+                          </AvatarFallback>
+                        ) : (
+                          <AvatarFallback className="bg-muted">
+                            <Bot className="h-3 w-3" />
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                      
+                      <div className={`rounded-lg px-3 py-2 ${
+                        message.type === 'user' 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-muted'
+                      }`}>
+                        <div className="text-sm whitespace-pre-wrap">
+                          {message.content}
+                        </div>
+                        
+                        {message.metadata?.quickActions && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {message.metadata.quickActions.map((action) => (
+                              <Button
+                                key={action.id}
+                                variant="outline"
+                                size="sm"
+                                className="text-xs h-6"
+                                onClick={() => handleQuickAction(action.action)}
+                              >
+                                {action.icon}
+                                <span className="ml-1">{action.label}</span>
+                              </Button>
+                            ))}
+                          </div>
+                        )}
+                        
+                        <div className="text-xs opacity-70 mt-1">
+                          {message.timestamp.toLocaleTimeString()}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-              
-              <div ref={messagesEndRef} />
-            </div>
+                ))}
+                
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="flex gap-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback className="bg-muted">
+                          <Bot className="h-3 w-3" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="bg-muted rounded-lg px-3 py-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Alex is typing...
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
 
-            {/* Input Area */}
-            <div className="p-4 border-t bg-gray-50">
-              <div className="flex items-end gap-2">
-                <div className="flex-1">
-                  <Textarea
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Ask about properties, book tours, get valuations..."
-                    className="resize-none min-h-[40px] max-h-[120px]"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isLoading}
-                  >
-                    <Paperclip className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleVoiceRecord}
-                    disabled={isLoading}
-                    className={cn(isRecording && "bg-red-100 text-red-600")}
-                  >
-                    {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleSendMessage()}
-                    disabled={!inputValue.trim() || isLoading}
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
+            {/* Property Matches */}
+            {propertyMatches.length > 0 && (
+              <div className="p-3 border-t bg-muted/50">
+                <div className="text-xs font-medium mb-2">Property Matches:</div>
+                <div className="space-y-2">
+                  {propertyMatches.slice(0, 2).map((property) => (
+                    <div key={property.id} className="flex items-center gap-2 p-2 bg-background rounded border">
+                      <div className="w-8 h-8 bg-muted rounded"></div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium truncate">{property.address}</div>
+                        <div className="text-xs text-muted-foreground">
+                          ${property.price.toLocaleString()} • {property.bedrooms}bd {property.bathrooms}ba
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {property.matchScore}% match
+                      </Badge>
+                    </div>
+                  ))}
                 </div>
               </div>
-              
-              {/* Language Selector */}
-              <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
-                <select 
-                  value={selectedLanguage} 
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
-                  className="text-xs bg-transparent border-none"
+            )}
+
+            {/* Input */}
+            <div className="p-4 border-t">
+              <div className="flex gap-2">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Ask Alex about properties, valuations, or market trends..."
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSendMessage(inputValue);
+                    }
+                  }}
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={() => handleSendMessage(inputValue)}
+                  disabled={isLoading || !inputValue.trim()}
+                  size="sm"
                 >
-                  {supportedLanguages.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="flex items-center gap-1">
-                  <Globe className="h-3 w-3" />
-                  <span>Multi-language support</span>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <div className="flex items-center justify-between mt-2">
+                <div className="text-xs text-muted-foreground">
+                  Powered by PropGuard AI
                 </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowMultimodal(true)}
+                  className="text-xs h-6"
+                >
+                  Video Chat
+                </Button>
               </div>
             </div>
           </CardContent>
         )}
       </Card>
 
-      {/* Hidden file input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*,application/pdf,.doc,.docx"
-        className="hidden"
-      />
+      {/* Multimodal Modal */}
+      {showMultimodal && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
+          <Card className="w-full max-w-4xl h-[80vh]">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Alex - Multimodal AI Assistant</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setShowMultimodal(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent className="h-full">
+              <MultimodalAIAssistant
+                className="h-full"
+                persona="alex"
+              />
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
+
+export default EnhancedChatWidget;

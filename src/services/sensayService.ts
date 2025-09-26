@@ -346,7 +346,7 @@ export class SensayService {
       actions: [
         { type: 'scheduleShowing', data: { address: entities.address }, label: '📅 Schedule Viewing', priority: 'medium' },
         { type: 'downloadReport', data: { valuation }, label: '📊 Download Report', priority: 'medium' },
-        { type: 'marketInsights', data: { location: valuation.location }, label: '📈 Market Analysis', priority: 'low' }
+        { type: 'marketInsights', data: { location: entities.location || 'Melbourne' }, label: '📈 Market Analysis', priority: 'low' }
       ],
       intent: { name: 'valuation', confidence: 0.95, category: 'valuation' },
       richContent: {
@@ -507,11 +507,11 @@ export class SensayService {
     
     // Update user preferences based on entities
     if (intentAnalysis.entities) {
-      this.updateUserPreferences(session, intentAnalysis.entities);
+      this.updateUserPreferencesFromEntities(session, intentAnalysis.entities);
     }
   }
 
-  private updateUserPreferences(session: ConversationState, entities: Record<string, any>): void {
+  private updateUserPreferencesFromEntities(session: ConversationState, entities: Record<string, any>): void {
     if (!session.userPreferences) {
       session.userPreferences = {};
     }
@@ -651,28 +651,85 @@ export class SensayService {
     return actions;
   }
 
-  async getConversationHistory(): Promise<SensayMessage[]> {
-    if (!this.conversationId) return [];
+  async getConversationHistory(userId: string = 'default'): Promise<SensayMessage[]> {
+    const session = this.userSessions.get(userId);
+    if (!session) return [];
 
-    try {
-      const response = await fetch(`${sensayEndpoints.conversations}/${this.conversationId}`, {
-        headers: {
-          'Authorization': `Bearer ${sensayConfig.apiKey}`,
-        },
-      });
+    // Return mock conversation history for demonstration
+    // In production, this would fetch from your backend
+    return [
+      {
+        id: '1',
+        content: 'Hi, I\'m looking for a property in Melbourne',
+        role: 'user',
+        timestamp: new Date(Date.now() - 60000),
+        language: session.language
+      },
+      {
+        id: '2',
+        content: 'I\'d be happy to help you find a property in Melbourne! What type of property are you looking for?',
+        role: 'assistant',
+        timestamp: new Date(Date.now() - 50000),
+        language: session.language
+      }
+    ];
+  }
 
-      if (!response.ok) return [];
+  resetConversation(userId: string = 'default'): void {
+    this.conversationId = null;
+    this.userSessions.delete(userId);
+  }
 
-      const data = await response.json();
-      return data.messages || [];
-    } catch (error) {
-      console.error('Error fetching conversation history:', error);
-      return [];
+  async getConversationState(userId: string = 'default'): Promise<ConversationState | null> {
+    return this.userSessions.get(userId) || null;
+  }
+
+  async getUserPreferences(userId: string = 'default'): Promise<UserPreferences | null> {
+    const session = this.userSessions.get(userId);
+    return session?.userPreferences || null;
+  }
+
+  async updateUserPreferencesById(userId: string, preferences: Partial<UserPreferences>): Promise<void> {
+    const session = this.userSessions.get(userId);
+    if (session) {
+      session.userPreferences = { ...session.userPreferences, ...preferences };
+      this.userSessions.set(userId, session);
     }
   }
 
-  resetConversation(): void {
-    this.conversationId = null;
+  async getAllUserSessions(): Promise<Map<string, ConversationState>> {
+    return new Map(this.userSessions);
+  }
+
+  async getSessionStats(): Promise<{
+    totalSessions: number;
+    activeSessions: number;
+    averageInteractions: number;
+    languages: Record<string, number>;
+  }> {
+    const sessions = Array.from(this.userSessions.values());
+    const now = Date.now();
+    const activeThreshold = 30 * 60 * 1000; // 30 minutes
+
+    const activeSessions = sessions.filter(session => 
+      now - session.sessionStart.getTime() < activeThreshold
+    ).length;
+
+    const averageInteractions = sessions.length > 0 
+      ? sessions.reduce((sum, session) => sum + session.interactionCount, 0) / sessions.length 
+      : 0;
+
+    const languages = sessions.reduce((acc, session) => {
+      acc[session.language] = (acc[session.language] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      totalSessions: sessions.length,
+      activeSessions,
+      averageInteractions,
+      languages
+    };
   }
 }
 

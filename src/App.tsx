@@ -11,9 +11,10 @@ import { PropertySearchPage } from "@/pages/PropertySearchPage";
 import { PropertyDetailPage } from "@/pages/PropertyDetailPage";
 import { MarketAnalysisPage } from "@/pages/MarketAnalysisPage";
 import { ValuationReportPage } from "@/pages/ValuationReportPage";
-import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
-import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
-import { MultimodalTestPage } from "@/pages/MultimodalTestPage";
+  import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
+  import SensayLeadGenerationPage from "@/pages/SensayLeadGenerationPage";
+  import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
+  import { MultimodalTestPage } from "@/pages/MultimodalTestPage";
 import NotFound from "./pages/NotFound";
 import { EnhancedChatWidget } from "@/components/EnhancedChatWidget";
 import { PropertyShowcase } from "@/components/PropertyShowcase";
@@ -21,6 +22,7 @@ import { SmartFAQ } from "@/components/SmartFAQ";
 import { VirtualTourBooking } from "@/components/VirtualTourBooking";
 import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
+import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
 
 const queryClient = new QueryClient();
 
@@ -37,15 +39,17 @@ const App = () => (
             <Route path="/search" element={<PropertySearchPage />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
             <Route path="/market-analysis" element={<MarketAnalysisPage />} />
-            <Route path="/report/:reportId" element={<ValuationReportPage />} />
-            <Route path="/sensay" element={<SensayIntegrationPage />} />
-            <Route path="/heygen-test" element={<HeyGenTestPage />} />
-            <Route path="/multimodal-test" element={<MultimodalTestPage />} />
+              <Route path="/report/:reportId" element={<ValuationReportPage />} />
+              <Route path="/sensay" element={<SensayIntegrationPage />} />
+              <Route path="/sensay-leads" element={<SensayLeadGenerationPage />} />
+              <Route path="/heygen-test" element={<HeyGenTestPage />} />
+              <Route path="/multimodal-test" element={<MultimodalTestPage />} />
             <Route path="/property-showcase" element={<PropertyShowcase />} />
             <Route path="/smart-faq" element={<SmartFAQ />} />
             <Route path="/virtual-tours" element={<VirtualTourBooking />} />
             <Route path="/leads" element={<LeadDashboard />} />
             <Route path="/appointments" element={<AppointmentManager />} />
+            <Route path="/propguard-chatbot" element={<PropGuardAIChatbot />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

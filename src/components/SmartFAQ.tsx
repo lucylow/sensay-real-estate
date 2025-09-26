@@ -1,510 +1,626 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Input } from './ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Alert, AlertDescription } from './ui/alert';
 import { 
   HelpCircle, 
+  Search, 
   MessageCircle, 
-  Mail, 
-  Phone, 
-  Calendar, 
   TrendingUp, 
-  Shield, 
-  Home,
-  DollarSign,
+  DollarSign, 
+  Home, 
+  FileText, 
+  Calculator,
+  Shield,
+  Clock,
   Users,
-  FileText,
-  CheckCircle
+  MapPin,
+  Zap,
+  CheckCircle,
+  AlertCircle,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  ThumbsUp,
+  ThumbsDown,
+  Share2,
+  Copy,
+  Star,
+  Filter,
+  Target
 } from 'lucide-react';
-import { sensayService } from '@/services/sensayService';
 
 interface FAQItem {
   id: string;
   question: string;
   answer: string;
-  category: 'general' | 'financing' | 'legal' | 'market' | 'process';
+  category: string;
   tags: string[];
+  helpful: number;
+  notHelpful: number;
+  lastUpdated: Date;
+  relatedQuestions: string[];
+  aiGenerated: boolean;
+  confidence: number;
 }
 
-interface LeadData {
+interface FAQCategory {
   id: string;
   name: string;
-  email: string;
-  phone?: string;
-  interests: string[];
-  budget?: string;
-  location?: string;
-  propertyType?: string;
-  leadScore: number;
-  lastInteraction: Date;
-  status: 'new' | 'qualified' | 'nurturing' | 'hot' | 'converted';
+  icon: React.ReactNode;
+  description: string;
+  questionCount: number;
 }
 
-const faqData: FAQItem[] = [
-  {
-    id: '1',
-    question: 'How does PropGuard AI assess property risk?',
-    answer: 'PropGuard AI uses advanced machine learning models combined with real-time NASA climate data to assess flood, fire, and coastal erosion risks. Our system analyzes historical data, climate projections, and property-specific factors to provide comprehensive risk scores.',
-    category: 'general',
-    tags: ['risk', 'assessment', 'climate', 'ai']
-  },
-  {
-    id: '2',
-    question: 'What is APRA CPS 230 compliance?',
-    answer: 'APRA CPS 230 is the Australian Prudential Regulation Authority\'s standard for operational risk management. PropGuard AI ensures full compliance by providing automated reporting, audit trails, and risk documentation required by Australian lenders.',
-    category: 'legal',
-    tags: ['apra', 'compliance', 'regulatory', 'lending']
-  },
-  {
-    id: '3',
-    question: 'How accurate are PropGuard AI valuations?',
-    answer: 'Our AI-powered valuations achieve 92% accuracy compared to actual sale prices, using blockchain-verified data and consensus from multiple valuation models. Each valuation includes confidence scores and risk assessments.',
-    category: 'market',
-    tags: ['valuation', 'accuracy', 'blockchain', 'confidence']
-  },
-  {
-    id: '4',
-    question: 'What financing options are available?',
-    answer: 'We work with all major Australian banks and lenders. Our platform provides pre-approval assistance, loan comparison tools, and connects you with qualified mortgage brokers who understand PropGuard AI risk assessments.',
-    category: 'financing',
-    tags: ['financing', 'loans', 'banks', 'pre-approval']
-  },
-  {
-    id: '5',
-    question: 'How long does the buying process take?',
-    answer: 'The typical property purchase process takes 4-6 weeks from offer acceptance to settlement. PropGuard AI can accelerate this by providing instant risk assessments and pre-approved valuations, potentially reducing time by 30%.',
-    category: 'process',
-    tags: ['timeline', 'process', 'settlement', 'offer']
-  }
-];
-
-const categoryIcons = {
-  general: HelpCircle,
-  financing: DollarSign,
-  legal: Shield,
-  market: TrendingUp,
-  process: Calendar
-};
+interface SearchResult {
+  item: FAQItem;
+  relevanceScore: number;
+  matchedTerms: string[];
+}
 
 export const SmartFAQ: React.FC = () => {
+  const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
+  const [categories, setCategories] = useState<FAQCategory[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const [leadData, setLeadData] = useState<LeadData | null>(null);
-  const [showLeadCapture, setShowLeadCapture] = useState(false);
+  const [activeTab, setActiveTab] = useState('browse');
 
-  const filteredFAQs = faqData.filter(faq => {
-    const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         faq.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory = selectedCategory === 'all' || faq.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  useEffect(() => {
+    loadFAQData();
+  }, []);
 
-  const handleFAQClick = async (faq: FAQItem) => {
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      performSearch(searchQuery);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchQuery, faqItems]);
+
+  const loadFAQData = async () => {
     setIsLoading(true);
-    try {
-      const response = await sensayService.sendMessage(`Tell me more about: ${faq.question}`);
-      
-      const message = {
-        id: Date.now().toString(),
-        question: faq.question,
-        answer: response.message,
-        timestamp: new Date(),
-        actions: response.actions || []
-      };
-      
-      setChatMessages(prev => [...prev, message]);
-      
-      // Check if we should capture lead information
-      if (response.message.includes('contact') || response.message.includes('email') || response.message.includes('phone')) {
-        setShowLeadCapture(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const sampleCategories: FAQCategory[] = [
+      {
+        id: 'buying',
+        name: 'Buying Process',
+        icon: <Home className="h-5 w-5" />,
+        description: 'Everything about purchasing property',
+        questionCount: 25
+      },
+      {
+        id: 'selling',
+        name: 'Selling Process',
+        icon: <TrendingUp className="h-5 w-5" />,
+        description: 'Guide to selling your property',
+        questionCount: 20
+      },
+      {
+        id: 'financing',
+        name: 'Financing & Mortgages',
+        icon: <DollarSign className="h-5 w-5" />,
+        description: 'Loan options and financing',
+        questionCount: 30
+      },
+      {
+        id: 'legal',
+        name: 'Legal & Documentation',
+        icon: <FileText className="h-5 w-5" />,
+        description: 'Legal requirements and paperwork',
+        questionCount: 15
+      },
+      {
+        id: 'investment',
+        name: 'Investment Properties',
+        icon: <Calculator className="h-5 w-5" />,
+        description: 'Real estate investment guidance',
+        questionCount: 18
+      },
+      {
+        id: 'market',
+        name: 'Market Analysis',
+        icon: <TrendingUp className="h-5 w-5" />,
+        description: 'Market trends and insights',
+        questionCount: 22
       }
-    } catch (error) {
-      console.error('Error getting FAQ response:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    ];
+
+    const sampleFAQItems: FAQItem[] = [
+      {
+        id: '1',
+        question: 'How do I get pre-approved for a mortgage?',
+        answer: 'Getting pre-approved for a mortgage is a crucial first step in the home buying process. Here\'s how:\n\n1. **Gather your financial documents** - Pay stubs, tax returns, bank statements, and employment verification\n2. **Check your credit score** - Aim for a score of 620 or higher for better rates\n3. **Compare lenders** - Get quotes from multiple lenders including banks, credit unions, and mortgage brokers\n4. **Submit your application** - Complete the pre-approval application with your chosen lender\n5. **Wait for approval** - This typically takes 1-3 business days\n\nPre-approval shows sellers you\'re a serious buyer and helps determine your budget.',
+        category: 'financing',
+        tags: ['mortgage', 'pre-approval', 'financing', 'home-buying'],
+        helpful: 142,
+        notHelpful: 8,
+        lastUpdated: new Date('2024-01-15'),
+        relatedQuestions: [
+          'What documents do I need for a mortgage application?',
+          'How long does mortgage pre-approval last?',
+          'What\'s the difference between pre-qualification and pre-approval?'
+        ],
+        aiGenerated: true,
+        confidence: 0.95
+      },
+      {
+        id: '2',
+        question: 'What are closing costs and how much should I expect to pay?',
+        answer: 'Closing costs are fees paid at the end of the real estate transaction. They typically range from 2-5% of the home\'s purchase price.\n\n**Common closing costs include:**\n- Loan origination fees (0.5-1% of loan amount)\n- Title insurance and search fees\n- Appraisal and inspection fees\n- Attorney fees\n- Recording fees\n- Property taxes and insurance\n\n**For a $500,000 home, expect closing costs of $10,000-$25,000.**\n\nSome costs are negotiable, and you may be able to get the seller to cover some fees. Always review your Loan Estimate carefully.',
+        category: 'buying',
+        tags: ['closing-costs', 'fees', 'home-buying', 'financing'],
+        helpful: 156,
+        notHelpful: 12,
+        lastUpdated: new Date('2024-01-20'),
+        relatedQuestions: [
+          'Can I negotiate closing costs with the seller?',
+          'What\'s included in the Loan Estimate?',
+          'Are there any closing cost assistance programs?'
+        ],
+        aiGenerated: true,
+        confidence: 0.92
+      },
+      {
+        id: '3',
+        question: 'How do I determine the right listing price for my home?',
+        answer: 'Pricing your home correctly is crucial for a successful sale. Here\'s how to determine the right price:\n\n**1. Get a Comparative Market Analysis (CMA)**\n- Compare your home to similar properties sold in the last 6 months\n- Look at active listings in your neighborhood\n- Consider location, size, condition, and features\n\n**2. Consider market conditions**\n- Seller\'s market: Price slightly above market value\n- Buyer\'s market: Price competitively or slightly below\n- Balanced market: Price at market value\n\n**3. Factor in your timeline**\n- Need to sell quickly? Price competitively\n- No rush? Can price higher and wait\n\n**4. Get a professional appraisal** for accurate valuation\n\nOverpricing can lead to longer time on market and lower final sale price.',
+        category: 'selling',
+        tags: ['listing-price', 'pricing', 'home-selling', 'market-analysis'],
+        helpful: 134,
+        notHelpful: 6,
+        lastUpdated: new Date('2024-01-18'),
+        relatedQuestions: [
+          'What\'s the difference between listing price and market value?',
+          'How often should I adjust my listing price?',
+          'Should I use an online home value estimator?'
+        ],
+        aiGenerated: true,
+        confidence: 0.89
+      },
+      {
+        id: '4',
+        question: 'What is a home inspection and what should I expect?',
+        answer: 'A home inspection is a thorough examination of a property\'s condition, typically performed by a licensed inspector before purchase.\n\n**What inspectors check:**\n- Structural integrity (foundation, walls, roof)\n- Electrical systems and wiring\n- Plumbing and water systems\n- HVAC systems\n- Appliances and fixtures\n- Safety hazards and code violations\n\n**What to expect:**\n- Inspection takes 2-4 hours depending on home size\n- You can attend the inspection to ask questions\n- Receive a detailed written report within 24-48 hours\n- Report includes photos and recommendations\n\n**Cost:** Typically $300-$500, paid by the buyer\n\n**After inspection:** You can negotiate repairs, ask for credits, or withdraw your offer if major issues are found.',
+        category: 'buying',
+        tags: ['home-inspection', 'property-condition', 'buying-process', 'due-diligence'],
+        helpful: 178,
+        notHelpful: 4,
+        lastUpdated: new Date('2024-01-22'),
+        relatedQuestions: [
+          'What if the home inspection reveals major problems?',
+          'Do I need a separate inspection for pests or mold?',
+          'Can I negotiate repairs after the inspection?'
+        ],
+        aiGenerated: true,
+        confidence: 0.94
+      },
+      {
+        id: '5',
+        question: 'How do I calculate my debt-to-income ratio for mortgage qualification?',
+        answer: 'Your debt-to-income (DTI) ratio is a key factor lenders use to determine mortgage eligibility.\n\n**DTI Calculation:**\nDTI = (Monthly Debt Payments + Proposed Mortgage Payment) ÷ Gross Monthly Income\n\n**Example:**\n- Gross monthly income: $8,000\n- Monthly debt payments: $1,200 (car loan, credit cards, student loans)\n- Proposed mortgage payment: $2,000\n- DTI = ($1,200 + $2,000) ÷ $8,000 = 40%\n\n**DTI Guidelines:**\n- **Conventional loans:** Maximum 43% DTI\n- **FHA loans:** Maximum 57% DTI (with compensating factors)\n- **VA loans:** Maximum 41% DTI\n- **Jumbo loans:** Maximum 45% DTI\n\n**To improve DTI:**\n- Pay down existing debt\n- Increase income\n- Consider a smaller loan amount\n- Look for properties with lower taxes/HOA fees',
+        category: 'financing',
+        tags: ['debt-to-income', 'DTI', 'mortgage-qualification', 'financing'],
+        helpful: 167,
+        notHelpful: 9,
+        lastUpdated: new Date('2024-01-16'),
+        relatedQuestions: [
+          'What debts are included in DTI calculation?',
+          'How can I improve my debt-to-income ratio?',
+          'What\'s the difference between front-end and back-end DTI?'
+        ],
+        aiGenerated: true,
+        confidence: 0.91
+      }
+    ];
+
+    setCategories(sampleCategories);
+    setFaqItems(sampleFAQItems);
+    setIsLoading(false);
   };
 
-  const handleLeadCapture = (leadInfo: Partial<LeadData>) => {
-    const newLead: LeadData = {
-      id: Date.now().toString(),
-      name: leadInfo.name || 'Anonymous',
-      email: leadInfo.email || '',
-      phone: leadInfo.phone,
-      interests: leadInfo.interests || [],
-      budget: leadInfo.budget,
-      location: leadInfo.location,
-      propertyType: leadInfo.propertyType,
-      leadScore: calculateLeadScore(leadInfo),
-      lastInteraction: new Date(),
-      status: 'new'
-    };
+  const performSearch = (query: string) => {
+    const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 2);
     
-    setLeadData(newLead);
-    setShowLeadCapture(false);
-    
-    // In a real app, this would save to your backend
-    console.log('Lead captured:', newLead);
+    const results: SearchResult[] = faqItems
+      .map(item => {
+        const questionMatch = searchTerms.some(term => 
+          item.question.toLowerCase().includes(term)
+        );
+        const answerMatch = searchTerms.some(term => 
+          item.answer.toLowerCase().includes(term)
+        );
+        const tagMatch = searchTerms.some(term => 
+          item.tags.some(tag => tag.toLowerCase().includes(term))
+        );
+
+        const relevanceScore = (questionMatch ? 3 : 0) + (answerMatch ? 2 : 0) + (tagMatch ? 1 : 0);
+        
+        if (relevanceScore > 0) {
+          return {
+            item,
+            relevanceScore,
+            matchedTerms: searchTerms.filter(term => 
+              item.question.toLowerCase().includes(term) ||
+              item.answer.toLowerCase().includes(term) ||
+              item.tags.some(tag => tag.toLowerCase().includes(term))
+            )
+          };
+        }
+        return null;
+      })
+      .filter((result): result is SearchResult => result !== null)
+      .sort((a, b) => b.relevanceScore - a.relevanceScore);
+
+    setSearchResults(results);
   };
 
-  const calculateLeadScore = (leadInfo: Partial<LeadData>): number => {
-    let score = 0;
-    if (leadInfo.email) score += 20;
-    if (leadInfo.phone) score += 15;
-    if (leadInfo.budget) score += 25;
-    if (leadInfo.location) score += 20;
-    if (leadInfo.propertyType) score += 20;
-    return Math.min(score, 100);
-  };
-
-  const getStatusColor = (status: LeadData['status']) => {
-    switch (status) {
-      case 'new': return 'bg-blue-100 text-blue-800';
-      case 'qualified': return 'bg-yellow-100 text-yellow-800';
-      case 'nurturing': return 'bg-purple-100 text-purple-800';
-      case 'hot': return 'bg-red-100 text-red-800';
-      case 'converted': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+  const toggleExpanded = (itemId: string) => {
+    const newExpanded = new Set(expandedItems);
+    if (newExpanded.has(itemId)) {
+      newExpanded.delete(itemId);
+    } else {
+      newExpanded.add(itemId);
     }
+    setExpandedItems(newExpanded);
   };
+
+  const handleHelpful = (itemId: string, isHelpful: boolean) => {
+    setFaqItems(prev => prev.map(item => 
+      item.id === itemId 
+        ? { 
+            ...item, 
+            helpful: isHelpful ? item.helpful + 1 : item.helpful,
+            notHelpful: !isHelpful ? item.notHelpful + 1 : item.notHelpful
+          }
+        : item
+    ));
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
+  const filteredFAQItems = selectedCategory === 'all' 
+    ? faqItems 
+    : faqItems.filter(item => item.category === selectedCategory);
+
+  const displayItems = searchQuery.trim() 
+    ? searchResults.map(result => result.item)
+    : filteredFAQItems;
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* FAQ Section */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <HelpCircle className="h-5 w-5 text-blue-600" />
-                Smart FAQ & Knowledge Base
-              </CardTitle>
-              <p className="text-gray-600">
-                Get instant answers to common real estate questions powered by AI
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Search */}
-              <Input
-                placeholder="Search FAQs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full"
-              />
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-2 mb-6">
+        <HelpCircle className="h-6 w-6 text-primary" />
+        <h1 className="text-3xl font-bold">Smart FAQ</h1>
+        <Badge variant="secondary" className="ml-auto">
+          <Zap className="h-3 w-3 mr-1" />
+          AI-Powered Answers
+        </Badge>
+      </div>
 
-              {/* Category Filter */}
-              <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-                <TabsList className="grid w-full grid-cols-6">
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="general">General</TabsTrigger>
-                  <TabsTrigger value="financing">Financing</TabsTrigger>
-                  <TabsTrigger value="legal">Legal</TabsTrigger>
-                  <TabsTrigger value="market">Market</TabsTrigger>
-                  <TabsTrigger value="process">Process</TabsTrigger>
-                </TabsList>
-              </Tabs>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="browse">Browse Categories</TabsTrigger>
+          <TabsTrigger value="search">Search FAQ</TabsTrigger>
+          <TabsTrigger value="ask">Ask Question</TabsTrigger>
+        </TabsList>
 
-              {/* FAQ List */}
-              <div className="space-y-2">
-                {filteredFAQs.map((faq) => {
-                  const IconComponent = categoryIcons[faq.category];
+        <TabsContent value="browse" className="space-y-6">
+          {/* Categories */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {categories.map((category) => (
+              <Card 
+                key={category.id} 
+                className={`cursor-pointer hover:shadow-lg transition-shadow ${
+                  selectedCategory === category.id ? 'ring-2 ring-primary' : ''
+                }`}
+                onClick={() => setSelectedCategory(selectedCategory === category.id ? 'all' : category.id)}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      {category.icon}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">{category.name}</CardTitle>
+                      <p className="text-sm text-muted-foreground">{category.description}</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline">
+                      {category.questionCount} questions
+                    </Badge>
+                    {selectedCategory === category.id && (
+                      <Badge variant="default">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Selected
+                      </Badge>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* FAQ Items */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">
+                {displayItems.length} Questions Found
+              </h2>
+              {searchQuery && (
+                <Badge variant="secondary">
+                  <Target className="h-3 w-3 mr-1" />
+                  Search Results
+                </Badge>
+              )}
+            </div>
+
+            {isLoading ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardContent className="p-6">
+                      <div className="h-4 bg-muted rounded mb-2"></div>
+                      <div className="h-3 bg-muted rounded w-3/4"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {displayItems.map((item) => {
+                  const isExpanded = expandedItems.has(item.id);
                   return (
-                    <Card key={faq.id} className="cursor-pointer hover:shadow-md transition-shadow">
-                      <CardContent className="p-4" onClick={() => handleFAQClick(faq)}>
-                        <div className="flex items-start gap-3">
-                          <IconComponent className="h-5 w-5 text-gray-500 mt-0.5" />
-                          <div className="flex-1">
-                            <h3 className="font-medium text-gray-900 mb-1">{faq.question}</h3>
-                            <p className="text-sm text-gray-600 line-clamp-2">{faq.answer}</p>
-                            <div className="flex gap-1 mt-2">
-                              {faq.tags.map((tag) => (
-                                <Badge key={tag} variant="outline" className="text-xs">
-                                  {tag}
-                                </Badge>
-                              ))}
+                    <Card key={item.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div 
+                            className="cursor-pointer"
+                            onClick={() => toggleExpanded(item.id)}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h3 className="text-lg font-semibold mb-2">{item.question}</h3>
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Badge variant="outline">
+                                    {categories.find(c => c.id === item.category)?.name}
+                                  </Badge>
+                                  {item.aiGenerated && (
+                                    <Badge variant="secondary" className="flex items-center gap-1">
+                                      <Zap className="h-3 w-3" />
+                                      AI Generated
+                                    </Badge>
+                                  )}
+                                  <Badge 
+                                    variant={item.confidence > 0.9 ? "default" : "secondary"}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <Star className="h-3 w-3" />
+                                    {Math.round(item.confidence * 100)}% confidence
+                                  </Badge>
+                                </div>
+                              </div>
+                              <Button variant="ghost" size="sm">
+                                {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                              </Button>
                             </div>
                           </div>
-                          <MessageCircle className="h-4 w-4 text-blue-600" />
+
+                          {isExpanded && (
+                            <div className="space-y-4">
+                              <div className="prose max-w-none">
+                                <p className="whitespace-pre-line text-muted-foreground">
+                                  {item.answer}
+                                </p>
+                              </div>
+
+                              {/* Tags */}
+                              <div className="flex flex-wrap gap-2">
+                                {item.tags.map((tag, index) => (
+                                  <Badge key={index} variant="secondary" className="text-xs">
+                                    #{tag}
+                                  </Badge>
+                                ))}
+                              </div>
+
+                              {/* Related Questions */}
+                              {item.relatedQuestions.length > 0 && (
+                                <div>
+                                  <h4 className="text-sm font-medium mb-2">Related Questions:</h4>
+                                  <div className="space-y-1">
+                                    {item.relatedQuestions.map((relatedQ, index) => (
+                                      <div key={index} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
+                                        • {relatedQ}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Actions */}
+                              <div className="flex items-center justify-between pt-4 border-t">
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleHelpful(item.id, true)}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <ThumbsUp className="h-4 w-4" />
+                                    Helpful ({item.helpful})
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleHelpful(item.id, false)}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <ThumbsDown className="h-4 w-4" />
+                                    Not Helpful ({item.notHelpful})
+                                  </Button>
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => copyToClipboard(item.answer)}
+                                  >
+                                    <Copy className="h-4 w-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm">
+                                    <Share2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
                   );
                 })}
               </div>
-            </CardContent>
-          </Card>
+            )}
+          </div>
+        </TabsContent>
 
-          {/* Lead Capture Form */}
-          {showLeadCapture && (
-            <Card className="border-blue-200 bg-blue-50">
-              <CardHeader>
-                <CardTitle className="text-blue-900">Get Personalized Help</CardTitle>
-                <p className="text-blue-700">Share your details for customized assistance</p>
-              </CardHeader>
-              <CardContent>
-                <LeadCaptureForm onCapture={handleLeadCapture} />
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Chat & Lead Management */}
-        <div className="space-y-6">
-          {/* Active Chat */}
-          {chatMessages.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5 text-green-600" />
-                  AI Assistant Responses
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {chatMessages.map((message) => (
-                    <div key={message.id} className="space-y-2">
-                      <div className="bg-gray-100 p-3 rounded-lg">
-                        <h4 className="font-medium text-gray-900">{message.question}</h4>
-                      </div>
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <p className="text-gray-800">{message.answer}</p>
-                        {message.actions && message.actions.length > 0 && (
-                          <div className="mt-2 space-x-2">
-                            {message.actions.map((action: any, index: number) => (
-                              <Button key={index} size="sm" variant="outline">
-                                {action.label}
-                              </Button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {isLoading && (
-                  <div className="flex justify-center py-4">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Lead Dashboard */}
-          {leadData && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-purple-600" />
-                  Lead Profile
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">{leadData.name}</h3>
-                    <p className="text-sm text-gray-600">{leadData.email}</p>
-                  </div>
-                  <Badge className={getStatusColor(leadData.status)}>
-                    {leadData.status}
-                  </Badge>
-                </div>
+        <TabsContent value="search" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Search className="h-5 w-5" />
+                Search FAQ
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Input
+                  placeholder="Search for questions, topics, or keywords..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full"
+                />
                 
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">Lead Score:</span>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${leadData.leadScore}%` }}
-                      ></div>
+                {searchQuery && searchResults.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">
+                        {searchResults.length} Results Found
+                      </h3>
+                      <Badge variant="secondary">
+                        <Target className="h-3 w-3 mr-1" />
+                        Search Results
+                      </Badge>
                     </div>
-                    <span className="text-xs text-gray-500">{leadData.leadScore}/100</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Last Contact:</span>
-                    <p className="text-xs">{leadData.lastInteraction.toLocaleDateString()}</p>
-                  </div>
-                </div>
-
-                {leadData.interests.length > 0 && (
-                  <div>
-                    <span className="text-sm text-gray-600">Interests:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {leadData.interests.map((interest, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {interest}
-                        </Badge>
+                    
+                    <div className="space-y-4">
+                      {searchResults.map((result, index) => (
+                        <Card key={result.item.id} className="hover:shadow-md transition-shadow">
+                          <CardContent className="p-4">
+                            <div className="space-y-2">
+                              <h4 className="font-semibold">{result.item.question}</h4>
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {result.item.answer.substring(0, 200)}...
+                              </p>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {Math.round(result.relevanceScore * 20)}% match
+                                </Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  {categories.find(c => c.id === result.item.category)?.name}
+                                </Badge>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
                       ))}
                     </div>
                   </div>
                 )}
-
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline">
-                    <Mail className="h-4 w-4 mr-1" />
-                    Email
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Phone className="h-4 w-4 mr-1" />
-                    Call
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    Schedule
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Help</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="outline" className="h-12" onClick={() => setSearchQuery('financing')}>
-                  <DollarSign className="h-4 w-4 mr-2" />
-                  Financing Help
-                </Button>
-                <Button variant="outline" className="h-12" onClick={() => setSearchQuery('process')}>
-                  <FileText className="h-4 w-4 mr-2" />
-                  Buying Process
-                </Button>
-                <Button variant="outline" className="h-12" onClick={() => setSearchQuery('market')}>
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  Market Trends
-                </Button>
-                <Button variant="outline" className="h-12" onClick={() => setSearchQuery('legal')}>
-                  <Shield className="h-4 w-4 mr-2" />
-                  Legal Questions
-                </Button>
+                
+                {searchQuery && searchResults.length === 0 && (
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      No results found for "{searchQuery}". Try different keywords or browse categories.
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
+        </TabsContent>
+
+        <TabsContent value="ask" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                Ask a Question
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Your Question</label>
+                  <Input
+                    placeholder="What would you like to know about real estate?"
+                    className="w-full"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Category</label>
+                  <select className="w-full p-2 border rounded-md">
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Additional Details (Optional)</label>
+                  <textarea 
+                    className="w-full p-2 border rounded-md h-20"
+                    placeholder="Provide any additional context or specific details..."
+                  />
+                </div>
+                
+                <Button className="w-full">
+                  <Zap className="h-4 w-4 mr-2" />
+                  Get AI Answer
+                </Button>
+                
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Our AI will analyze your question and provide a comprehensive answer based on current real estate knowledge and best practices.
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
 
-// Lead Capture Form Component
-interface LeadCaptureFormProps {
-  onCapture: (leadInfo: Partial<LeadData>) => void;
-}
-
-const LeadCaptureForm: React.FC<LeadCaptureFormProps> = ({ onCapture }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    budget: '',
-    location: '',
-    propertyType: '',
-    interests: [] as string[]
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onCapture(formData);
-  };
-
-  const interestOptions = [
-    'First Home Buyer',
-    'Investment Property',
-    'Upgrading Home',
-    'Downsizing',
-    'Commercial Property',
-    'Land Development'
-  ];
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          placeholder="Your Name"
-          value={formData.name}
-          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-        />
-        <Input
-          placeholder="Email Address"
-          type="email"
-          value={formData.email}
-          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-        />
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          placeholder="Phone (optional)"
-          value={formData.phone}
-          onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-        />
-        <Input
-          placeholder="Budget Range"
-          value={formData.budget}
-          onChange={(e) => setFormData(prev => ({ ...prev, budget: e.target.value }))}
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          placeholder="Preferred Location"
-          value={formData.location}
-          onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-        />
-        <Input
-          placeholder="Property Type"
-          value={formData.propertyType}
-          onChange={(e) => setFormData(prev => ({ ...prev, propertyType: e.target.value }))}
-        />
-      </div>
-
-      <div>
-        <label className="text-sm font-medium text-gray-700 mb-2 block">Interests:</label>
-        <div className="flex flex-wrap gap-2">
-          {interestOptions.map((interest) => (
-            <Button
-              key={interest}
-              type="button"
-              variant={formData.interests.includes(interest) ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                const newInterests = formData.interests.includes(interest)
-                  ? formData.interests.filter(i => i !== interest)
-                  : [...formData.interests, interest];
-                setFormData(prev => ({ ...prev, interests: newInterests }));
-              }}
-            >
-              {interest}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex gap-2">
-        <Button type="submit" className="flex-1">
-          <CheckCircle className="h-4 w-4 mr-2" />
-          Get Help
-        </Button>
-        <Button type="button" variant="outline" onClick={() => setFormData({
-          name: '', email: '', phone: '', budget: '', location: '', propertyType: '', interests: []
-        })}>
-          Cancel
-        </Button>
-      </div>
-    </form>
-  );
-};
+export default SmartFAQ;

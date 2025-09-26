@@ -151,7 +151,7 @@ export class SensayAPI {
         confidence: 0.3,
         suggestions: [
           'Tell me about this property',
-          'What's the market value?',
+          'What is the market value?',
           'Show me risk factors',
           'Get investment analysis'
         ],

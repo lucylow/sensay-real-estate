@@ -28,12 +28,12 @@ const LandingPage = () => {
               <a href="#features" className="text-gray-600 hover:text-gray-900">Features</a>
               <a href="#pricing" className="text-gray-600 hover:text-gray-900">Pricing</a>
               <a href="#demo" className="text-gray-600 hover:text-gray-900">Demo</a>
-              <button 
-                onClick={() => navigate('/property-showcase')}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Properties
-              </button>
+               <button 
+                 onClick={() => navigate('/sensay-leads')}
+                 className="text-gray-600 hover:text-gray-900"
+               >
+                 Sensay AI
+               </button>
               <button 
                 onClick={() => navigate('/virtual-tours')}
                 className="text-gray-600 hover:text-gray-900"

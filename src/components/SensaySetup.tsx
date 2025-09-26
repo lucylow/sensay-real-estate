@@ -137,7 +137,7 @@ export const SensaySetup: React.FC<SensaySetupProps> = ({
           {t('sensaySetup.title')}
           <div className="ml-auto flex items-center gap-2">
             <LanguageSelector variant="ghost" size="sm" showLabel={false} />
-            <Badge variant="outline">
+            <Badge variant="outline" className="text-xs">
               {t('sensaySetup.hackathonBadge')}
             </Badge>
           </div>
