@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Shield, TrendingUp, Users, CheckCircle, Star, Play, BarChart3, Zap, Globe, Menu, X, MessageCircle, Search, Building, FileText, Map, Bot, Video, Mic } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp, Users, CheckCircle, Star, Play, BarChart3, Zap, Globe, Menu, X, MessageCircle, Search, Building, FileText, Map, Bot, Video, Mic, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
@@ -71,6 +71,13 @@ const LandingPage = () => {
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Sensay AI Chatbot
+                    </button>
+                    <button 
+                      onClick={() => navigate('/sensay-wisdom')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Brain className="mr-2 h-4 w-4" />
+                      Sensay Wisdom
                     </button>
                     <button 
                       onClick={() => navigate('/sensay-features')}
@@ -188,6 +195,15 @@ const LandingPage = () => {
                 className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
               >
                 Market Analysis
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/sensay-wisdom');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Sensay Wisdom
               </button>
               <button 
                 onClick={() => {
@@ -361,6 +377,88 @@ const LandingPage = () => {
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-400">CBA</div>
               <div className="text-sm text-gray-500">Compliance Testing</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sensay Wisdom Integration */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Brain className="w-7 h-7 text-white" />
+              </div>
+              <div className="text-left">
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Sensay Wisdom Integration
+                </h2>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+                    🏆 Hackathon Winner 2024
+                  </span>
+                  <span className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                    💰 $10,000 Prize
+                  </span>
+                </div>
+              </div>
+            </div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
+              Experience enhanced AI-powered property analysis with Sensay's Wisdom Engine. 
+              Get sophisticated insights, risk assessments, and investment advice powered by 
+              advanced artificial intelligence.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={() => navigate('/sensay-wisdom')}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-semibold transition flex items-center justify-center shadow-lg"
+              >
+                <Brain className="mr-2 h-5 w-5" />
+                Explore Sensay Wisdom
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </button>
+              <button 
+                onClick={() => navigate('/sensay-wisdom')}
+                className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center justify-center"
+              >
+                <Play className="mr-2 h-5 w-5" />
+                Live Demo
+              </button>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Enhanced AI</h3>
+              <p className="text-gray-600 text-sm">Powered by Sensay's Wisdom Engine for sophisticated conversations</p>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Market Intelligence</h3>
+              <p className="text-gray-600 text-sm">Advanced market analysis and trend predictions</p>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Risk Assessment</h3>
+              <p className="text-gray-600 text-sm">Comprehensive risk analysis with mitigation strategies</p>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-4">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Smart Reports</h3>
+              <p className="text-gray-600 text-sm">Generate detailed property analysis reports</p>
             </div>
           </div>
         </div>
