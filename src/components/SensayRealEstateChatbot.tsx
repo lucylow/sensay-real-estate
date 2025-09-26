@@ -21,7 +21,15 @@ import {
   CheckCircle,
   AlertCircle,
   Globe,
-  Zap
+  Zap,
+  Mic,
+  MicOff,
+  Smile,
+  Frown,
+  Meh,
+  Brain,
+  Target,
+  BarChart3
 } from 'lucide-react';
 import { SensayAPI } from '@/services/api/sensay';
 import { aiRiskPredictionEngine } from '@/services/aiRiskPredictionEngine';
@@ -96,9 +104,40 @@ const SensayRealEstateChatbot: React.FC = () => {
   const [riskAnalysis, setRiskAnalysis] = useState<any>(null);
   const [pricingIntelligence, setPricingIntelligence] = useState<any>(null);
   
+  // Additional state variables for enhanced features
+  const [sentiment, setSentiment] = useState<'positive' | 'neutral' | 'negative'>('neutral');
+  const [userEmotion, setUserEmotion] = useState<string>('');
+  const [language, setLanguage] = useState('en');
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [aiInsights, setAiInsights] = useState<any>(null);
+  const [predictiveSuggestions, setPredictiveSuggestions] = useState<string[]>([]);
+  const [conversationQuality, setConversationQuality] = useState<number>(0);
+  const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false);
+  
+  const recognitionRef = useRef<any>(null);
   const sensayAPI = useRef(new SensayAPI());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { analyzeProperty } = usePropertyAnalysis();
+
+  // Helper function to calculate conversation quality
+  const calculateConversationQuality = (messages: ConversationMessage[]): number => {
+    if (messages.length === 0) return 0;
+    
+    let qualityScore = 0;
+    let totalMessages = messages.length;
+    
+    messages.forEach(msg => {
+      if (msg.metadata?.confidence) {
+        qualityScore += msg.metadata.confidence;
+      }
+      if (msg.metadata?.intent && msg.metadata.intent !== 'greeting') {
+        qualityScore += 0.2; // Bonus for intent recognition
+      }
+    });
+    
+    return Math.min(qualityScore / totalMessages, 1.0);
+  };
 
   // Initialize conversation
   useEffect(() => {
@@ -138,7 +177,7 @@ const SensayRealEstateChatbot: React.FC = () => {
   useEffect(() => {
     // Initialize voice recognition
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
@@ -309,9 +348,10 @@ What brings you here today?`,
       content: currentMessage,
       timestamp: new Date(),
       metadata: {
-        sentiment,
-        emotion: userEmotion,
-        language
+        intent: 'user_message',
+        entities: {},
+        confidence: 1.0,
+        actions: []
       }
     };
 
@@ -324,7 +364,13 @@ What brings you here today?`,
       const intentPrediction = await contextualMemorySystem.predictUserIntent(userId, currentMessage);
       
       // Process message with Sensay API
-      const response = await sensayAPI.current.sendMessage(currentMessage, conversationId);
+      const response = await sensayAPI.current.chat(currentMessage, {
+        property: leadData,
+        analysis: riskAnalysis,
+        sessionId: conversationId,
+        userInfo: { userId, language },
+        interactionHistory: conversationHistory.slice(-5)
+      });
       
       // Analyze intent and entities
       const intent = intentPrediction.intent || response.metadata?.intent || 'general';
@@ -358,8 +404,7 @@ What brings you here today?`,
           intent,
           entities,
           confidence: response.confidence,
-          actions: assistantResponse.actions,
-          contextFactors: intentPrediction.contextFactors
+          actions: assistantResponse.actions
         }
       };
 
@@ -584,6 +629,10 @@ Would you like to see more details or schedule a viewing?`;
       }
 
       const analysis = await analyzeProperty(address);
+      
+      if (!analysis) {
+        return 'I apologize, but I couldn\'t retrieve the property analysis at this time. Please try again later.';
+      }
       
       return `Here's the valuation analysis for ${address}:
 
