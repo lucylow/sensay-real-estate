@@ -176,3 +176,4 @@ localStorage.setItem('elevenlabs-debug', 'true');
 - Use environment variables for all sensitive configuration
 - Regularly rotate your API keys
 - Monitor your usage to avoid unexpected charges
+

@@ -648,3 +648,4 @@ export const getInsightsBySeverity = (severity: string): AIInsight[] => {
 export const getCapabilityById = (id: string): PropGuardCapability | undefined => {
   return mockPropGuardCapabilities.find(capability => capability.id === id);
 };
+

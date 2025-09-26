@@ -521,3 +521,4 @@ export const MultimodalAIAssistant: React.FC<MultimodalAIAssistantProps> = ({
 };
 
 export default MultimodalAIAssistant;
+

@@ -247,3 +247,4 @@ VITE_USE_MOCK_DATA=true  # Enable mock mode
 - Accessibility considerations
 
 This mock data integration provides a complete, professional-grade demonstration of Sensay's AI-powered real estate platform with voice and video capabilities, ready for the hackathon presentation.
+

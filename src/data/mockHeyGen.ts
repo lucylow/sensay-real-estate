@@ -368,3 +368,4 @@ export const mockHeyGenTemplates = [
     duration_estimate: 20
   }
 ];
+

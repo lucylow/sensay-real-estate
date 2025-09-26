@@ -475,3 +475,4 @@ export const ChatbotDemo: React.FC<ChatbotDemoProps> = ({ className = '' }) => {
     </div>
   );
 };
+

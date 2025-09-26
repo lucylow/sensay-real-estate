@@ -447,3 +447,4 @@ export const mockSensayPricing = [
     popular: false
   }
 ];
+

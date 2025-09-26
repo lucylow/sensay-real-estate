@@ -537,3 +537,4 @@ export const SensayMultimodalIntegration: React.FC<SensayMultimodalIntegrationPr
 };
 
 export default SensayMultimodalIntegration;
+

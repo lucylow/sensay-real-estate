@@ -307,3 +307,4 @@ def get_configuration():
             'error': f'Configuration check failed: {str(e)}',
             'timestamp': datetime.now().isoformat()
         }), 500
+

@@ -426,3 +426,4 @@ export const shouldUseMockData = (): boolean => {
 
 // Initialize mock mode based on environment
 mockDataService.setMockMode(shouldUseMockData());
+

@@ -837,3 +837,4 @@ export const mockConversationAnalytics = {
   averageResponseTime: 1.2, // seconds
   conversionRate: 23.4 // percentage
 };
+
