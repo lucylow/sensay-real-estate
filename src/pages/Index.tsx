@@ -14,7 +14,8 @@ import { PropertyAnalytics } from '@/components/PropertyAnalytics';
 import { SystemHealth } from '@/components/SystemHealth';
 import { Badge } from '@/components/ui/badge';
 import { propGuardAPI } from '@/config/api';
-import { Shield, Building, TrendingUp, BarChart3, Map, FileText, Coins, Menu, X, CheckCircle, AlertTriangle, Clock, Search, MessageCircle, Globe, Zap, Users } from 'lucide-react';
+import { Shield, Building, TrendingUp, BarChart3, Map, FileText, Coins, Menu, X, CheckCircle, AlertTriangle, Clock, Search, Globe, Zap, Users } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 interface PropertyData {
   address: string;
