@@ -251,3 +251,4 @@ export class HeyGenAPI {
 
 // Export singleton instance
 export const heyGenAPI = new HeyGenAPI(true);
+

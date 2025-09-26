@@ -265,3 +265,4 @@ export const VideoAvatar: React.FC<VideoAvatarProps> = ({
 };
 
 export default VideoAvatar;
+

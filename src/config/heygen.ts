@@ -176,3 +176,4 @@ export class HeyGenService {
 
 // Export singleton instance
 export const heyGenService = new HeyGenService();
+

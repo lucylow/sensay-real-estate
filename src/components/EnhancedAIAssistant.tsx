@@ -297,3 +297,4 @@ export const EnhancedAIAssistant: React.FC<EnhancedAIAssistantProps> = ({
 };
 
 export default EnhancedAIAssistant;
+
