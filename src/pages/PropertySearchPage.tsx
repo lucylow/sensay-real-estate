@@ -78,7 +78,7 @@ export const PropertySearchPage: React.FC = () => {
             Property Search
           </h1>
           <p className="text-muted-foreground">
-            Search Australian properties with AI-powered analysis and risk assessment
+            Search global properties with Sensay AI-powered analysis and risk assessment
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export const PropertySearchPage: React.FC = () => {
               <div className="lg:col-span-2">
                 <label className="block text-sm font-medium mb-2">Location</label>
                 <Input
-                  placeholder="e.g., Sydney, Melbourne, Brisbane"
+                  placeholder="e.g., New York, London, Tokyo, Sydney"
                   value={searchParams.location}
                   onChange={(e) => setSearchParams(prev => ({ ...prev, location: e.target.value }))}
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
