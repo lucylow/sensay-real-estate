@@ -16,7 +16,16 @@ import {
   Settings,
   Play,
   Pause,
-  RefreshCw
+  RefreshCw,
+  Bot,
+  Brain,
+  Shield,
+  DollarSign,
+  Star,
+  ArrowRight,
+  ChevronDown,
+  Menu,
+  X
 } from 'lucide-react';
 import SensayRealEstateChatbot from '@/components/SensayRealEstateChatbot';
 import LeadAnalyticsDashboard from '@/components/LeadAnalyticsDashboard';
@@ -25,6 +34,7 @@ import ROIImpactCalculator from '@/components/ROIImpactCalculator';
 const SensayLeadGenerationPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chatbot');
   const [isChatbotActive, setIsChatbotActive] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const features = [
     {
@@ -74,39 +84,205 @@ const SensayLeadGenerationPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
+      {/* Enhanced Header */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <div className="h-10 w-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                <Zap className="h-6 w-6 text-white" />
+          <div className="flex justify-between items-center h-16">
+            {/* Logo and Title */}
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Bot className="h-6 w-6 text-white" />
               </div>
-              <div>
+              <div className="ml-4">
                 <h1 className="text-xl font-bold text-gray-900">Sensay Lead Generation</h1>
-                <p className="text-sm text-gray-600">Real Estate AI Assistant</p>
+                <p className="text-sm text-gray-500 flex items-center">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  Real Estate AI Assistant
+                </p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Badge variant={isChatbotActive ? "default" : "secondary"} className="flex items-center space-x-1">
-                <div className={`w-2 h-2 rounded-full ${isChatbotActive ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-                <span>{isChatbotActive ? 'Active' : 'Inactive'}</span>
-              </Badge>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              <nav className="flex items-center space-x-1">
+                <button
+                  onClick={() => setActiveTab('chatbot')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'chatbot' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Bot className="h-4 w-4 inline mr-2" />
+                  Chatbot
+                </button>
+                <button
+                  onClick={() => setActiveTab('analytics')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'analytics' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <BarChart3 className="h-4 w-4 inline mr-2" />
+                  Analytics
+                </button>
+                <button
+                  onClick={() => setActiveTab('roi-calculator')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'roi-calculator' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <DollarSign className="h-4 w-4 inline mr-2" />
+                  ROI Calculator
+                </button>
+                <button
+                  onClick={() => setActiveTab('features')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'features' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Star className="h-4 w-4 inline mr-2" />
+                  Features
+                </button>
+                <button
+                  onClick={() => setActiveTab('settings')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'settings' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Settings className="h-4 w-4 inline mr-2" />
+                  Settings
+                </button>
+              </nav>
+              
+              <div className="h-6 w-px bg-gray-300"></div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
+                  <div className={`w-2 h-2 rounded-full ${isChatbotActive ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                  <span className="text-sm text-gray-600">
+                    {isChatbotActive ? 'Active' : 'Paused'}
+                  </span>
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsChatbotActive(!isChatbotActive)}
+                  className="flex items-center space-x-2"
+                >
+                  {isChatbotActive ? (
+                    <>
+                      <Pause className="h-4 w-4" />
+                      <span>Pause</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4" />
+                      <span>Resume</span>
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsChatbotActive(!isChatbotActive)}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                {isChatbotActive ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                {isChatbotActive ? 'Pause' : 'Start'}
-              </Button>
-              <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4" />
-                Settings
+                {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </Button>
             </div>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="px-4 py-3 space-y-2">
+              <button
+                onClick={() => {
+                  setActiveTab('chatbot');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  activeTab === 'chatbot' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Bot className="h-4 w-4 mr-3" />
+                Chatbot
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('analytics');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  activeTab === 'analytics' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <BarChart3 className="h-4 w-4 mr-3" />
+                Analytics
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('roi-calculator');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  activeTab === 'roi-calculator' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <DollarSign className="h-4 w-4 mr-3" />
+                ROI Calculator
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('features');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  activeTab === 'features' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Star className="h-4 w-4 mr-3" />
+                Features
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab('settings');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  activeTab === 'settings' 
+                    ? 'bg-blue-100 text-blue-700' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Settings className="h-4 w-4 mr-3" />
+                Settings
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -143,16 +319,10 @@ const SensayLeadGenerationPage: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="chatbot">Chatbot</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="roi-calculator">ROI Calculator</TabsTrigger>
-            <TabsTrigger value="features">Features</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
+        <div className="space-y-6">
 
-          <TabsContent value="chatbot" className="space-y-6">
+          {activeTab === 'chatbot' && (
+            <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Chatbot Preview */}
               <div className="lg:col-span-2">
@@ -238,15 +408,16 @@ const SensayLeadGenerationPage: React.FC = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="analytics">
+          {activeTab === 'analytics' && (
             <LeadAnalyticsDashboard />
-          </TabsContent>
+          )}
 
-          <TabsContent value="roi-calculator">
+          {activeTab === 'roi-calculator' && (
             <ROIImpactCalculator />
-          </TabsContent>
+          )}
 
-          <TabsContent value="features" className="space-y-6">
+          {activeTab === 'features' && (
+            <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map((feature, index) => (
                 <Card key={index}>
@@ -321,7 +492,8 @@ const SensayLeadGenerationPage: React.FC = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-6">
+          {activeTab === 'settings' && (
+            <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
@@ -371,8 +543,9 @@ const SensayLeadGenerationPage: React.FC = () => {
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
-        </Tabs>
+            </div>
+          )}
+        </div>
 
         {/* Floating Chatbot */}
         <SensayRealEstateChatbot />
