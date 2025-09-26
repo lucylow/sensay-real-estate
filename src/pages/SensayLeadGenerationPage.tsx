@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import SensayRealEstateChatbot from '@/components/SensayRealEstateChatbot';
 import LeadAnalyticsDashboard from '@/components/LeadAnalyticsDashboard';
+import ROIImpactCalculator from '@/components/ROIImpactCalculator';
 
 const SensayLeadGenerationPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chatbot');
@@ -143,9 +144,10 @@ const SensayLeadGenerationPage: React.FC = () => {
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="chatbot">Chatbot</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="roi-calculator">ROI Calculator</TabsTrigger>
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
@@ -238,6 +240,10 @@ const SensayLeadGenerationPage: React.FC = () => {
 
           <TabsContent value="analytics">
             <LeadAnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="roi-calculator">
+            <ROIImpactCalculator />
           </TabsContent>
 
           <TabsContent value="features" className="space-y-6">

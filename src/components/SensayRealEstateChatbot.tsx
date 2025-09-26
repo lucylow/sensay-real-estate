@@ -24,6 +24,9 @@ import {
   Zap
 } from 'lucide-react';
 import { SensayAPI } from '@/services/api/sensay';
+import { aiRiskPredictionEngine } from '@/services/aiRiskPredictionEngine';
+import { dynamicPricingIntelligence } from '@/services/dynamicPricingIntelligence';
+import { contextualMemorySystem } from '@/services/contextualMemorySystem';
 import { usePropertyAnalysis } from '@/hooks/usePropertyAnalysis';
 
 interface LeadData {
@@ -89,6 +92,9 @@ const SensayRealEstateChatbot: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [conversationId, setConversationId] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
+  const [riskAnalysis, setRiskAnalysis] = useState<any>(null);
+  const [pricingIntelligence, setPricingIntelligence] = useState<any>(null);
   
   const sensayAPI = useRef(new SensayAPI());
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -165,6 +171,13 @@ What brings you here today?`,
   const handleSendMessage = async () => {
     if (!currentMessage.trim()) return;
 
+    // Initialize user profile if not exists
+    if (!userId) {
+      const newUserId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      setUserId(newUserId);
+      await contextualMemorySystem.createOrUpdateUserProfile(newUserId, conversationId);
+    }
+
     const userMessage: ConversationMessage = {
       id: `msg_${Date.now()}`,
       type: 'user',
@@ -177,29 +190,46 @@ What brings you here today?`,
     setIsTyping(true);
 
     try {
+      // Predict user intent with contextual memory
+      const intentPrediction = await contextualMemorySystem.predictUserIntent(userId, currentMessage);
+      
       // Process message with Sensay API
       const response = await sensayAPI.current.sendMessage(currentMessage, conversationId);
       
       // Analyze intent and entities
-      const intent = response.metadata?.intent || 'general';
+      const intent = intentPrediction.intent || response.metadata?.intent || 'general';
       const entities = response.metadata?.entities || {};
       
       // Update lead data based on conversation
       await updateLeadData(userMessage, intent, entities);
       
-      // Generate appropriate response
+      // Update user behavioral data
+      await contextualMemorySystem.updateBehavioralData(userId, {
+        type: 'message',
+        data: { duration: 0, query: currentMessage }
+      });
+      
+      // Generate appropriate response with contextual enhancement
       const assistantResponse = await generateResponse(intent, entities, response);
+      
+      // Enhance response with contextual memory
+      const contextualResponse = await contextualMemorySystem.generateContextualResponse(
+        userId,
+        currentMessage,
+        assistantResponse.content
+      );
       
       const assistantMessage: ConversationMessage = {
         id: `msg_${Date.now() + 1}`,
         type: 'assistant',
-        content: assistantResponse.content,
+        content: contextualResponse,
         timestamp: new Date(),
         metadata: {
           intent,
           entities,
           confidence: response.confidence,
-          actions: assistantResponse.actions
+          actions: assistantResponse.actions,
+          contextFactors: intentPrediction.contextFactors
         }
       };
 
@@ -346,6 +376,16 @@ What brings you here today?`,
         actions.push('show_valuation', 'download_report');
         break;
         
+      case 'risk_analysis':
+        content = await generateRiskAnalysisResponse(entities);
+        actions.push('show_risk_analysis', 'get_insurance_quote');
+        break;
+        
+      case 'pricing_intelligence':
+        content = await generatePricingIntelligenceResponse(entities);
+        actions.push('show_pricing_analysis', 'schedule_consultation');
+        break;
+        
       case 'schedule_viewing':
         content = await generateSchedulingResponse(entities);
         actions.push('book_appointment', 'check_availability');
@@ -417,6 +457,40 @@ Would you like to see more details or schedule a viewing?`;
 Would you like a detailed report or to schedule a professional appraisal?`;
     } catch (error) {
       return 'I\'m having trouble accessing the valuation data right now. Please try again or contact our support team for assistance.';
+    }
+  };
+
+  const generateRiskAnalysisResponse = async (entities: any): Promise<string> => {
+    try {
+      const address = entities.address || entities.location;
+      if (!address) {
+        return 'I\'d be happy to provide an environmental risk analysis! Please provide the property address you\'d like me to analyze.';
+      }
+
+      const riskAnalysis = await aiRiskPredictionEngine.analyzePropertyRisk(address);
+      setRiskAnalysis(riskAnalysis);
+      
+      return await aiRiskPredictionEngine.generateRiskAnalysisConversation(riskAnalysis);
+    } catch (error) {
+      return 'I\'m having trouble accessing the risk analysis data right now. Please try again or contact our support team for assistance.';
+    }
+  };
+
+  const generatePricingIntelligenceResponse = async (entities: any): Promise<string> => {
+    try {
+      const address = entities.address || entities.location;
+      const propertyDetails = entities.propertyDetails || {};
+      
+      if (!address) {
+        return 'I\'d be happy to provide pricing intelligence! Please provide the property address you\'d like me to analyze.';
+      }
+
+      const pricingIntelligence = await dynamicPricingIntelligence.analyzeOptimalPricing(address, propertyDetails);
+      setPricingIntelligence(pricingIntelligence);
+      
+      return await dynamicPricingIntelligence.generatePricingConversation(pricingIntelligence);
+    } catch (error) {
+      return 'I\'m having trouble accessing the pricing intelligence data right now. Please try again or contact our support team for assistance.';
     }
   };
 
@@ -528,6 +602,8 @@ This helps me match you with the perfect properties and agent!`;
     const quickMessages: Record<string, string> = {
       'find_properties': 'I\'m looking for properties to buy',
       'get_valuation': 'I need a property valuation',
+      'risk_analysis': 'I want to analyze environmental risks for a property',
+      'pricing_intelligence': 'I need pricing intelligence for optimal listing price',
       'schedule_viewing': 'I want to schedule a property viewing',
       'ask_questions': 'I have questions about real estate'
     };
@@ -678,6 +754,24 @@ This helps me match you with the perfect properties and agent!`;
                     >
                       <DollarSign className="h-3 w-3 mr-1" />
                       Get Valuation
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleQuickAction('risk_analysis')}
+                      className="text-xs"
+                    >
+                      <AlertCircle className="h-3 w-3 mr-1" />
+                      Risk Analysis
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleQuickAction('pricing_intelligence')}
+                      className="text-xs"
+                    >
+                      <TrendingUp className="h-3 w-3 mr-1" />
+                      Pricing Intel
                     </Button>
                     <Button
                       variant="outline"
