@@ -87,6 +87,13 @@ const LandingPage = () => {
                       Sensay Features
                     </button>
                     <button 
+                      onClick={() => navigate('/blockchain')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Shield className="mr-2 h-4 w-4" />
+                      Blockchain Integration
+                    </button>
+                    <button 
                       onClick={() => navigate('/dashboard')}
                       className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
@@ -213,6 +220,15 @@ const LandingPage = () => {
                 className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
               >
                 Sensay Features
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/blockchain');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Blockchain Integration
               </button>
               <button 
                 onClick={() => {

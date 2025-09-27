@@ -175,9 +175,9 @@ export const SensayIntegrationPage: React.FC = () => {
                       <span className="text-sm">Local AI Fallback</span>
                       <Badge variant="default">Active</Badge>
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-muted-foreground">
                       Demo Mode - Full functionality available
-                    </div>
+                      </div>
                   </div>
                 </CardContent>
               </Card>
@@ -205,7 +205,7 @@ export const SensayIntegrationPage: React.FC = () => {
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">AI Assistant</CardTitle>
@@ -236,6 +236,24 @@ export const SensayIntegrationPage: React.FC = () => {
                       className="w-full"
                     >
                       View Live Data
+                    </Button>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Chatbot Integration</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Learn how to integrate our AI chatbot widget into your website.
+                    </p>
+                    <Button 
+                      onClick={() => window.location.href = '/sensay-chatbot'}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      View Integration Guide
                     </Button>
                   </CardContent>
                 </Card>

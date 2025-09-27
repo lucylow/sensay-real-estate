@@ -14,6 +14,7 @@ import { MarketAnalysisPage } from "@/pages/MarketAnalysisPage";
 import { ValuationReportPage } from "@/pages/ValuationReportPage";
   import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
   import SensayLeadGenerationPage from "@/pages/SensayLeadGenerationPage";
+  import SensayChatbotIntegrationPage from "@/pages/SensayChatbotIntegrationPage";
   import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
   import { MultimodalTestPage } from "@/pages/MultimodalTestPage";
 import NotFound from "./pages/NotFound";
@@ -27,7 +28,7 @@ import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
 import { SensayHackathonShowcase } from "@/components/SensayHackathonShowcase";
 import { KnowledgeMonitoringDashboard } from "@/components/KnowledgeMonitoringDashboard";
 import SensayFeaturesPage from "@/pages/SensayFeaturesPage";
-import SensayWisdomPage from "@/pages/SensayWisdomPage"; // ORIGINAL IMPORT
+import SensayWisdomPageTest from "@/pages/SensayWisdomPageTest"; // TEST IMPORT
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/report/:reportId" element={<ValuationReportPage />} />
               <Route path="/sensay" element={<SensayIntegrationPage />} />
               <Route path="/sensay-leads" element={<SensayLeadGenerationPage />} />
+              <Route path="/sensay-chatbot" element={<SensayChatbotIntegrationPage />} />
               <Route path="/heygen-test" element={<HeyGenTestPage />} />
               <Route path="/multimodal-test" element={<MultimodalTestPage />} />
             <Route path="/property-showcase" element={<PropertyShowcase />} />
@@ -59,7 +61,7 @@ const App = () => (
                    <Route path="/sensay-showcase" element={<SensayHackathonShowcase />} />
                    <Route path="/knowledge-dashboard" element={<KnowledgeMonitoringDashboard />} />
                    <Route path="/sensay-features" element={<SensayFeaturesPage />} />
-                   <Route path="/sensay-wisdom" element={<SensayWisdomPage />} />
+                   <Route path="/sensay-wisdom" element={<SensayWisdomPageTest />} />
                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
