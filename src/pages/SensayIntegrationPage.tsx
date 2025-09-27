@@ -3,36 +3,28 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Bot, Key, Sparkles, TrendingUp, Shield, FileText, Search, Database, Globe, MessageCircle, Users, BarChart3 } from 'lucide-react';
-import { SensaySetup } from '@/components/SensaySetup';
+import { Bot, Sparkles, TrendingUp, Shield, FileText, Globe, MessageCircle, Users, BarChart3 } from 'lucide-react';
 import { SensayAssistantFixed } from '@/components/SensayAssistantFixed';
 import { RealTimeDataIntegration } from '@/components/RealTimeDataIntegration';
-import { SensayCredentials } from '@/services/api/sensay';
 
 export const SensayIntegrationPage: React.FC = () => {
-  const [credentials, setCredentials] = useState<SensayCredentials | null>(null);
-  const [activeTab, setActiveTab] = useState('setup');
-
-  const handleCredentialsSet = (newCredentials: SensayCredentials) => {
-    setCredentials(newCredentials);
-    // Switch to assistant tab when credentials are set
-    setActiveTab('assistant');
-  };
+  const [activeTab, setActiveTab] = useState('assistant');
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2">
-          <Sparkles className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold">Sensay Wisdom Integration</h1>
+          <Bot className="h-8 w-8 text-primary" />
+          <h1 className="text-3xl font-bold">Sensay AI Real Estate Assistant</h1>
           <Badge variant="secondary" className="text-sm">
-            Hackathon
+            <Sparkles className="h-3 w-3 mr-1" />
+            AI Powered
           </Badge>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Experience enhanced AI-powered property analysis with Sensay's Wisdom Engine. 
-          Get sophisticated insights, risk assessments, and investment advice.
+          Get instant property analysis, market insights, and investment advice 
+          powered by advanced AI technology.
         </p>
       </div>
 
@@ -81,11 +73,7 @@ export const SensayIntegrationPage: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="setup" className="flex items-center gap-2">
-            <Key className="h-4 w-4" />
-            Setup
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="assistant" className="flex items-center gap-2">
             <Bot className="h-4 w-4" />
             AI Assistant
@@ -99,10 +87,6 @@ export const SensayIntegrationPage: React.FC = () => {
             Demo
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="setup" className="mt-6">
-          <SensaySetup onCredentialsSet={handleCredentialsSet} />
-        </TabsContent>
 
         <TabsContent value="assistant" className="mt-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -184,20 +168,16 @@ export const SensayIntegrationPage: React.FC = () => {
                 <CardContent>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Sensay Wisdom Engine</span>
-                      <Badge variant={credentials ? "default" : "secondary"}>
-                        {credentials ? "Connected" : "Not Connected"}
-                      </Badge>
+                      <span className="text-sm">Sensay AI Engine</span>
+                      <Badge variant="default">Active</Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Local AI Fallback</span>
                       <Badge variant="default">Active</Badge>
                     </div>
-                    {credentials && (
-                      <div className="text-xs text-muted-foreground">
-                        Org ID: {credentials.organizationId}
-                      </div>
-                    )}
+                    <div className="text-xs text-muted-foreground">
+                      Demo Mode - Full functionality available
+                    </div>
                   </div>
                 </CardContent>
               </Card>
