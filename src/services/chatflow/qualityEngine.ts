@@ -36,7 +36,7 @@ export interface UserContext {
   userId: string;
   currentState: ConversationState;
   previousStates: ConversationState[];
-  preferences: Record<string, any>;
+  preferences: Record<string, unknown>;
   interactionHistory: Array<{
     timestamp: Date;
     userMessage: string;
@@ -174,7 +174,7 @@ export class ChatFlowQualityEngine {
     const startTime = Date.now();
     
     // Get or create user context
-    const userContext = this.getUserContext(userId);
+    const userContext = this.getOrCreateUserContext(userId);
     
     // Analyze message quality and intent
     const messageAnalysis = await this.analyzeMessageQuality(message, userContext);
@@ -203,22 +203,6 @@ export class ChatFlowQualityEngine {
     };
   }
 
-  private getUserContext(userId: string): UserContext {
-    if (!this.userContexts.has(userId)) {
-      this.userContexts.set(userId, {
-        userId,
-        currentState: ConversationState.GREETING,
-        previousStates: [],
-        preferences: {},
-        interactionHistory: [],
-        lastActivity: new Date(),
-        conversationStart: new Date(),
-        sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        language: 'en'
-      });
-    }
-    return this.userContexts.get(userId)!;
-  }
 
   private async analyzeMessageQuality(message: string, userContext: UserContext): Promise<MessageAnalysis> {
     return {
@@ -720,7 +704,7 @@ export class ChatFlowQualityEngine {
     botResponse: QualityResponse,
     qualityMetrics: ConversationMetrics
   ): void {
-    const userContext = this.getUserContext(userId);
+    const userContext = this.getOrCreateUserContext(userId);
     
     // Update state
     userContext.previousStates.push(userContext.currentState);
@@ -765,6 +749,23 @@ export class ChatFlowQualityEngine {
   // Public methods for analytics and monitoring
   public getUserContext(userId: string): UserContext | undefined {
     return this.userContexts.get(userId);
+  }
+
+  private getOrCreateUserContext(userId: string): UserContext {
+    if (!this.userContexts.has(userId)) {
+      this.userContexts.set(userId, {
+        userId,
+        currentState: ConversationState.GREETING,
+        previousStates: [],
+        preferences: {},
+        interactionHistory: [],
+        lastActivity: new Date(),
+        conversationStart: new Date(),
+        sessionId: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        language: 'en'
+      });
+    }
+    return this.userContexts.get(userId)!;
   }
 
   public getQualityMetrics(userId: string): ConversationMetrics[] {

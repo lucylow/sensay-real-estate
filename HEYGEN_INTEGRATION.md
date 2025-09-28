@@ -31,6 +31,12 @@ HEYGEN_API_KEY=your-heygen-api-key
 HEYGEN_AVATAR_ID=Marianne_CasualLook_public
 ELEVENLABS_API_KEY=your-elevenlabs-api-key
 ELEVENLABS_VOICE_ID=alex-professional-australian
+
+# Supabase Functions Configuration
+ELEVENLABS_API_KEY=your-elevenlabs-api-key
+ELEVENLABS_VOICE_ID=alex-professional-australian
+HEYGEN_API_KEY=your-heygen-api-key
+HEYGEN_AVATAR_ID=Marianne_CasualLook_public
 ```
 
 ### Getting Your HeyGen API Key

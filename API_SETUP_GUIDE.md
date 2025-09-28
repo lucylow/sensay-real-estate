@@ -1,6 +1,6 @@
 # ElevenLabs & HeyGen API Setup Guide
 
-This guide will help you set up and test the ElevenLabs and HeyGen APIs for the Sensay Real Estate platform.
+This guide will help you set up and test the ElevenLabs and HeyGen APIs for the Sensay Real Estate platform, including proper Supabase configuration.
 
 ## 🚀 Quick Start
 
@@ -9,13 +9,25 @@ This guide will help you set up and test the ElevenLabs and HeyGen APIs for the 
 Create a `.env` file in your project root with the following variables:
 
 ```bash
-# ElevenLabs API Configuration
+# ElevenLabs API Configuration (Frontend)
 VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 VITE_ELEVENLABS_VOICE_ID=alex-professional-australian
 
-# HeyGen API Configuration  
+# HeyGen API Configuration (Frontend)
 VITE_HEYGEN_API_KEY=your_heygen_api_key_here
 VITE_HEYGEN_AVATAR_ID=Marianne_CasualLook_public
+
+# Backend Configuration (Python backend)
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+ELEVENLABS_VOICE_ID=alex-professional-australian
+HEYGEN_API_KEY=your_heygen_api_key_here
+HEYGEN_AVATAR_ID=Marianne_CasualLook_public
+
+# Supabase Functions Configuration
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+ELEVENLABS_VOICE_ID=alex-professional-australian
+HEYGEN_API_KEY=your_heygen_api_key_here
+HEYGEN_AVATAR_ID=Marianne_CasualLook_public
 
 # Sensay Platform Configuration
 VITE_SENSAY_API_KEY=your_sensay_api_key_here
@@ -25,7 +37,30 @@ VITE_SENSAY_ORG_ID=your_organization_id_here
 VITE_USE_MOCK_DATA=false
 ```
 
-### 2. **Get API Keys**
+### 2. **Supabase Configuration**
+
+Configure Supabase environment variables for your functions:
+
+```bash
+# Install Supabase CLI (if not already installed)
+npm install -g supabase
+
+# Login to Supabase
+supabase login
+
+# Set environment variables for Supabase functions
+supabase secrets set ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+supabase secrets set ELEVENLABS_VOICE_ID=alex-professional-australian
+supabase secrets set HEYGEN_API_KEY=your_heygen_api_key_here
+supabase secrets set HEYGEN_AVATAR_ID=Marianne_CasualLook_public
+
+# Verify your secrets
+supabase secrets list
+```
+
+**Important**: Use the exact variable names shown above. The code looks for `ELEVENLABS_API_KEY` (not `ELEVEN_LABS_API_KEY`).
+
+### 3. **Get API Keys**
 
 #### **ElevenLabs API Key**
 1. Visit [elevenlabs.io](https://elevenlabs.io)
@@ -42,7 +77,7 @@ VITE_USE_MOCK_DATA=false
 5. Copy your API key
 6. Add it to your `.env` file
 
-### 3. **Test Your Setup**
+### 4. **Test Your Setup**
 
 Run the development server and navigate to the API testing page:
 
