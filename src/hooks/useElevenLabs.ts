@@ -21,14 +21,14 @@ export interface UseElevenLabsReturn {
   error: string | null;
   
   // Voice data
-  voices: any[];
+  voices: Record<string, unknown>[];
   selectedVoiceId: string;
   voiceSettings: VoiceSettings;
   
   // Audio state
   isPlaying: boolean;
-  currentTrack: any;
-  queue: any;
+  currentTrack: Record<string, unknown> | null;
+  queue: Record<string, unknown> | null;
   
   // Actions
   setSelectedVoice: (voiceId: string) => void;
@@ -40,14 +40,14 @@ export interface UseElevenLabsReturn {
   
   // Utility
   refreshVoices: () => Promise<void>;
-  getUserInfo: () => Promise<any>;
+  getUserInfo: () => Promise<Record<string, unknown>>;
 }
 
 export const useElevenLabs = (): UseElevenLabsReturn => {
   const [isConfigured, setIsConfigured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [voices, setVoices] = useState<any[]>([]);
+  const [voices, setVoices] = useState<Record<string, unknown>[]>([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>({
     stability: 0.5,
@@ -56,8 +56,8 @@ export const useElevenLabs = (): UseElevenLabsReturn => {
     use_speaker_boost: true
   });
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState<any>(null);
-  const [queue, setQueue] = useState<any>(null);
+  const [currentTrack, setCurrentTrack] = useState<Record<string, unknown> | null>(null);
+  const [queue, setQueue] = useState<Record<string, unknown> | null>(null);
 
   // Initialize service
   useEffect(() => {
@@ -206,7 +206,7 @@ export const useElevenLabs = (): UseElevenLabsReturn => {
     }
   }, [isConfigured]);
 
-  const getUserInfo = useCallback(async (): Promise<any> => {
+  const getUserInfo = useCallback(async (): Promise<Record<string, unknown>> => {
     if (!isConfigured) return null;
     
     try {

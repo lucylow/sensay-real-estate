@@ -8,11 +8,11 @@ interface SystemHealthProps {
 }
 
 interface SystemHealth {
-  propguard: any;
-  llm: any;
-  blockchain: any;
-  xnode: any;
-  pipeline: any;
+  propguard: Record<string, unknown> | null;
+  llm: Record<string, unknown> | null;
+  blockchain: Record<string, unknown> | null;
+  xnode: Record<string, unknown> | null;
+  pipeline: Record<string, unknown> | null;
 }
 
 export const SystemHealth: React.FC<SystemHealthProps> = ({ className }) => {
@@ -36,9 +36,9 @@ export const SystemHealth: React.FC<SystemHealthProps> = ({ className }) => {
     }
   };
 
-  const getHealthStatus = (service: any) => {
+  const getHealthStatus = (service: Record<string, unknown> | null) => {
     if (!service) return 'offline';
-    return service.success ? 'online' : 'error';
+    return (service.success as boolean) ? 'online' : 'error';
   };
 
   const getHealthColor = (status: string) => {

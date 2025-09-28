@@ -11,7 +11,7 @@ export const usePropertyAnalysis = () => {
   const [error, setError] = useState<string | null>(null);
   const [dataMode, setDataMode] = useState<DataMode>('demo');
   const [dataSource, setDataSource] = useState<string>('');
-  const [apiHealth, setApiHealth] = useState<any>(null);
+  const [apiHealth, setApiHealth] = useState<Record<string, unknown> | null>(null);
 
   const analyzeProperty = useCallback(async (query: string) => {
     setIsLoading(true);

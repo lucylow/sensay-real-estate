@@ -3,11 +3,11 @@ import { propGuardAPI } from '@/services/api/propguard';
 import { getCollinsStreetSystemHealth } from '@/data/mockData';
 
 interface SystemHealth {
-  propguard: any;
-  llm: any;
-  blockchain: any;
-  xnode: any;
-  pipeline: any;
+  propguard: Record<string, unknown> | null;
+  llm: Record<string, unknown> | null;
+  blockchain: Record<string, unknown> | null;
+  xnode: Record<string, unknown> | null;
+  pipeline: Record<string, unknown> | null;
 }
 
 export const useSystemHealth = () => {
@@ -36,9 +36,9 @@ export const useSystemHealth = () => {
     return () => clearInterval(interval);
   }, [checkHealth]);
 
-  const getServiceStatus = (service: any) => {
+  const getServiceStatus = (service: Record<string, unknown> | null) => {
     if (!service) return 'offline';
-    return service.success ? 'online' : 'error';
+    return (service.success as boolean) ? 'online' : 'error';
   };
 
   return {
