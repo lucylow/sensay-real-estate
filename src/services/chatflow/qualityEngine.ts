@@ -92,7 +92,12 @@ export class ChatFlowQualityEngine {
   private sensayAPI: typeof sensayAPI;
   private llmAPI: typeof llmAPI;
   private userContexts: Map<string, UserContext> = new Map();
-  private flowTemplates: Map<ConversationState, any> = new Map();
+  private flowTemplates: Map<ConversationState, {
+    requiredElements: string[];
+    optimalResponseTime: number;
+    expectedUserResponseTypes: string[];
+    template: Record<string, unknown>;
+  }> = new Map();
   private qualityMetrics: Map<string, ConversationMetrics[]> = new Map();
   private t: (key: string, params?: Record<string, string | number>) => string;
 
@@ -476,7 +481,7 @@ export class ChatFlowQualityEngine {
     );
   }
 
-  private getResponseTemplate(state: ConversationState, messageAnalysis: MessageAnalysis): any {
+  private getResponseTemplate(state: ConversationState, messageAnalysis: MessageAnalysis): Record<string, unknown> {
     const template = this.flowTemplates.get(state);
     if (!template) {
       return {
@@ -492,13 +497,14 @@ export class ChatFlowQualityEngine {
   }
 
   private async personalizeResponse(
-    template: any,
+    template: Record<string, unknown>,
     userContext: UserContext,
     messageAnalysis: MessageAnalysis
   ): Promise<QualityResponse> {
     const response: QualityResponse = {
-      message: template.message,
-      quickActions: template.quickActions || template.actionButtons,
+      message: (template.message as string) || '',
+      quickActions: (template.quickActions as Array<{action: string, label: string}>) || 
+                   (template.actionButtons as Array<{action: string, label: string}>),
       metadata: {
         confidence: messageAnalysis.intentConfidence,
         processingTime: 0,
@@ -507,7 +513,7 @@ export class ChatFlowQualityEngine {
     };
     
     // Add personalization based on user preferences
-    if (userContext.preferences.name) {
+    if (userContext.preferences.name && typeof userContext.preferences.name === 'string') {
       response.message = response.message.replace('Hello!', `Hello ${userContext.preferences.name}!`);
     }
     
@@ -677,12 +683,14 @@ export class ChatFlowQualityEngine {
     let score = 0;
     
     // Check for personalization elements
-    if (userContext.preferences.name && response.message.includes(userContext.preferences.name)) {
+    if (userContext.preferences.name && typeof userContext.preferences.name === 'string' && 
+        response.message.includes(userContext.preferences.name)) {
       score += 30;
     }
     
     if (userContext.preferences.preferredLocations && 
-        response.message.includes(userContext.preferences.preferredLocations[0])) {
+        Array.isArray(userContext.preferences.preferredLocations) &&
+        response.message.includes(userContext.preferences.preferredLocations[0] as string)) {
       score += 25;
     }
     

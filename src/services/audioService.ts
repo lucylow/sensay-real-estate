@@ -24,7 +24,7 @@ export interface AudioQueue {
 export class AudioService {
   private audio: HTMLAudioElement;
   private queue: AudioQueue;
-  private listeners: Map<string, Function[]> = new Map();
+  private listeners: Map<string, ((data?: unknown) => void)[]> = new Map();
 
   constructor() {
     this.audio = new Audio();
@@ -278,7 +278,7 @@ export class AudioService {
   /**
    * Add event listener
    */
-  on(event: string, callback: Function): void {
+  on(event: string, callback: (data?: unknown) => void): void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
@@ -288,7 +288,7 @@ export class AudioService {
   /**
    * Remove event listener
    */
-  off(event: string, callback: Function): void {
+  off(event: string, callback: (data?: unknown) => void): void {
     const callbacks = this.listeners.get(event);
     if (callbacks) {
       const index = callbacks.indexOf(callback);
@@ -301,7 +301,7 @@ export class AudioService {
   /**
    * Emit event to listeners
    */
-  private emit(event: string, data?: any): void {
+  private emit(event: string, data?: unknown): void {
     const callbacks = this.listeners.get(event);
     if (callbacks) {
       callbacks.forEach(callback => callback(data));

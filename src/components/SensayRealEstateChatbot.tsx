@@ -84,7 +84,7 @@ interface ConversationMessage {
   timestamp: Date;
   metadata?: {
     intent?: string;
-    entities?: any;
+    entities?: Record<string, unknown>;
     confidence?: number;
     actions?: string[];
   };
@@ -125,7 +125,7 @@ const SensayRealEstateChatbot: React.FC = () => {
     if (messages.length === 0) return 0;
     
     let qualityScore = 0;
-    let totalMessages = messages.length;
+    const totalMessages = messages.length;
     
     messages.forEach(msg => {
       if (msg.metadata?.confidence) {

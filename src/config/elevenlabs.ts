@@ -33,18 +33,18 @@ export interface ElevenLabsVoiceResponse {
 export interface ElevenLabsVoice {
   voice_id: string;
   name: string;
-  samples?: any[];
+  samples?: Record<string, unknown>[];
   category: string;
-  fine_tuning?: any;
+  fine_tuning?: Record<string, unknown>;
   labels?: Record<string, string>;
   description?: string;
   preview_url?: string;
   available_for_tiers?: string[];
-  settings?: any;
-  sharing?: any;
+  settings?: Record<string, unknown>;
+  sharing?: Record<string, unknown>;
   high_quality_base_model_ids?: string[];
-  safety_control?: any;
-  permission_on_resource?: any;
+  safety_control?: Record<string, unknown>;
+  permission_on_resource?: Record<string, unknown>;
 }
 
 export class ElevenLabsService {

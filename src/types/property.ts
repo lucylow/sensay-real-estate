@@ -18,7 +18,7 @@ export interface PropertyAnalysis {
   risk_score: number;
   confidence: number;
   lvr?: number;
-  analysis_result: any;
+  analysis_result: Record<string, unknown>;
 }
 
 export interface SentimentAnalysis {

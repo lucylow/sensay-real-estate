@@ -143,7 +143,7 @@ export class HeyGenService {
   /**
    * Get available avatars
    */
-  async getAvailableAvatars(): Promise<any[]> {
+  async getAvailableAvatars(): Promise<Record<string, unknown>[]> {
     if (!this.isConfigured()) {
       return [];
     }

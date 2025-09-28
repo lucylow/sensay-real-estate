@@ -142,28 +142,28 @@ export class PropGuardAPI {
     });
   }
 
-  async getMarketSentiment(marketData: any) {
+  async getMarketSentiment(marketData: Record<string, unknown>) {
     return this.request(API_CONFIG.ENDPOINTS.MARKET_SENTIMENT, {
       method: 'POST',
       body: JSON.stringify({ market_data: marketData })
     });
   }
 
-  async generateLVRReport(propertyData: any) {
+  async generateLVRReport(propertyData: Record<string, unknown>) {
     return this.request(API_CONFIG.ENDPOINTS.GENERATE_LVR_REPORT, {
       method: 'POST',
       body: JSON.stringify({ property_data: propertyData })
     });
   }
 
-  async getFinancialImpactAssessment(propertyData: any, loanAmount: number) {
+  async getFinancialImpactAssessment(propertyData: Record<string, unknown>, loanAmount: number) {
     return this.request(API_CONFIG.ENDPOINTS.FINANCIAL_IMPACT, {
       method: 'POST',
       body: JSON.stringify({ property_data: propertyData, loan_amount: loanAmount })
     });
   }
 
-  async getDistributedValuation(propertyData: any, comparables: any[], riskData: any, marketFactors: any) {
+  async getDistributedValuation(propertyData: Record<string, unknown>, comparables: Record<string, unknown>[], riskData: Record<string, unknown>, marketFactors: Record<string, unknown>) {
     return this.request(API_CONFIG.ENDPOINTS.DISTRIBUTED_VALUATION, {
       method: 'POST',
       body: JSON.stringify({
@@ -175,7 +175,7 @@ export class PropGuardAPI {
     });
   }
 
-  async mintPropertyNFT(propertyData: any, valuationData: any) {
+  async mintPropertyNFT(propertyData: Record<string, unknown>, valuationData: Record<string, unknown>) {
     return this.request(API_CONFIG.ENDPOINTS.MINT_NFT, {
       method: 'POST',
       body: JSON.stringify({
