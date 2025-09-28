@@ -58,33 +58,32 @@ export class SensayAPI {
   }
 
   private async makeRequest(endpoint: string, data: any = {}, method: string = 'POST'): Promise<any> {
-    const url = `${this.baseUrl}${endpoint}`;
+    // Use Supabase Edge Function for Sensay API calls
+    const url = sensayConfig.supabaseFunctionUrl;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    if (this.apiKey) {
-      headers['Authorization'] = `Bearer ${this.apiKey}`;
-    }
-
-    if (this.organizationId) {
-      headers['X-Organization-ID'] = this.organizationId;
-    }
-
-    const config: RequestInit = {
-      method,
-      headers,
+    // Add credentials to request body for Supabase function
+    const requestData = {
+      ...data,
+      credentials: {
+        apiKey: this.apiKey,
+        organizationId: this.organizationId
+      }
     };
 
-    if (method !== 'GET' && Object.keys(data).length > 0) {
-      config.body = JSON.stringify(data);
-    }
+    const config: RequestInit = {
+      method: 'POST', // Supabase functions always use POST
+      headers,
+      body: JSON.stringify(requestData),
+    };
 
     const response = await fetch(url, config);
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`API request failed: ${response.status} ${errorText}`);
+      throw new Error(`Supabase function request failed: ${response.status} ${errorText}`);
     }
 
     return response.json();

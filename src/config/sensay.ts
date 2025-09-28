@@ -1,9 +1,10 @@
 // Sensay API Configuration
 export const sensayConfig = {
   apiKey: import.meta.env.VITE_SENSAY_API_KEY || 'your_sensay_api_key_here',
-  orgSecret: import.meta.env.VITE_SENSAY_ORG_SECRET || 'your_sensay_org_secret_here',
+  organizationId: import.meta.env.VITE_SENSAY_ORG_ID || 'your_sensay_org_id_here',
   replicaId: import.meta.env.VITE_SENSAY_REPLICA_ID || 'propguard-real-estate-agent',
-  baseUrl: 'https://api.sensay.com/v1',
+  baseUrl: 'https://api.sensay.io/v1',
+  supabaseFunctionUrl: `${import.meta.env.VITE_SUPABASE_URL || 'https://mpbwpixpuonkczxgkjks.supabase.co'}/functions/v1/sensay-chat`,
 };
 
 // Sensay API endpoints

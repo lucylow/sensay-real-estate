@@ -28,6 +28,8 @@ VITE_SENSAY_API_KEY=your_api_key_here
 VITE_SENSAY_ORG_ID=your_organization_id_here
 ```
 
+**Note**: The environment variable name is `VITE_SENSAY_ORG_ID` (not `VITE_SENSAY_ORG_SECRET`).
+
 ### 3. API Credentials Management
 
 The application automatically:
