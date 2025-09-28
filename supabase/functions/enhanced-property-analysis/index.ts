@@ -140,7 +140,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         status: 'error',
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
         timestamp: new Date().toISOString()
       }),
       {
@@ -223,14 +223,28 @@ function generateRiskAssessment(address: string) {
   };
 }
 
-function generateMarketAnalysis(address: string) {
+function generateMarketAnalysis(address: string): {
+  sentiment_score: number;
+  trend: 'bullish' | 'bearish' | 'neutral';
+  confidence: number;
+  summary: string;
+  key_indicators: {
+    price_growth_yoy: number;
+    days_on_market: number;
+    auction_clearance: number;
+    inventory_levels: number;
+  };
+} {
   const isPremiumArea = address.toLowerCase().includes('collins') || 
                        address.toLowerCase().includes('toorak') ||
                        address.toLowerCase().includes('bondi');
   
+  const randomTrend = Math.random();
+  const trend: 'bullish' | 'bearish' | 'neutral' = randomTrend > 0.6 ? 'bullish' : randomTrend > 0.3 ? 'neutral' : 'bearish';
+  
   return {
     sentiment_score: isPremiumArea ? 7.5 + Math.random() * 1.5 : 5.5 + Math.random() * 2,
-    trend: (Math.random() > 0.6 ? 'bullish' : Math.random() > 0.3 ? 'neutral' : 'bearish') as const,
+    trend,
     confidence: 0.75 + Math.random() * 0.2,
     summary: `Market analysis for ${address} shows ${isPremiumArea ? 'strong' : 'moderate'} fundamentals with stable demand patterns.`,
     key_indicators: {

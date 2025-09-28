@@ -52,7 +52,7 @@ serve(async (req) => {
       JSON.stringify({
         status: 'error',
         response: 'I apologize, but I encountered an issue processing your request. Please try again.',
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
         timestamp: new Date().toISOString()
       }),
       {

@@ -5,7 +5,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
+serve(async (req): Promise<Response> => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -94,11 +94,20 @@ serve(async (req) => {
       )
     }
 
+    // Fallback return for edge cases
+    return new Response(
+      JSON.stringify({ error: 'No valid action processed' }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400 
+      }
+    )
+
   } catch (error) {
     console.error('Domain AU API Error:', error)
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to fetch property data',
+        error: error instanceof Error ? error.message : 'Failed to fetch property data',
         suggestions: [],
         property: null 
       }),
