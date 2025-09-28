@@ -28,7 +28,7 @@ import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
 import { SensayHackathonShowcase } from "@/components/SensayHackathonShowcase";
 import { KnowledgeMonitoringDashboard } from "@/components/KnowledgeMonitoringDashboard";
 import SensayFeaturesPage from "@/pages/SensayFeaturesPage";
-import SensayWisdomPageTest from "@/pages/SensayWisdomPageTest"; // TEST IMPORT
+import SensayWisdomPage from "@/pages/SensayWisdomPage";
 
 const queryClient = new QueryClient();
 
@@ -61,7 +61,7 @@ const App = () => (
                    <Route path="/sensay-showcase" element={<SensayHackathonShowcase />} />
                    <Route path="/knowledge-dashboard" element={<KnowledgeMonitoringDashboard />} />
                    <Route path="/sensay-features" element={<SensayFeaturesPage />} />
-                   <Route path="/sensay-wisdom" element={<SensayWisdomPageTest />} />
+                   <Route path="/sensay-wisdom" element={<SensayWisdomPage />} />
                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
