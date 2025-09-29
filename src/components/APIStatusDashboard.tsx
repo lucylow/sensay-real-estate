@@ -19,7 +19,8 @@ import {
   Bot,
   Activity,
   Wifi,
-  WifiOff
+  WifiOff,
+  Settings
 } from 'lucide-react';
 import { elevenLabsService } from '@/config/elevenlabs';
 import { heyGenService } from '@/config/heygen';
