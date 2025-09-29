@@ -56,8 +56,9 @@ export interface SensayAuthenticationError {
 let SensayClient: any;
 
 try {
-  const sdk = await import('@/src/sdk');
-  SensayClient = sdk.Client || sdk.default.Client;
+  // const sdk = await import('@sensay/sdk');
+  // SensayClient = sdk.Client || sdk.default.Client;
+  throw new Error('SDK not available');
 } catch (error) {
   console.warn('Sensay SDK not found, using fallback client');
   // Fallback client for development

@@ -16,10 +16,7 @@ export default defineConfig(({ mode }) => ({
     componentTagger(),
     viteStaticCopy({
       targets: [
-        {
-          src: 'src/assets/videos/**/*',
-          dest: 'videos'
-        }
+        // Videos will be copied if directory exists
       ]
     })
   ].filter(Boolean),
