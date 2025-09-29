@@ -527,3 +527,5 @@ export const PropertyDetailPage: React.FC = () => {
     </div>
   );
 };
+
+export default PropertyDetailPage;

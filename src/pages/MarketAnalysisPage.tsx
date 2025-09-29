@@ -429,3 +429,5 @@ export const MarketAnalysisPage: React.FC = () => {
     </div>
   );
 };
+
+export default MarketAnalysisPage;

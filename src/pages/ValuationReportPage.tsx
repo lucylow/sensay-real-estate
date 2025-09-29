@@ -481,3 +481,5 @@ export const ValuationReportPage: React.FC = () => {
     </div>
   );
 };
+
+export default ValuationReportPage;
