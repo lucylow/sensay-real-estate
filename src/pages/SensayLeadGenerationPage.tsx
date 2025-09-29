@@ -30,9 +30,12 @@ import {
 import SensayRealEstateChatbot from '@/components/SensayRealEstateChatbot';
 import LeadAnalyticsDashboard from '@/components/LeadAnalyticsDashboard';
 import ROIImpactCalculator from '@/components/ROIImpactCalculator';
+import { EnhancedLeadGenerationKPIs } from '@/components/EnhancedLeadGenerationKPIs';
+import { EnhancedLeadNurturingWorkflow } from '@/components/EnhancedLeadNurturingWorkflow';
+import { EnhancedMultiChannelDeployment } from '@/components/EnhancedMultiChannelDeployment';
 
 const SensayLeadGenerationPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('chatbot');
+  const [activeTab, setActiveTab] = useState('kpis');
   const [isChatbotActive, setIsChatbotActive] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -106,6 +109,39 @@ const SensayLeadGenerationPage: React.FC = () => {
             <div className="hidden md:flex items-center space-x-6">
               <nav className="flex items-center space-x-1">
                 <button
+                  onClick={() => setActiveTab('kpis')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'kpis' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Target className="h-4 w-4 inline mr-2" />
+                  KPIs
+                </button>
+                <button
+                  onClick={() => setActiveTab('nurturing')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'nurturing' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <TrendingUp className="h-4 w-4 inline mr-2" />
+                  Nurturing
+                </button>
+                <button
+                  onClick={() => setActiveTab('channels')}
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === 'channels' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Globe className="h-4 w-4 inline mr-2" />
+                  Multi-Channel
+                </button>
+                <button
                   onClick={() => setActiveTab('chatbot')}
                   className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                     activeTab === 'chatbot' 
@@ -126,39 +162,6 @@ const SensayLeadGenerationPage: React.FC = () => {
                 >
                   <BarChart3 className="h-4 w-4 inline mr-2" />
                   Analytics
-                </button>
-                <button
-                  onClick={() => setActiveTab('roi-calculator')}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeTab === 'roi-calculator' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <DollarSign className="h-4 w-4 inline mr-2" />
-                  ROI Calculator
-                </button>
-                <button
-                  onClick={() => setActiveTab('features')}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeTab === 'features' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <Star className="h-4 w-4 inline mr-2" />
-                  Features
-                </button>
-                <button
-                  onClick={() => setActiveTab('settings')}
-                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeTab === 'settings' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <Settings className="h-4 w-4 inline mr-2" />
-                  Settings
                 </button>
               </nav>
               
@@ -409,12 +412,20 @@ const SensayLeadGenerationPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === 'analytics' && (
-            <LeadAnalyticsDashboard />
+          {activeTab === 'kpis' && (
+            <EnhancedLeadGenerationKPIs />
           )}
 
-          {activeTab === 'roi-calculator' && (
-            <ROIImpactCalculator />
+          {activeTab === 'nurturing' && (
+            <EnhancedLeadNurturingWorkflow />
+          )}
+
+          {activeTab === 'channels' && (
+            <EnhancedMultiChannelDeployment />
+          )}
+
+          {activeTab === 'analytics' && (
+            <LeadAnalyticsDashboard />
           )}
 
           {activeTab === 'features' && (

@@ -7,11 +7,35 @@ export const sensayConfig = {
   supabaseFunctionUrl: `${import.meta.env.VITE_SUPABASE_URL || 'https://mpbwpixpuonkczxgkjks.supabase.co'}/functions/v1/sensay-chat`,
 };
 
-// Sensay API endpoints
+// Sensay API endpoints based on official documentation
 export const sensayEndpoints = {
+  // Core chat endpoints
   chat: `${sensayConfig.baseUrl}/chat`,
-  replicas: `${sensayConfig.baseUrl}/replicas`,
   conversations: `${sensayConfig.baseUrl}/conversations`,
+  
+  // Replica management
+  replicas: `${sensayConfig.baseUrl}/replicas`,
+  replica: (replicaId: string) => `${sensayConfig.baseUrl}/replicas/${replicaId}`,
+  
+  // User management
+  users: `${sensayConfig.baseUrl}/users`,
+  user: (userId: string) => `${sensayConfig.baseUrl}/users/${userId}`,
+  
+  // Knowledge base management
+  knowledgeBase: (replicaId: string) => `${sensayConfig.baseUrl}/replicas/${replicaId}/knowledge-base`,
+  knowledgeEntry: (replicaId: string, entryId: string) => `${sensayConfig.baseUrl}/replicas/${replicaId}/knowledge-base/${entryId}`,
+  
+  // Training and content management
+  training: (replicaId: string) => `${sensayConfig.baseUrl}/replicas/${replicaId}/training`,
+  content: (replicaId: string) => `${sensayConfig.baseUrl}/replicas/${replicaId}/content`,
+  
+  // Analytics and insights
+  analytics: `${sensayConfig.baseUrl}/analytics`,
+  insights: (replicaId: string) => `${sensayConfig.baseUrl}/replicas/${replicaId}/insights`,
+  
+  // Health and status
+  health: `${sensayConfig.baseUrl}/health`,
+  status: `${sensayConfig.baseUrl}/status`,
 };
 
 // Sensay widget theme configuration

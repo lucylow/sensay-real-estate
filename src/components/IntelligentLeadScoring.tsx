@@ -70,7 +70,7 @@ import {
   Image,
   Photo,
   CameraIcon,
-  VideoCamera,
+  Video,
   VideoCameraSlash,
   Microphone,
   MicrophoneOff,
@@ -467,7 +467,7 @@ export const IntelligentLeadScoring: React.FC = () => {
       case 'meeting': return <Calendar className="w-4 h-4" />;
       case 'website': return <Eye className="w-4 h-4" />;
       case 'social': return <Share2 className="w-4 h-4" />;
-      case 'demo': return <VideoCamera className="w-4 h-4" />;
+      case 'demo': return <Video className="w-4 h-4" />;
       default: return <MessageSquare className="w-4 h-4" />;
     }
   };

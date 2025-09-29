@@ -20,7 +20,7 @@ import {
   Clock,
   Star,
   Flag,
-  Translate,
+  Languages,
   Mic,
   Headphones,
   Monitor,
@@ -453,7 +453,7 @@ export const MultilingualSupport: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Translate className="h-5 w-5" />
+                  <Languages className="h-5 w-5" />
                   Translation Features
                 </CardTitle>
               </CardHeader>

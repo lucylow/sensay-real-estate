@@ -22,6 +22,55 @@ export interface SensayResponse {
   actions?: SensayAction[];
 }
 
+export interface SensayUser {
+  id: string;
+  name: string;
+  email: string;
+  metadata?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SensayReplica {
+  id: string;
+  name: string;
+  description?: string;
+  userId: string;
+  status: 'active' | 'inactive' | 'training';
+  metadata?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SensayKnowledgeEntry {
+  id: string;
+  title: string;
+  content: string;
+  type: 'text' | 'url' | 'file';
+  status: 'processing' | 'ready' | 'error';
+  metadata?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SensayConversation {
+  id: string;
+  userId: string;
+  replicaId: string;
+  messages: SensayMessage[];
+  status: 'active' | 'completed' | 'archived';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SensayMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+  metadata?: Record<string, any>;
+}
+
 export interface SensayAction {
   type: 'viewProperty' | 'scheduleShowing' | 'downloadReport' | 'bookTour' | 'getValuation' | 'analyzeRisk' | 'getMarketData';
   data: Record<string, any>;
@@ -66,7 +115,9 @@ export class SensayAPI {
 
     // Add credentials to request body for Supabase function
     const requestData = {
-      ...data,
+      endpoint,
+      method,
+      data,
       credentials: {
         apiKey: this.apiKey,
         organizationId: this.organizationId
@@ -445,18 +496,112 @@ export class SensayAPI {
     }
   }
 
-  async getConversationAnalytics(conversationId: string): Promise<any> {
+  // User Management Methods
+  async createUser(userData: { name: string; email: string; metadata?: Record<string, any> }): Promise<SensayUser> {
     try {
-      const response = await this.makeRequest('/analytics/conversation', { conversationId });
-      return response;
+      const result = await this.makeRequest('/users', userData);
+      return result;
     } catch (error) {
-      return {
-        messageCount: 12,
-        averageResponseTime: 1.2,
-        satisfactionScore: 4.5,
-        intents: ['property_search', 'valuation', 'scheduling'],
-        entities: ['location', 'budget', 'timeline']
-      };
+      console.error('Sensay createUser error:', error);
+      throw new Error(`Failed to create user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async getUser(userId: string): Promise<SensayUser> {
+    try {
+      const result = await this.makeRequest(`/users/${userId}`, {}, 'GET');
+      return result;
+    } catch (error) {
+      console.error('Sensay getUser error:', error);
+      throw new Error(`Failed to get user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Replica Management Methods
+  async createReplica(replicaData: { name: string; description?: string; userId: string; metadata?: Record<string, any> }): Promise<SensayReplica> {
+    try {
+      const result = await this.makeRequest('/replicas', replicaData);
+      return result;
+    } catch (error) {
+      console.error('Sensay createReplica error:', error);
+      throw new Error(`Failed to create replica: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async getReplica(replicaId: string): Promise<SensayReplica> {
+    try {
+      const result = await this.makeRequest(`/replicas/${replicaId}`, {}, 'GET');
+      return result;
+    } catch (error) {
+      console.error('Sensay getReplica error:', error);
+      throw new Error(`Failed to get replica: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Knowledge Base Management Methods
+  async addKnowledgeEntry(replicaId: string, entryData: { title: string; content: string; type: 'text' | 'url' | 'file' }): Promise<SensayKnowledgeEntry> {
+    try {
+      const result = await this.makeRequest(`/replicas/${replicaId}/knowledge-base`, entryData);
+      return result;
+    } catch (error) {
+      console.error('Sensay addKnowledgeEntry error:', error);
+      throw new Error(`Failed to add knowledge entry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async getKnowledgeEntries(replicaId: string): Promise<SensayKnowledgeEntry[]> {
+    try {
+      const result = await this.makeRequest(`/replicas/${replicaId}/knowledge-base`, {}, 'GET');
+      return result.entries || result;
+    } catch (error) {
+      console.error('Sensay getKnowledgeEntries error:', error);
+      throw new Error(`Failed to get knowledge entries: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Conversation Management Methods
+  async getConversation(conversationId: string): Promise<SensayConversation> {
+    try {
+      const result = await this.makeRequest(`/conversations/${conversationId}`, {}, 'GET');
+      return result;
+    } catch (error) {
+      console.error('Sensay getConversation error:', error);
+      throw new Error(`Failed to get conversation: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async getConversations(userId?: string, replicaId?: string): Promise<SensayConversation[]> {
+    try {
+      const params = new URLSearchParams();
+      if (userId) params.append('userId', userId);
+      if (replicaId) params.append('replicaId', replicaId);
+      
+      const result = await this.makeRequest(`/conversations?${params.toString()}`, {}, 'GET');
+      return result.conversations || result;
+    } catch (error) {
+      console.error('Sensay getConversations error:', error);
+      throw new Error(`Failed to get conversations: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Analytics Methods
+  async getAnalytics(timeframe: string = '30d'): Promise<SensayAnalytics> {
+    try {
+      const result = await this.makeRequest(`/analytics?timeframe=${timeframe}`, {}, 'GET');
+      return result;
+    } catch (error) {
+      console.error('Sensay getAnalytics error:', error);
+      throw new Error(`Failed to get analytics: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async getReplicaInsights(replicaId: string, timeframe: string = '30d'): Promise<any> {
+    try {
+      const result = await this.makeRequest(`/replicas/${replicaId}/insights?timeframe=${timeframe}`, {}, 'GET');
+      return result;
+    } catch (error) {
+      console.error('Sensay getReplicaInsights error:', error);
+      throw new Error(`Failed to get replica insights: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }

@@ -22,8 +22,10 @@ import { ValuationReportPage } from "@/pages/ValuationReportPage";
 import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
 import SensayFeaturesPage from "@/pages/SensayFeaturesPage";
 import SensayWisdomPage from "@/pages/SensayWisdomPage";
+import AIServicesPage from "@/pages/AIServicesPage";
 import SensayLeadGenerationPage from "@/pages/SensayLeadGenerationPage";
 import SensayChatbotIntegrationPage from "@/pages/SensayChatbotIntegrationPage";
+import { SensayFeaturesDashboard } from "@/components/sensay/SensayFeaturesDashboard";
 
 // AI & Chatbot Pages
 import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
@@ -65,11 +67,13 @@ const App = () => (
             
             {/* Sensay Integration Routes */}
             <Route path="/sensay" element={<SensayIntegrationPage />} />
-            <Route path="/sensay-features" element={<SensayFeaturesPage />} />
-            <Route path="/sensay-wisdom" element={<SensayWisdomPage />} />
+                   <Route path="/sensay-features" element={<SensayFeaturesPage />} />
+                   <Route path="/sensay-wisdom" element={<SensayWisdomPage />} />
+                   <Route path="/ai-services" element={<AIServicesPage />} />
             <Route path="/sensay-leads" element={<SensayLeadGenerationPage />} />
             <Route path="/sensay-chatbot" element={<SensayChatbotIntegrationPage />} />
             <Route path="/sensay-showcase" element={<SensayHackathonShowcase />} />
+            <Route path="/sensay-dashboard" element={<SensayFeaturesDashboard />} />
             
             {/* AI & Chatbot Routes */}
             <Route path="/propguard-chatbot" element={<PropGuardAIChatbot />} />

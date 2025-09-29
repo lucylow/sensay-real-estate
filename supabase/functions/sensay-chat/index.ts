@@ -19,6 +19,9 @@ interface SensayChatRequest {
     apiKey?: string;
     organizationId?: string;
   };
+  endpoint?: string;
+  method?: string;
+  data?: any;
 }
 
 interface SensayChatResponse {
@@ -37,12 +40,14 @@ serve(async (req) => {
 
   try {
     const requestData: SensayChatRequest = await req.json();
-    const { message, context, credentials } = requestData;
+    const { message, context, credentials, endpoint, method, data } = requestData;
     
-    console.log('Sensay Chat Request:', { 
+    console.log('Sensay Request:', { 
       message: message?.substring(0, 100) + '...', 
       hasContext: !!context,
-      hasCredentials: !!credentials
+      hasCredentials: !!credentials,
+      endpoint: endpoint || '/chat',
+      method: method || 'POST'
     });
 
     // Get Sensay credentials from environment or request
@@ -65,44 +70,64 @@ serve(async (req) => {
       );
     }
 
+    // Determine the target endpoint
+    const targetEndpoint = endpoint || '/chat';
+    const requestMethod = method || 'POST';
+    const requestData = data || { message, context: context || {} };
+
     // Prepare Sensay API request
     const sensayRequest = {
-      message,
-      context: context || {},
+      ...requestData,
       replica_id: 'propguard-real-estate-agent',
       organization_id: sensayOrgId
     };
 
-    console.log('Making Sensay API request to:', 'https://api.sensay.io/v1/chat');
+    console.log('Making Sensay API request to:', `https://api.sensay.io/v1${targetEndpoint}`);
 
     // Make request to Sensay API
-    const sensayResponse = await fetch('https://api.sensay.io/v1/chat', {
-      method: 'POST',
+    const sensayResponse = await fetch(`https://api.sensay.io/v1${targetEndpoint}`, {
+      method: requestMethod,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sensayApiKey}`,
         'X-Organization-ID': sensayOrgId,
       },
-      body: JSON.stringify(sensayRequest),
+      body: requestMethod !== 'GET' ? JSON.stringify(sensayRequest) : undefined,
     });
 
     if (!sensayResponse.ok) {
       const errorText = await sensayResponse.text();
       console.error('Sensay API Error:', sensayResponse.status, errorText);
       
-      // Fallback to local AI response
-      const fallbackResponse = await generateFallbackResponse(message, context);
-      
-      return new Response(
-        JSON.stringify({
-          status: 'success',
-          ...fallbackResponse,
-          fallback: true,
-          sensayError: `Sensay API error: ${sensayResponse.status} ${sensayResponse.statusText}`,
-          timestamp: new Date().toISOString()
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      // Fallback to local AI response for chat endpoints
+      if (targetEndpoint === '/chat') {
+        const fallbackResponse = await generateFallbackResponse(message, context);
+        
+        return new Response(
+          JSON.stringify({
+            status: 'success',
+            ...fallbackResponse,
+            fallback: true,
+            sensayError: `Sensay API error: ${sensayResponse.status} ${sensayResponse.statusText}`,
+            timestamp: new Date().toISOString()
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } else {
+        // For non-chat endpoints, return the error
+        return new Response(
+          JSON.stringify({
+            status: 'error',
+            error: `Sensay API error: ${sensayResponse.status} ${sensayResponse.statusText}`,
+            details: errorText,
+            timestamp: new Date().toISOString()
+          }),
+          {
+            status: sensayResponse.status,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
     }
 
     const sensayData = await sensayResponse.json();
@@ -110,7 +135,7 @@ serve(async (req) => {
 
     // Process Sensay response
     const processedResponse: SensayChatResponse = {
-      response: sensayData.response || sensayData.message || 'I received your message but could not generate a response.',
+      response: sensayData.response || sensayData.message || JSON.stringify(sensayData),
       conversationId: sensayData.conversation_id || context?.conversationId,
       suggestions: sensayData.suggestions || generateDefaultSuggestions(message),
       insights: sensayData.insights || null,

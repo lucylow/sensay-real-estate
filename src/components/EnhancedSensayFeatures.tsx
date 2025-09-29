@@ -675,7 +675,7 @@ export const EnhancedSensayFeatures: React.FC = () => {
                 <Button 
                   className="w-full" 
                   variant="default"
-                  onClick={() => navigate('/sensay-features')}
+                  onClick={() => navigate('/ai-services')}
                 >
                   <Play className="w-4 h-4 mr-2" />
                   Try Live Demo
