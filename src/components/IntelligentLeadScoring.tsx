@@ -443,7 +443,7 @@ export const IntelligentLeadScoring: React.FC = () => {
     switch (type) {
       case 'email': return <Mail className="w-4 h-4" />;
       case 'call': return <Phone className="w-4 h-4" />;
-      case 'meeting': return <Calendar className="w-4 h-4" />;
+      case 'meeting': return <CalendarIcon className="w-4 h-4" />;
       case 'website': return <Eye className="w-4 h-4" />;
       case 'social': return <Share2 className="w-4 h-4" />;
       case 'demo': return <Video className="w-4 h-4" />;
@@ -689,7 +689,7 @@ export const IntelligentLeadScoring: React.FC = () => {
                     <span>{selectedLead.company}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
+                    <CalendarIcon className="w-4 h-4" />
                     <span>Added {selectedLead.createdAt.toLocaleDateString()}</span>
                   </div>
                 </div>

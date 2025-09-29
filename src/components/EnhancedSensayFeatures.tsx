@@ -564,7 +564,7 @@ export const EnhancedSensayFeatures: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <CalendarIcon className="w-5 h-5 text-purple-500 mt-0.5" />
+                        <Calendar className="w-5 h-5 text-purple-500 mt-0.5" />
                         <div>
                           <div className="font-medium">Easy Booking</div>
                           <div className="text-sm text-gray-600">Simple reservation system with confirmations</div>
@@ -644,7 +644,7 @@ export const EnhancedSensayFeatures: React.FC = () => {
                   variant="outline"
                   onClick={() => navigate('/virtual-tours')}
                 >
-                  <CalendarIcon className="w-4 h-4 mr-2" />
+                  <Calendar className="w-4 h-4 mr-2" />
                   Schedule Virtual Tour
                 </Button>
                 <Button 
