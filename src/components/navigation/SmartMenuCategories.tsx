@@ -22,6 +22,9 @@ import {
   Eye,
   Calendar,
   ChevronDown,
+  Sparkles,
+  HelpCircle,
+  Search as InputIcon,
   ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
