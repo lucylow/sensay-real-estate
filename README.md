@@ -102,8 +102,31 @@ sensay-real-estate/
 4. **🌍 Multilingual Support** - 4 languages with cultural adaptation
 5. **📊 Advanced Analytics** - Comprehensive metrics and ROI tracking
 6. **🧠 Contextual Memory** - Persistent profiles and predictive conversation flows
+7. **💬 Conversation Analytics** - Real-time conversation insights with cursor-based pagination
+8. **🔄 Cross-Platform Tracking** - Analytics across web, telegram, discord, and embed sources
 
 See **[Features Documentation](docs/features/README.md)** for detailed breakdown.
+
+## 🔌 Sensay Conversation Analytics
+
+### Advanced API Integration
+Our application implements comprehensive Sensay conversation analytics using the Organization ID `E0b1218c-e817-4994-a45b-43e092bd6d4b`:
+
+#### Key Features:
+- **Cursor-Based Pagination**: Efficient navigation through large conversation histories
+- **Real-Time Analytics**: 30-day historical trends and source distribution
+- **Message Expansion**: Placeholder expansion for detailed conversation analysis
+- **Cross-Platform Insights**: Analytics across web, telegram, discord, and embed sources
+
+#### API Endpoints Used:
+- `GET /v1/replicas/{replicaUUID}/conversations/{conversationUUID}/mentions`
+- `GET /v1/replicas/{replicaUUID}/conversations/{conversationUUID}/messages`
+- `GET /v1/replicas/{replicaUUID}/analytics/conversations/historical`
+- `GET /v1/replicas/{replicaUUID}/analytics/conversations/sources`
+
+#### Access the Analytics:
+- **Live Demo**: [Conversation Analytics Dashboard](https://propguard-ai-sensay.vercel.app/sensay-analytics)
+- **Local Development**: `http://localhost:5173/sensay-analytics`
 
 ## 📞 Contact & Support
 

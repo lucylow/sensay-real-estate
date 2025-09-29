@@ -10,6 +10,7 @@ import { EnhancedChatWidget } from "@/components/EnhancedChatWidget";
 import LandingPage from "@/components/LandingPage";
 import Index from "@/pages/Index";
 import NotFound from "./pages/NotFound";
+import TutorialPage from "@/pages/TutorialPage";
 
 // Main Application Pages
 import { EnhancedDashboard } from "@/components/propguard/EnhancedDashboard";
@@ -25,6 +26,7 @@ import SensayWisdomPage from "@/pages/SensayWisdomPage";
 import AIServicesPage from "@/pages/AIServicesPage";
 import SensayLeadGenerationPage from "@/pages/SensayLeadGenerationPage";
 import SensayChatbotIntegrationPage from "@/pages/SensayChatbotIntegrationPage";
+import SensayConversationAnalyticsPage from "@/pages/SensayConversationAnalyticsPage";
 import { SensayFeaturesDashboard } from "@/components/sensay/SensayFeaturesDashboard";
 
 // AI & Chatbot Pages
@@ -57,6 +59,7 @@ const App = () => (
             {/* Core Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/app" element={<Index />} />
+            <Route path="/tutorial" element={<TutorialPage />} />
             
             {/* Main Application Routes */}
             <Route path="/dashboard" element={<EnhancedDashboard />} />
@@ -72,6 +75,7 @@ const App = () => (
                    <Route path="/ai-services" element={<AIServicesPage />} />
             <Route path="/sensay-leads" element={<SensayLeadGenerationPage />} />
             <Route path="/sensay-chatbot" element={<SensayChatbotIntegrationPage />} />
+            <Route path="/sensay-analytics" element={<SensayConversationAnalyticsPage />} />
             <Route path="/sensay-showcase" element={<SensayHackathonShowcase />} />
             <Route path="/sensay-dashboard" element={<SensayFeaturesDashboard />} />
             
