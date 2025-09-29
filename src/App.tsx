@@ -61,10 +61,11 @@ const App = () => (
             {/* Landing Page - Marketing and introduction (no shared layout) */}
             <Route path="/" element={<LandingPageSimple />} />
 
-            {/* All application pages use a single shared layout to avoid duplicate headers/footers */}
+            {/* Keep /app outside the shared layout to avoid double headers (it has its own) */}
+            <Route path="/app" element={<IndexSimple />} />
+
+            {/* All other application pages use a single shared layout to avoid duplicate headers/footers */}
             <Route element={<NavigationLayout />}> 
-              {/* Main App Entry Point - Clear transition from landing */}
-              <Route path="/app" element={<IndexSimple />} />
               
               {/* Core Real Estate Functionality */}
               <Route path="/dashboard" element={<EnhancedDashboard />} />

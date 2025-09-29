@@ -22,7 +22,7 @@ export const NavigationLayout: React.FC<NavigationLayoutProps> = ({
   showQuickStats = false
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gray-50">
       {/* Enhanced Navigation - Desktop Only */}
       <div className="hidden md:block">
         <EnhancedNavigation />
@@ -37,8 +37,10 @@ export const NavigationLayout: React.FC<NavigationLayoutProps> = ({
       )}
 
       {/* Main Content Area */}
-      <main className="min-h-[calc(100vh-200px)]">
-        {children || <Outlet />}
+      <main className="min-h-[calc(100vh-200px)] bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {children || <Outlet />}
+        </div>
       </main>
     </div>
   );

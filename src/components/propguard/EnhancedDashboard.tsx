@@ -27,25 +27,29 @@ export const EnhancedDashboard = () => {
       id: 'overview',
       label: 'Overview',
       icon: LayoutDashboard,
-      description: 'Property portfolio overview'
+      description: 'Property portfolio overview',
+      color: 'blue'
     },
     {
       id: 'showcase',
       label: 'Property Showcase',
       icon: Home,
-      description: 'Browse and showcase properties'
+      description: 'Browse and showcase properties',
+      color: 'green'
     },
     {
       id: 'analytics',
       label: 'Analytics Dashboard',
       icon: BarChart3,
-      description: 'Advanced analytics and insights'
+      description: 'Advanced analytics and insights',
+      color: 'purple'
     },
     {
       id: 'reports',
       label: 'Reports',
       icon: FileText,
-      description: 'Generate and view reports'
+      description: 'Generate and view reports',
+      color: 'orange'
     }
   ];
 
@@ -85,95 +89,118 @@ export const EnhancedDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Dashboard Header */}
-        <div className="py-8">
-          <div className="mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h1 className="text-3xl font-bold text-foreground">
-                PropGuard Dashboard
-              </h1>
-              <p className="text-muted-foreground mt-2">
+    <div className="min-h-screen bg-gray-50">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-between"
+          >
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <LayoutDashboard className="h-6 w-6" />
+                </div>
+                <h1 className="text-3xl font-bold">PropGuard Dashboard</h1>
+              </div>
+              <p className="text-blue-100 mt-1">
                 Manage your property portfolio with AI-powered insights and analytics
               </p>
-            </motion.div>
-          </div>
-
-          {/* Quick Stats */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-          >
-            <AnimatePresence>
-              {quickStats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <motion.div
-                    key={stat.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <Card className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">
-                              {stat.title}
-                            </p>
-                            <p className="text-2xl font-bold text-foreground">
-                              {stat.value}
-                            </p>
-                            <Badge 
-                              variant={stat.trend === 'up' ? 'default' : 'secondary'}
-                              className="mt-2 text-xs"
-                            >
-                              {stat.change}
-                            </Badge>
-                          </div>
-                          <Icon className={`h-8 w-8 ${stat.color}`} />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Badge className="bg-green-500/20 text-green-100 border-green-300/30">
+                <Activity className="h-3 w-3 mr-1" />
+                All Systems Operational
+              </Badge>
+              <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                <Eye className="h-4 w-4 mr-2" />
+                View All Properties
+              </Button>
+            </div>
           </motion.div>
+        </div>
+      </div>
 
-          {/* Main Content Tabs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <div className="mb-6">
-                <TabsList className="grid w-full max-w-4xl grid-cols-4">
-                  {tabOptions.map((tab) => {
-                    const Icon = tab.icon;
-                    return (
-                      <TabsTrigger 
-                        key={tab.id} 
-                        value={tab.id}
-                        className="flex items-center gap-2"
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span className="hidden sm:inline">{tab.label}</span>
-                        <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-              </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Quick Stats */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          <AnimatePresence>
+            {quickStats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={stat.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <Card className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-600 mb-1">
+                            {stat.title}
+                          </p>
+                          <p className="text-3xl font-bold text-gray-900 mb-2">
+                            {stat.value}
+                          </p>
+                          <Badge 
+                            className={`text-xs font-medium ${
+                              stat.trend === 'up' 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-red-100 text-red-800'
+                            }`}
+                          >
+                            {stat.change}
+                          </Badge>
+                        </div>
+                        <div className={`p-3 rounded-lg ${stat.color.replace('text-', 'bg-').replace('-600', '-100')}`}>
+                          <Icon className={`h-6 w-6 ${stat.color}`} />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Main Content Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <div className="mb-8">
+              <TabsList className="grid w-full max-w-4xl grid-cols-4 bg-gray-100 p-1 rounded-lg">
+                {tabOptions.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <TabsTrigger 
+                      key={tab.id} 
+                      value={tab.id}
+                      className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900 text-gray-600 font-medium"
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
+            </div>
 
               <TabsContent value="overview" className="mt-0">
                 <div className="space-y-8">

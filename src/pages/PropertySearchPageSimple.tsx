@@ -139,22 +139,29 @@ export const PropertySearchPageSimple: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Property Search</h1>
-          <p className="text-gray-600">Find your perfect property with AI-powered insights</p>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <Search className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Property Search</h1>
+              <p className="text-gray-600">Find your perfect property with AI-powered insights</p>
+            </div>
+          </div>
         </div>
 
         {/* Search Filters */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="h-5 w-5" />
+        <Card className="mb-8 shadow-lg border-0">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
+            <CardTitle className="flex items-center gap-2 text-gray-800">
+              <Search className="h-5 w-5 text-blue-600" />
               Search Properties
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
               <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Location
                 </label>
                 <div className="relative">
@@ -163,17 +170,17 @@ export const PropertySearchPageSimple: React.FC = () => {
                     placeholder="Enter suburb, city, or address"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Property Type
                 </label>
                 <Select value={propertyType} onValueChange={setPropertyType}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                     <SelectValue placeholder="Any type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -187,11 +194,11 @@ export const PropertySearchPageSimple: React.FC = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Price Range
                 </label>
                 <Select value={priceRange} onValueChange={setPriceRange}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                     <SelectValue placeholder="Any price" />
                   </SelectTrigger>
                   <SelectContent>
@@ -205,11 +212,11 @@ export const PropertySearchPageSimple: React.FC = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Bedrooms
                 </label>
                 <Select value={bedrooms} onValueChange={setBedrooms}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent>
@@ -223,16 +230,20 @@ export const PropertySearchPageSimple: React.FC = () => {
               </div>
             </div>
             
-            <div className="flex gap-4">
-              <Button onClick={handleSearch} disabled={isLoading} className="flex items-center gap-2">
+            <div className="flex flex-wrap gap-3">
+              <Button 
+                onClick={handleSearch} 
+                disabled={isLoading} 
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg"
+              >
                 <Search className="h-4 w-4" />
                 {isLoading ? 'Searching...' : 'Search Properties'}
               </Button>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button variant="outline" className="flex items-center gap-2 border-gray-300 hover:border-blue-500 hover:text-blue-600">
                 <Filter className="h-4 w-4" />
                 More Filters
               </Button>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button variant="outline" className="flex items-center gap-2 border-gray-300 hover:border-blue-500 hover:text-blue-600">
                 <SortAsc className="h-4 w-4" />
                 Sort
               </Button>
@@ -242,14 +253,15 @@ export const PropertySearchPageSimple: React.FC = () => {
 
         {/* Demo Map: show instantly when typing 123 Collins Street */}
         {showCollinsDemo && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+          <Card className="mb-8 shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-lg">
+              <CardTitle className="flex items-center gap-2 text-gray-800">
+                <MapPin className="h-5 w-5 text-green-600" />
                 123 Collins Street, Melbourne VIC
+                <Badge className="ml-auto bg-green-100 text-green-800">Live Demo</Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <PropertyMap
                 property={{
                   address: '123 Collins Street, Melbourne VIC',
@@ -264,58 +276,66 @@ export const PropertySearchPageSimple: React.FC = () => {
         )}
 
         {/* Results */}
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-gray-600">
-            {results.length} properties found
-          </p>
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-semibold text-gray-900">Search Results</h2>
+            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+              {results.length} properties found
+            </Badge>
+          </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">List View</Button>
-            <Button variant="outline" size="sm">Map View</Button>
+            <Button variant="outline" size="sm" className="border-gray-300 hover:border-blue-500 hover:text-blue-600">
+              List View
+            </Button>
+            <Button variant="outline" size="sm" className="border-gray-300 hover:border-blue-500 hover:text-blue-600">
+              Map View
+            </Button>
           </div>
         </div>
 
         {/* Property Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {results.map((property) => (
-            <Card key={property.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-              <div className="relative">
+            <Card key={property.id} className="hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-lg group">
+              <div className="relative overflow-hidden rounded-t-lg">
                 <img
                   src={property.image}
                   alt={property.address}
-                  className="w-full h-48 object-cover rounded-t-lg"
+                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-3 left-3">
-                  <Badge className={`${getRiskColor(property.riskScore)} font-medium`}>
+                  <Badge className={`${getRiskColor(property.riskScore)} font-medium shadow-sm`}>
                     Risk: {property.riskScore}/100
                   </Badge>
                 </div>
                 <div className="absolute top-3 right-3">
-                  <Badge className={`${getClimateRiskColor(property.climateRisk)} font-medium`}>
+                  <Badge className={`${getClimateRiskColor(property.climateRisk)} font-medium shadow-sm`}>
                     {property.climateRisk} Risk
                   </Badge>
                 </div>
-              </div>
-              
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900 line-clamp-1">
-                    {property.address}
-                  </h3>
+                <div className="absolute bottom-3 right-3">
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="bg-white/90 hover:bg-white text-gray-700">
                       <Heart className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="bg-white/90 hover:bg-white text-gray-700">
                       <Share2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
-                
-                <div className="text-2xl font-bold text-blue-600 mb-3">
-                  ${property.price.toLocaleString()}
+              </div>
+              
+              <CardContent className="p-6">
+                <div className="mb-3">
+                  <h3 className="font-semibold text-gray-900 line-clamp-1 mb-2">
+                    {property.address}
+                  </h3>
+                  <div className="text-2xl font-bold text-blue-600 mb-3">
+                    ${property.price.toLocaleString()}
+                  </div>
                 </div>
                 
-                <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                   <div className="flex items-center gap-1">
                     <Bed className="h-4 w-4" />
                     {property.bedrooms}
@@ -341,7 +361,7 @@ export const PropertySearchPageSimple: React.FC = () => {
                 </p>
                 
                 <Button 
-                  className="w-full" 
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg" 
                   onClick={() => handlePropertyClick(property.id)}
                 >
                   <Eye className="h-4 w-4 mr-2" />

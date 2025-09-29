@@ -220,52 +220,53 @@ export const PropGuardAIChatbot: React.FC = () => {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="container mx-auto p-6 space-y-6"
-    >
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
-      >
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+    <div className="min-h-screen bg-gray-50">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
           >
-            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-full p-3">
-              <Bot className="h-8 w-8 text-white" />
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              >
+                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Bot className="h-8 w-8" />
+                </div>
+              </motion.div>
+              <h1 className="text-4xl font-bold">PropGuard AI Chatbot</h1>
             </div>
+            <p className="text-purple-100 text-lg max-w-2xl mx-auto mb-4">
+              Your intelligent real estate assistant powered by advanced AI personality and emotional intelligence
+            </p>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center justify-center gap-2 flex-wrap"
+            >
+              <Badge className="bg-white/20 text-white px-4 py-2">
+                <Zap className="h-4 w-4 mr-2" />
+                Real Estate Automation
+              </Badge>
+              <Badge className="bg-white/20 text-white px-4 py-2">
+                <Heart className="h-4 w-4 mr-2" />
+                Emotional Intelligence
+              </Badge>
+              <Badge className="bg-white/20 text-white px-4 py-2">
+                <Target className="h-4 w-4 mr-2" />
+                Lead Generation
+              </Badge>
+            </motion.div>
           </motion.div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            PropGuard AI Chatbot
-          </h1>
         </div>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-4">
-          Your intelligent real estate assistant powered by advanced AI personality and emotional intelligence
-        </p>
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center justify-center gap-2"
-        >
-          <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2">
-            <Zap className="h-4 w-4 mr-2" />
-            Real Estate Automation
-          </Badge>
-          <Badge variant="outline" className="px-4 py-2">
-            <Heart className="h-4 w-4 mr-2" />
-            Emotional Intelligence
-          </Badge>
-          <Badge variant="outline" className="px-4 py-2">
-            <Target className="h-4 w-4 mr-2" />
-            Lead Generation
-          </Badge>
-        </motion.div>
-      </motion.div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
       {/* Metrics Overview */}
       {metrics && (
