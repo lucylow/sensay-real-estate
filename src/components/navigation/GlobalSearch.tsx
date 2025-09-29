@@ -236,3 +236,4 @@ const GlobalSearch: React.FC = () => {
 
 export default GlobalSearch;
 
+
