@@ -4,10 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
-import SensayEnhancedChatWidget from "@/components/SensayEnhancedChatWidget";
 
 // Core Pages - Essential navigation flow
-import LandingPage from "@/components/LandingPage";
+import LandingPageSimple from "@/components/LandingPageSimple";
 import IndexSimple from "@/pages/IndexSimple";
 import NotFound from "./pages/NotFound";
 
@@ -57,7 +56,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Landing Page - Marketing and introduction */}
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<LandingPageSimple />} />
             
             {/* Main App Entry Point - Clear transition from landing */}
             <Route path="/app" element={<IndexSimple />} />
@@ -82,8 +81,6 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           
-          {/* Sensay Enhanced Chat Widget - Available on all pages */}
-          <SensayEnhancedChatWidget />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

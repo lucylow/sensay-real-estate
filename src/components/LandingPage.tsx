@@ -11,7 +11,7 @@ const LandingPage = () => {
   };
 
   const handleChatClick = () => {
-    navigate('/sensay-chatbot');
+    navigate('/chat');
   };
 
   const handleDashboardClick = () => {
@@ -77,7 +77,7 @@ const LandingPage = () => {
                       <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Sensay AI</h3>
                     </div>
                     <button 
-                      onClick={() => navigate('/sensay-chatbot')}
+                      onClick={() => navigate('/chat')}
                       className="w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
                       <MessageCircle className="mr-3 h-4 w-4" />
@@ -87,7 +87,7 @@ const LandingPage = () => {
                       </div>
                     </button>
                     <button 
-                      onClick={() => navigate('/sensay-wisdom')}
+                      onClick={() => navigate('/sensay')}
                       className="w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
                       <Brain className="mr-3 h-4 w-4" />
@@ -99,7 +99,7 @@ const LandingPage = () => {
                   </div>
                 </div>
               </div>
-              <button onClick={() => navigate('/page-directory')} className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+              <button onClick={() => navigate('/app')} className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
                 All Features
               </button>
             </div>
@@ -362,7 +362,7 @@ const LandingPage = () => {
                 <ArrowRight className="ml-1 h-4 w-4" />
               </button>
             </div>
-
+            
             <div className="text-center p-8 rounded-xl hover:shadow-lg transition-shadow">
               <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Brain className="h-8 w-8 text-purple-600" />
@@ -372,14 +372,14 @@ const LandingPage = () => {
                 Interact with our advanced Sensay AI assistant for instant property insights and analysis.
               </p>
               <button 
-                onClick={() => navigate('/sensay-chatbot')}
+                onClick={() => navigate('/chat')}
                 className="text-purple-600 font-medium hover:text-purple-700 flex items-center justify-center"
               >
                 Try AI Assistant
                 <ArrowRight className="ml-1 h-4 w-4" />
               </button>
             </div>
-
+            
             <div className="text-center p-8 rounded-xl hover:shadow-lg transition-shadow">
               <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Shield className="h-8 w-8 text-green-600" />
@@ -418,7 +418,7 @@ const LandingPage = () => {
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
             <button 
-              onClick={() => navigate('/page-directory')}
+              onClick={() => navigate('/app')}
               className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition"
             >
               Explore All Features
@@ -448,23 +448,23 @@ const LandingPage = () => {
                 <li><button onClick={() => navigate('/search')} className="hover:text-white transition">Property Search</button></li>
                 <li><button onClick={() => navigate('/market-analysis')} className="hover:text-white transition">Market Analysis</button></li>
                 <li><button onClick={() => navigate('/sensay-chatbot')} className="hover:text-white transition">AI Assistant</button></li>
-                <li><button onClick={() => navigate('/sensay-wisdom')} className="hover:text-white transition">Sensay Wisdom</button></li>
+                <li><button onClick={() => navigate('/sensay')} className="hover:text-white transition">Sensay Wisdom</button></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Resources</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><button onClick={() => navigate('/page-directory')} className="hover:text-white transition">All Features</button></li>
+                <li><button onClick={() => navigate('/app')} className="hover:text-white transition">All Features</button></li>
                 <li><button onClick={() => navigate('/dashboard')} className="hover:text-white transition">Dashboard</button></li>
-                <li><button onClick={() => navigate('/sensay-features')} className="hover:text-white transition">Sensay Features</button></li>
-                <li><button onClick={() => navigate('/blockchain')} className="hover:text-white transition">Blockchain</button></li>
+                <li><button onClick={() => navigate('/sensay')} className="hover:text-white transition">Sensay Features</button></li>
+                <li><button onClick={() => navigate('/showcase')} className="hover:text-white transition">Blockchain</button></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
                 <li><button onClick={handleChatClick} className="hover:text-white transition">Contact Support</button></li>
-                <li><button onClick={() => navigate('/smart-faq')} className="hover:text-white transition">FAQ</button></li>
+                <li><button onClick={() => navigate('/chat')} className="hover:text-white transition">FAQ</button></li>
                 <li><button onClick={() => navigate('/app')} className="hover:text-white transition">Sign In</button></li>
                 <li><button onClick={handleGetStartedClick} className="hover:text-white transition">Get Started</button></li>
               </ul>

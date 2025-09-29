@@ -110,10 +110,10 @@ export const SensayEnhancedChatWidget: React.FC = () => {
       };
 
       if (!credentials.apiKey) {
-        console.log('⚠️ No Sensay API key found, using fallback mode');
+        console.log('⚠️ No Sensay API key found, using offline mode');
         setSensayAuth({
           isAuthenticated: false,
-          error: 'No Sensay API key configured. Using fallback AI responses.'
+          error: undefined
         });
         return;
       }
@@ -458,18 +458,6 @@ What would you like to explore?`,
 
         {!isMinimized && (
           <CardContent className="flex flex-col h-full p-0">
-            {/* Sensay Status Alert */}
-            {sensayAuth.error && (
-              <Alert className="mx-4 mt-4 mb-2">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  <div className="space-y-1">
-                    <p className="font-medium">AI Status: {sensayAuth.error}</p>
-                    <p className="text-gray-600">Using advanced PropGuard AI fallback responses</p>
-                  </div>
-                </AlertDescription>
-              </Alert>
-            )}
 
             {/* Messages */}
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
