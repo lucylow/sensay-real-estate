@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ['video.js'],
+    include: [],
     exclude: []
   },
   define: {
