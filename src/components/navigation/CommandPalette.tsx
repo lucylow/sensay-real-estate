@@ -369,3 +369,4 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 };
 
 export default CommandPalette;
+
