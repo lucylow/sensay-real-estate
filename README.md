@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Sensay Hackathon](https://img.shields.io/badge/Sensay-Hackathon%202024-purple?logo=sensay)](https://sensay.io/hackathon)
 
-> 🏆 **Sensay Hackathon 2024 Winner** - Complete AI-powered real estate platform integrating Sensay's conversational AI with PropGuard AI's property analysis for intelligent lead generation, automated scheduling, multilingual support, and comprehensive analytics.
+Complete AI-powered real estate platform integrating Sensay's conversational AI with PropGuard AI's property analysis for intelligent lead generation, automated scheduling, multilingual support, and comprehensive analytics.
 
 ## 📋 Submission Requirements Completed
 
