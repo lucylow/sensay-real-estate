@@ -4,13 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
-import { EnhancedChatWidget } from "@/components/EnhancedChatWidget";
+import SensayEnhancedChatWidget from "@/components/SensayEnhancedChatWidget";
 
 // Core Pages
 import LandingPage from "@/components/LandingPage";
 import Index from "@/pages/Index";
 import NotFound from "./pages/NotFound";
-import TutorialPage from "@/pages/TutorialPage";
 
 // Main Application Pages
 import { EnhancedDashboard } from "@/components/propguard/EnhancedDashboard";
@@ -59,7 +58,6 @@ const App = () => (
             {/* Core Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/app" element={<Index />} />
-            <Route path="/tutorial" element={<TutorialPage />} />
             
             {/* Main Application Routes */}
             <Route path="/dashboard" element={<EnhancedDashboard />} />
@@ -99,8 +97,8 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           
-          {/* Enhanced Chat Widget - Available on all pages */}
-          <EnhancedChatWidget />
+          {/* Sensay Enhanced Chat Widget - Available on all pages */}
+          <SensayEnhancedChatWidget />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
