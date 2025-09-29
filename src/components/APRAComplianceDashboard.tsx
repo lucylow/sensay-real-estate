@@ -14,7 +14,7 @@ import {
   DollarSign 
 } from 'lucide-react';
 import { COLLINS_STREET_MOCK_DATA } from '@/data/mockData';
-import { EnhancedSensayAssistant } from '@/components/SimpleEnhancedComponents';
+import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
 import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 
 export const APRAComplianceDashboard = () => {
