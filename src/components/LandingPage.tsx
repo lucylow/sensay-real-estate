@@ -102,18 +102,25 @@ const LandingPage = () => {
                       Risk Assessment
                     </button>
                     <button 
-                      onClick={() => navigate('/heygen-test')}
+                      onClick={() => navigate('/avatar-features')}
                       className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
                       <Video className="mr-2 h-4 w-4" />
-                      Video Avatars
+                      AI Video Avatars
+                    </button>
+                    <button 
+                      onClick={() => navigate('/heygen-test')}
+                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
+                    >
+                      <Bot className="mr-2 h-4 w-4" />
+                      HeyGen Integration
                     </button>
                     <button 
                       onClick={() => navigate('/multimodal-test')}
                       className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center"
                     >
                       <Mic className="mr-2 h-4 w-4" />
-                      Voice & Audio
+                      Voice Synthesis
                     </button>
                     <button 
                       onClick={() => navigate('/blockchain')}
@@ -251,12 +258,21 @@ const LandingPage = () => {
               </button>
               <button 
                 onClick={() => {
+                  navigate('/avatar-features');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                AI Video Avatars
+              </button>
+              <button 
+                onClick={() => {
                   navigate('/heygen-test');
                   setIsMobileMenuOpen(false);
                 }}
                 className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
               >
-                Video Avatars
+                HeyGen Integration
               </button>
               <button 
                 onClick={() => {
@@ -265,7 +281,7 @@ const LandingPage = () => {
                 }}
                 className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
               >
-                Voice & Audio
+                Voice Synthesis
               </button>
               <button 
                 onClick={() => {
@@ -312,7 +328,7 @@ const LandingPage = () => {
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Revolutionize mortgage lending with real-time climate risk analysis, 
-                blockchain-verified valuations, and APRA CPS 230 compliance. 
+                blockchain-verified valuations, APRA CPS 230 compliance, and AI-powered multimodal interactions. 
                 Reduce loan defaults by 30% while ensuring regulatory compliance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">

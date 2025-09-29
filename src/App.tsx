@@ -41,10 +41,12 @@ import { VirtualTourBooking } from "@/components/VirtualTourBooking";
 import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
 import { BlockchainIntegrationPage } from "@/pages/BlockchainIntegrationPage";
+import { PlatformDemosPage } from "@/pages/PlatformDemosPage";
 
 // Test & Development Pages
 import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
 import { MultimodalTestPage } from "@/pages/MultimodalTestPage";
+import EnhancedAvatarFeatures from "@/pages/EnhancedAvatarFeatures";
 
 const queryClient = new QueryClient();
 
@@ -90,10 +92,12 @@ const App = () => (
             <Route path="/leads" element={<LeadDashboard />} />
             <Route path="/appointments" element={<AppointmentManager />} />
             <Route path="/blockchain" element={<BlockchainIntegrationPage />} />
+            <Route path="/platform-demos" element={<PlatformDemosPage />} />
             
             {/* Test & Development Routes */}
             <Route path="/heygen-test" element={<HeyGenTestPage />} />
             <Route path="/multimodal-test" element={<MultimodalTestPage />} />
+            <Route path="/avatar-features" element={<EnhancedAvatarFeatures />} />
             
             {/* Catch-all Route */}
             <Route path="*" element={<NotFound />} />

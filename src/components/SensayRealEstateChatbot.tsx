@@ -36,6 +36,8 @@ import { aiRiskPredictionEngine } from '@/services/aiRiskPredictionEngine';
 import { dynamicPricingIntelligence } from '@/services/dynamicPricingIntelligence';
 import { contextualMemorySystem } from '@/services/contextualMemorySystem';
 import { usePropertyAnalysis } from '@/hooks/usePropertyAnalysis';
+import { sensayPersonalityIntegration } from '@/services/sensayPersonalityIntegration';
+import { SENSAY_PERSONALITY_CONFIG } from '@/data/sensayPersonalityTraining';
 
 interface LeadData {
   id: string;
@@ -87,6 +89,18 @@ interface ConversationMessage {
     entities?: Record<string, unknown>;
     confidence?: number;
     actions?: string[];
+    personality?: {
+      tone?: any;
+      userType?: string;
+      language?: string;
+      emotionalState?: string;
+    };
+    analytics?: {
+      userType?: string;
+      emotionalState?: string;
+      conversationStage?: string;
+      satisfactionPrediction?: number;
+    };
   };
 }
 
@@ -122,6 +136,12 @@ const SensayRealEstateChatbot: React.FC<SensayRealEstateChatbotProps> = ({
   const [predictiveSuggestions, setPredictiveSuggestions] = useState<string[]>([]);
   const [conversationQuality, setConversationQuality] = useState<number>(0);
   const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false);
+  
+  // Personality system state
+  const [userType, setUserType] = useState<string>('first_time_buyer');
+  const [personalityAnalytics, setPersonalityAnalytics] = useState<any>(null);
+  const [emotionalState, setEmotionalState] = useState<string>('neutral');
+  const [personalityEnabled, setPersonalityEnabled] = useState(true);
   
   const recognitionRef = useRef<any>(null);
   const sensayAPI = useRef(new SensayAPI());
@@ -368,53 +388,91 @@ What brings you here today?`,
     setIsTyping(true);
 
     try {
-      // Predict user intent with contextual memory
-      const intentPrediction = await contextualMemorySystem.predictUserIntent(userId, currentMessage);
-      
-      // Process message with Sensay API
-      const response = await sensayAPI.current.chat(currentMessage, {
-        property: leadData,
-        analysis: riskAnalysis,
-        sessionId: conversationId,
-        userInfo: { userId, language },
-        interactionHistory: conversationHistory.slice(-5)
-      });
-      
-      // Analyze intent and entities
-      const intent = intentPrediction.intent || response.metadata?.intent || 'general';
-      const entities = response.metadata?.entities || {};
-      
-      // Update lead data based on conversation
-      await updateLeadData(userMessage, intent, entities);
-      
-      // Update user behavioral data
-      await contextualMemorySystem.updateBehavioralData(userId, {
-        type: 'message',
-        data: { duration: 0, query: currentMessage }
-      });
-      
-      // Generate appropriate response with contextual enhancement
-      const assistantResponse = await generateResponse(intent, entities, response);
-      
-      // Enhance response with contextual memory
-      const contextualResponse = await contextualMemorySystem.generateContextualResponse(
-        userId,
-        currentMessage,
-        assistantResponse.content
-      );
-      
-      const assistantMessage: ConversationMessage = {
-        id: `msg_${Date.now() + 1}`,
-        type: 'assistant',
-        content: contextualResponse,
-        timestamp: new Date(),
-        metadata: {
-          intent,
-          entities,
-          confidence: response.confidence,
-          actions: assistantResponse.actions
-        }
-      };
+      let assistantMessage: ConversationMessage;
+
+      if (personalityEnabled) {
+        // Use personality integration for enhanced responses
+        const personalityResponse = await sensayPersonalityIntegration.generateEnhancedChatCompletion({
+          userId,
+          message: currentMessage,
+          context: {
+            platform: 'web',
+            language,
+            userType,
+            conversationId,
+            previousMessages: conversationHistory.slice(-5).map(msg => ({
+              role: msg.type === 'user' ? 'user' : 'assistant',
+              content: msg.content,
+              timestamp: msg.timestamp
+            }))
+          }
+        });
+
+        // Update emotional state and analytics
+        setEmotionalState(personalityResponse.analytics.emotionalState);
+        setPersonalityAnalytics(personalityResponse.analytics);
+
+        assistantMessage = {
+          id: `msg_${Date.now() + 1}`,
+          type: 'assistant',
+          content: personalityResponse.content,
+          timestamp: new Date(),
+          metadata: {
+            intent: 'personality_enhanced',
+            entities: {},
+            confidence: personalityResponse.personality.confidence,
+            actions: personalityResponse.actions.immediate,
+            personality: {
+              tone: personalityResponse.personality.tone,
+              userType: personalityResponse.personality.metadata.userType,
+              language: personalityResponse.personality.metadata.language,
+              emotionalState: personalityResponse.personality.metadata.emotionalAdaptation
+            },
+            analytics: personalityResponse.analytics
+          }
+        };
+
+        // Update lead data based on personality insights
+        await updateLeadDataWithPersonality(userMessage, personalityResponse);
+
+      } else {
+        // Fallback to original Sensay API processing
+        const intentPrediction = await contextualMemorySystem.predictUserIntent(userId, currentMessage);
+        
+        const response = await sensayAPI.current.chat(currentMessage, {
+          property: leadData,
+          analysis: riskAnalysis,
+          sessionId: conversationId,
+          userInfo: { userId, language },
+          interactionHistory: conversationHistory.slice(-5)
+        });
+        
+        const intent = intentPrediction.intent || response.metadata?.intent || 'general';
+        const entities = response.metadata?.entities || {};
+        
+        await updateLeadData(userMessage, intent, entities);
+        
+        const assistantResponse = await generateResponse(intent, entities, response);
+        
+        const contextualResponse = await contextualMemorySystem.generateContextualResponse(
+          userId,
+          currentMessage,
+          assistantResponse.content
+        );
+        
+        assistantMessage = {
+          id: `msg_${Date.now() + 1}`,
+          type: 'assistant',
+          content: contextualResponse,
+          timestamp: new Date(),
+          metadata: {
+            intent,
+            entities,
+            confidence: response.confidence,
+            actions: assistantResponse.actions
+          }
+        };
+      }
 
       setConversationHistory(prev => [...prev, assistantMessage]);
       
@@ -508,6 +566,56 @@ What brings you here today?`,
     setLeadData(updatedLead);
   };
 
+  const updateLeadDataWithPersonality = async (message: ConversationMessage, personalityResponse: any) => {
+    if (!leadData) {
+      // Initialize new lead
+      const newLead: LeadData = {
+        id: `lead_${Date.now()}`,
+        leadScore: 0,
+        status: 'new',
+        interactions: []
+      };
+      setLeadData(newLead);
+    }
+
+    // Update lead data based on personality insights
+    const updatedLead = { ...leadData! };
+    const analytics = personalityResponse.analytics;
+    const personality = personalityResponse.personality;
+    
+    // Extract information from personality-enhanced response
+    const entities = personalityResponse.sensay?.metadata || {};
+    if (entities.budget) updatedLead.budgetRange = entities.budget;
+    if (entities.location) updatedLead.preferredLocations = entities.location;
+    if (entities.propertyType) updatedLead.propertyTypes = entities.propertyType;
+    if (entities.timeline) updatedLead.timeline = entities.timeline;
+    if (entities.financing) updatedLead.financingStatus = entities.financing;
+    if (entities.email) updatedLead.email = entities.email;
+    if (entities.phone) updatedLead.phone = entities.phone;
+    if (entities.name) updatedLead.name = entities.name;
+    
+    // Add interaction with personality metadata
+    updatedLead.interactions.push({
+      timestamp: message.timestamp,
+      message: message.content,
+      response: personalityResponse.content,
+      channel: 'web',
+      intent: 'personality_enhanced'
+    });
+
+    // Calculate lead score with personality enhancements
+    updatedLead.leadScore = calculateLeadScoreWithPersonality(updatedLead, analytics, personality);
+    
+    // Update status based on score
+    if (updatedLead.leadScore >= 80) {
+      updatedLead.status = 'qualified';
+    } else if (updatedLead.leadScore >= 60) {
+      updatedLead.status = 'contacted';
+    }
+
+    setLeadData(updatedLead);
+  };
+
   const calculateLeadScore = (lead: LeadData, currentIntent: string): number => {
     let score = 0;
     
@@ -550,6 +658,53 @@ What brings you here today?`,
     else if (interactionCount >= 1) score += 5;
     
     return Math.min(score, 100);
+  };
+
+  const calculateLeadScoreWithPersonality = (lead: LeadData, analytics: any, personality: any): number => {
+    let score = 0;
+    
+    // Standard lead scoring (70% weight)
+    score += calculateLeadScore(lead, 'personality_enhanced') * 0.7;
+    
+    // Personality enhancements (30% weight)
+    const personalityScore = 0;
+    
+    // Emotional state scoring
+    const emotionalScore = getEmotionalScore(analytics.emotionalState);
+    
+    // User type scoring
+    const userTypeScore = getUserTypeScore(personality.metadata.userType);
+    
+    // Confidence scoring
+    const confidenceScore = (personality.confidence || 0.8) * 20;
+    
+    score += (emotionalScore + userTypeScore + confidenceScore) * 0.3;
+    
+    return Math.min(score, 100);
+  };
+
+  const getEmotionalScore = (emotionalState: string): number => {
+    switch (emotionalState) {
+      case 'excited': return 25;
+      case 'urgent': return 20;
+      case 'neutral': return 15;
+      case 'uncertain': return 10;
+      case 'stressed': return 5;
+      case 'frustrated': return 0;
+      default: return 15;
+    }
+  };
+
+  const getUserTypeScore = (userType: string): number => {
+    switch (userType) {
+      case 'investor': return 25;
+      case 'seller': return 20;
+      case 'agent': return 18;
+      case 'professional': return 16;
+      case 'first_time_buyer': return 12;
+      case 'renter': return 10;
+      default: return 12;
+    }
   };
 
   const generateResponse = async (intent: string, entities: any, sensayResponse: any): Promise<{content: string, actions: string[]}> => {
