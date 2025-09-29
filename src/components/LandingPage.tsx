@@ -7,20 +7,16 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleDemoClick = () => {
-    navigate('/demo');
-  };
-
   const handleGetStartedClick = () => {
-    navigate('/setup');
+    navigate('/app');
   };
 
-  const handleFeaturesClick = () => {
-    navigate('/sensay-features');
+  const handleChatClick = () => {
+    navigate('/chat');
   };
 
-  const handleSensayDemoClick = () => {
-    navigate('/sensay-leads');
+  const handleDashboardClick = () => {
+    navigate('/dashboard'); 
   };
 
   return (
@@ -40,12 +36,12 @@ const LandingPage = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              <a href="#features" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
-                Features
-              </a>
-              <a href="#pricing" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
-                Pricing
-              </a>
+              <button onClick={handleDashboardClick} className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                Dashboard
+              </button>
+              <button onClick={handleChatClick} className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                Try AI Assistant
+              </button>
               <div className="relative group">
                 <button className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center">
                   Products
@@ -341,15 +337,18 @@ const LandingPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <button 
-                  onClick={handleDemoClick}
+                  onClick={handleGetStartedClick}
                   className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center"
                 >
-                  Try Demo: 123 Main Street
+                  Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
-                <button className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:border-gray-400 transition flex items-center justify-center">
-                  <Play className="mr-2 h-5 w-5" />
-                  Watch Demo Video
+                <button 
+                  onClick={handleChatClick}
+                  className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:border-gray-400 transition flex items-center justify-center"
+                >
+                  <Bot className="mr-2 h-5 w-5" />
+                  Try AI Assistant
                 </button>
               </div>
               <div className="flex items-center space-x-6 text-sm text-gray-600">

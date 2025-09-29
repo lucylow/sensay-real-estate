@@ -1,5 +1,5 @@
 import React from 'react';
-import { AIServicesShowcase } from '@/components/AIServicesShowcase';
+import AIServicesShowcase from '@/components/AIServicesShowcase';
 import { IntelligentLeadScoring } from '@/components/IntelligentLeadScoring';
 import { AutomatedNurturing } from '@/components/AutomatedNurturing';
 import { EnhancedSensayFeatures } from '@/components/EnhancedSensayFeatures';

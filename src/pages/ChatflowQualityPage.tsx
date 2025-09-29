@@ -8,7 +8,7 @@ import {
   Star, Users, TrendingUp, Settings, Activity, CheckCircle
 } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
-import { QualityControlledAssistant } from '@/components/QualityControlledAssistant';
+import QualityControlledAssistant from '@/components/QualityControlledAssistant';
 import { ConversationAnalyticsDashboard } from '@/components/ConversationAnalyticsDashboard';
 import { ChatFlowQualityEngine, ConversationState, ConversationMetrics } from '@/services/chatflow/qualityEngine';
 

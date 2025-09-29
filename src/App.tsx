@@ -6,52 +6,48 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import SensayEnhancedChatWidget from "@/components/SensayEnhancedChatWidget";
 
-// Core Pages
+// Core Pages - Essential navigation flow
 import LandingPage from "@/components/LandingPage";
 import Index from "@/pages/Index";
 import NotFound from "./pages/NotFound";
 
-// Main Application Pages
+// Main Application Pages - Core real estate functionality
 import { EnhancedDashboard } from "@/components/propguard/EnhancedDashboard";
 import { PropertySearchPage } from "@/pages/PropertySearchPage";
 import { PropertyDetailPage } from "@/pages/PropertyDetailPage";
 import { MarketAnalysisPage } from "@/pages/MarketAnalysisPage";
 import { ValuationReportPage } from "@/pages/ValuationReportPage";
 
-// Sensay Integration Pages
+// AI & Chatbot - Consolidated Sensay integration
 import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
-import SensayFeaturesPage from "@/pages/SensayFeaturesPage";
-import SensayWisdomPage from "@/pages/SensayWisdomPage";
-import AIServicesPage from "@/pages/AIServicesPage";
-import SensayLeadGenerationPage from "@/pages/SensayLeadGenerationPage";
-import SensayChatbotIntegrationPage from "@/pages/SensayChatbotIntegrationPage";
-import SensayConversationAnalyticsPage from "@/pages/SensayConversationAnalyticsPage";
-import SensayWisdomChatbotPage from "@/pages/SensayWisdomChatbotPage";
-import { SensayFeaturesDashboard } from "@/components/sensay/SensayFeaturesDashboard";
-
-// AI & Chatbot Pages
 import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
-import { SensayHackathonShowcase } from "@/components/SensayHackathonShowcase";
-import KnowledgeMonitoringDashboard from "@/components/KnowledgeMonitoringDashboard";
 
-// Feature Pages
+// Essential Features - Most important to users
 import { PropertyShowcase } from "@/components/PropertyShowcase";
-import { SmartFAQ } from "@/components/SmartFAQ";
-import { VirtualTourBooking } from "@/components/VirtualTourBooking";
 import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
 
-// Additional Pages
-import { BlockchainIntegrationPage } from "@/pages/BlockchainIntegrationPage";
-import { PlatformDemosPage } from "@/pages/PlatformDemosPage";
-import MenuDirectory from "@/pages/MenuDirectory";
-import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
-import { MultimodalTestPage } from "@/pages/MultimodalTestPage";
-import EnhancedAvatarFeatures from "@/pages/EnhancedAvatarFeatures";
-import TestPage from "@/pages/TestPage";
-
 const queryClient = new QueryClient();
 
+/**
+ * Simplified Application with Clear Navigation Flow:
+ * 
+ * 1. Landing Page (/) - Introduction and marketing
+ * 2. App Dashboard (/app) - Main entry point after landing
+ * 3. Core Features:
+ *    - Dashboard (/dashboard) - Overview and analytics
+ *    - Search (/search) - Property search
+ *    - Property Details (/property/:id) - Individual property view
+ *    - Market Analysis (/market-analysis) - Market insights
+ *    - Reports (/report/:reportId) - Valuation reports
+ * 4. AI Integration:
+ *    - Sensay Integration (/sensay) - Configure Sensay AI
+ *    - AI Chatbot (/chat) - Main chatbot interface
+ * 5. Essential Features:
+ *    - Property Showcase (/showcase) - Property listings
+ *    - Leads (/leads) - Lead management
+ *    - Appointments (/appointments) - Schedule management
+ */
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
@@ -60,48 +56,27 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Core Routes */}
+            {/* Landing Page - Marketing and introduction */}
             <Route path="/" element={<LandingPage />} />
+            
+            {/* Main App Entry Point - Clear transition from landing */}
             <Route path="/app" element={<Index />} />
             
-            {/* Main Application Routes */}
+            {/* Core Real Estate Functionality */}
             <Route path="/dashboard" element={<EnhancedDashboard />} />
             <Route path="/search" element={<PropertySearchPage />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
             <Route path="/market-analysis" element={<MarketAnalysisPage />} />
             <Route path="/report/:reportId" element={<ValuationReportPage />} />
             
-            {/* Sensay Integration Routes */}
+            {/* AI Integration - Consolidated Sensay functionality */}
             <Route path="/sensay" element={<SensayIntegrationPage />} />
-                   <Route path="/sensay-features" element={<SensayFeaturesPage />} />
-                   <Route path="/sensay-wisdom" element={<SensayWisdomPage />} />
-                   <Route path="/ai-services" element={<AIServicesPage />} />
-            <Route path="/sensay-leads" element={<SensayLeadGenerationPage />} />
-            <Route path="/sensay-chatbot" element={<SensayChatbotIntegrationPage />} />
-            <Route path="/sensay-wisdom-chatbot" element={<SensayWisdomChatbotPage />} />
-            <Route path="/sensay-analytics" element={<SensayConversationAnalyticsPage />} />
-            <Route path="/sensay-showcase" element={<SensayHackathonShowcase />} />
-            <Route path="/sensay-dashboard" element={<SensayFeaturesDashboard />} />
+            <Route path="/chat" element={<PropGuardAIChatbot />} />
             
-            {/* AI & Chatbot Routes */}
-            <Route path="/propguard-chatbot" element={<PropGuardAIChatbot />} />
-            <Route path="/knowledge-dashboard" element={<KnowledgeMonitoringDashboard />} />
-            
-            {/* Feature Routes */}
-            <Route path="/page-directory" element={<MenuDirectory />} />
-            <Route path="/property-showcase" element={<PropertyShowcase />} />
-            <Route path="/smart-faq" element={<SmartFAQ />} />
-            <Route path="/virtual-tours" element={<VirtualTourBooking />} />
+            {/* Essential Real Estate Features */}
+            <Route path="/showcase" element={<PropertyShowcase />} />
             <Route path="/leads" element={<LeadDashboard />} />
             <Route path="/appointments" element={<AppointmentManager />} />
-            <Route path="/blockchain" element={<BlockchainIntegrationPage />} />
-            <Route path="/platform-demos" element={<PlatformDemosPage />} />
-            
-            {/* Test & Development Routes */}
-            <Route path="/heygen-test" element={<HeyGenTestPage />} />
-            <Route path="/multimodal-test" element={<MultimodalTestPage />} />
-            <Route path="/avatar-features" element={<EnhancedAvatarFeatures />} />
-            <Route path="/test" element={<TestPage />} />
             
             {/* Catch-all Route */}
             <Route path="*" element={<NotFound />} />
