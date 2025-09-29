@@ -10,7 +10,7 @@ import { Search, MapPin, Bed, Bath, Car, Square, DollarSign } from 'lucide-react
 import { realtyBaseAPI, PropertySearchParams, PropertyDetails } from '@/services/api/realtybase';
 import { useToast } from '@/hooks/use-toast';
 import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
-import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
+// import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 
 export const PropertySearchPage: React.FC = () => {
   const navigate = useNavigate();

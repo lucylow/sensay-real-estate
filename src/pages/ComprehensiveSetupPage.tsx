@@ -20,9 +20,9 @@ import {
   Home,
   Bot
 } from 'lucide-react';
-import APITestingComponent from './APITestingComponent';
-import APIStatusDashboard from './APIStatusDashboard';
-import SensaySetup from './SensaySetup';
+// import APITestingComponent from './APITestingComponent';
+// import APIStatusDashboard from './APIStatusDashboard';
+// import SensaySetup from './SensaySetup';
 
 export const ComprehensiveSetupPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('status');
@@ -79,17 +79,27 @@ export const ComprehensiveSetupPage: React.FC = () => {
 
         {/* Status Tab */}
         <TabsContent value="status" className="space-y-6">
-          <APIStatusDashboard />
+          <div className="p-8 text-center">
+            <h3 className="text-lg font-medium mb-2">API Status</h3>
+            <p className="text-gray-600">API status monitoring coming soon...</p>
+          </div>
         </TabsContent>
 
         {/* Testing Tab */}
         <TabsContent value="testing" className="space-y-6">
-          <APITestingComponent />
+          {/* <APITestingComponent /> */}
+          <div className="p-8 text-center">
+            <h3 className="text-lg font-medium mb-2">API Testing</h3>
+            <p className="text-gray-600">API testing functionality coming soon...</p>
+          </div>
         </TabsContent>
 
         {/* Sensay Tab */}
         <TabsContent value="sensay" className="space-y-6">
-          <SensaySetup />
+          <div className="p-8 text-center">
+            <h3 className="text-lg font-medium mb-2">Sensay Setup</h3>
+            <p className="text-gray-600">Sensay configuration coming soon...</p>
+          </div>
         </TabsContent>
 
         {/* Overview Tab */}

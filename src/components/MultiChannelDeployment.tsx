@@ -450,8 +450,13 @@ const MultiChannelDeployment: React.FC = () => {
                       placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
                       readOnly
                     />
-                    <Button variant="outline" size="sm">
-                      <Copy className="h-4 w-4" />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      aria-label="Copy email address to clipboard"
+                      onClick={() => navigator.clipboard.writeText(deployments.email.emailAddress || '')}
+                    >
+                      <Copy className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </div>
                 </div>
@@ -535,8 +540,13 @@ const MultiChannelDeployment: React.FC = () => {
                       placeholder="assistant@propguard.ai"
                       readOnly
                     />
-                    <Button variant="outline" size="sm">
-                      <Copy className="h-4 w-4" />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      aria-label="Copy email address to clipboard"
+                      onClick={() => navigator.clipboard.writeText(deployments.email.emailAddress || '')}
+                    >
+                      <Copy className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </div>
                 </div>
@@ -552,7 +562,11 @@ const MultiChannelDeployment: React.FC = () => {
                   id="email-signature" 
                   defaultValue="Best regards,\nPropGuard AI Assistant\nPowered by Sensay Wisdom Engine"
                   rows={3}
+                  aria-describedby="email-signature-help"
                 />
+                <p id="email-signature-help" className="text-sm text-muted-foreground mt-1">
+                  Customize the email signature for your PropGuard AI assistant
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -581,12 +595,12 @@ const MultiChannelDeployment: React.FC = () => {
                 >
                   {deployments.email.status === 'active' ? (
                     <>
-                      <CheckCircle className="h-4 w-4 mr-2" />
+                      <CheckCircle className="h-4 w-4 mr-2" aria-hidden="true" />
                       Email Assistant Active
                     </>
                   ) : (
                     <>
-                      <Zap className="h-4 w-4 mr-2" />
+                      <Zap className="h-4 w-4 mr-2" aria-hidden="true" />
                       Deploy Email Assistant
                     </>
                   )}

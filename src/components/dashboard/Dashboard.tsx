@@ -42,30 +42,42 @@ export const Dashboard: React.FC = () => {
   } = usePropertyAnalysis();
 
   const handlePropertyAnalysis = async (address: string, propertyData?: any) => {
-    console.log('Analyzing property:', address, propertyData);
-    
-    // Always trigger the actual analysis
-    await analyzeProperty(address);
-    
-    // Set property data based on input
-    if (address.toLowerCase().includes('collins street') || propertyData === COLLINS_STREET_MOCK_DATA) {
-      setSelectedProperty({
-        ...COLLINS_STREET_MOCK_DATA.propertyData,
-        address,
-        coordinates: { lat: -37.8136, lng: 144.9631 },
-        riskData: {
-          flood: COLLINS_STREET_MOCK_DATA.propertyAnalysis.analysis_result.risk.flood,
-          fire: COLLINS_STREET_MOCK_DATA.propertyAnalysis.analysis_result.risk.fire,
-          coastal: COLLINS_STREET_MOCK_DATA.propertyAnalysis.analysis_result.risk.coastalErosion
-        }
-      });
-      setPropertyValuation(COLLINS_STREET_MOCK_DATA.propertyAnalysis);
-    } else {
-      setSelectedProperty(propertyData || { 
-        address,
-        coordinates: { lat: -33.8688, lng: 151.2093 } // Default Sydney coordinates
-      });
-      setPropertyValuation(analysis);
+    try {
+      console.log('Analyzing property:', address, propertyData);
+      
+      // Always trigger the actual analysis
+      await analyzeProperty(address);
+      
+      // Set property data based on input
+      if (address.toLowerCase().includes('collins street') || propertyData === COLLINS_STREET_MOCK_DATA) {
+        const newPropertyData = {
+          ...COLLINS_STREET_MOCK_DATA.propertyData,
+          address,
+          coordinates: { lat: -37.8136, lng: 144.9631 },
+          riskData: {
+            flood: COLLINS_STREET_MOCK_DATA.propertyAnalysis.analysis_result.risk.flood,
+            fire: COLLINS_STREET_MOCK_DATA.propertyAnalysis.analysis_result.risk.fire,
+            coastal: COLLINS_STREET_MOCK_DATA.propertyAnalysis.analysis_result.risk.coastalErosion
+          }
+        };
+        setSelectedProperty(newPropertyData);
+        setPropertyValuation(COLLINS_STREET_MOCK_DATA.propertyAnalysis);
+        return { success: true, property: newPropertyData };
+      } else {
+        const newPropertyData = propertyData || { 
+          address,
+          coordinates: { lat: -33.8688, lng: 151.2093 } // Default Sydney coordinates
+        };
+        setSelectedProperty(newPropertyData);
+        setPropertyValuation(analysis);
+        return { success: true, property: newPropertyData };
+      }
+    } catch (error) {
+      console.error('Property analysis failed:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Analysis failed' 
+      };
     }
   };
   

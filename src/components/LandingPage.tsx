@@ -8,11 +8,19 @@ const LandingPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleDemoClick = () => {
-    navigate('/app');
+    navigate('/demo');
   };
 
   const handleGetStartedClick = () => {
-    navigate('/app');
+    navigate('/setup');
+  };
+
+  const handleFeaturesClick = () => {
+    navigate('/sensay-features');
+  };
+
+  const handleSensayDemoClick = () => {
+    navigate('/sensay-leads');
   };
 
   return (
@@ -149,7 +157,7 @@ const LandingPage = () => {
                 Sign In
               </button>
               <button 
-                onClick={() => navigate('/app')}
+                onClick={handleGetStartedClick}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all font-medium text-sm shadow-sm"
               >
                 Get Started Free
@@ -333,7 +341,7 @@ const LandingPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <button 
-                  onClick={() => navigate('/app')}
+                  onClick={handleDemoClick}
                   className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center"
                 >
                   Try Demo: 123 Main Street
@@ -598,7 +606,7 @@ const LandingPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => navigate('/app')}
+              onClick={handleDemoClick}
               className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition"
             >
               Try Demo: 123 Main Street

@@ -10,7 +10,7 @@
 }
 
 .chat-scroll-area {
-  @apply h-full overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400;
+  @apply h-full overflow-y-auto;
 }
 
 /* Custom scrollbar for webkit browsers */

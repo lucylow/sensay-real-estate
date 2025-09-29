@@ -40,13 +40,15 @@ import { SmartFAQ } from "@/components/SmartFAQ";
 import { VirtualTourBooking } from "@/components/VirtualTourBooking";
 import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
+
+// Additional Pages
 import { BlockchainIntegrationPage } from "@/pages/BlockchainIntegrationPage";
 import { PlatformDemosPage } from "@/pages/PlatformDemosPage";
-
-// Test & Development Pages
+import MenuDirectory from "@/pages/MenuDirectory";
 import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
 import { MultimodalTestPage } from "@/pages/MultimodalTestPage";
 import EnhancedAvatarFeatures from "@/pages/EnhancedAvatarFeatures";
+import TestPage from "@/pages/TestPage";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +88,7 @@ const App = () => (
             <Route path="/knowledge-dashboard" element={<KnowledgeMonitoringDashboard />} />
             
             {/* Feature Routes */}
+            <Route path="/page-directory" element={<MenuDirectory />} />
             <Route path="/property-showcase" element={<PropertyShowcase />} />
             <Route path="/smart-faq" element={<SmartFAQ />} />
             <Route path="/virtual-tours" element={<VirtualTourBooking />} />
@@ -98,6 +101,7 @@ const App = () => (
             <Route path="/heygen-test" element={<HeyGenTestPage />} />
             <Route path="/multimodal-test" element={<MultimodalTestPage />} />
             <Route path="/avatar-features" element={<EnhancedAvatarFeatures />} />
+            <Route path="/test" element={<TestPage />} />
             
             {/* Catch-all Route */}
             <Route path="*" element={<NotFound />} />
