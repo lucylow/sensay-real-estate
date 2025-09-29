@@ -1,6 +1,10 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log('🔄 Generating Sensay API SDK...');
 
@@ -36,6 +40,12 @@ try {
   
   // Fallback: create a basic SDK structure for development
   console.log('🛠️  Creating fallback SDK structure...');
+  
+  // Ensure the SDK directory exists
+  const sdkDir = path.join(__dirname, '../src/sdk');
+  if (!fs.existsSync(sdkDir)) {
+    fs.mkdirSync(sdkDir, { recursive: true });
+  }
   
   const fallbackClientPath = path.join(sdkDir, 'Client.ts');
   const fallbackConfig = `// Sensay API Client - Fallback Implementation
