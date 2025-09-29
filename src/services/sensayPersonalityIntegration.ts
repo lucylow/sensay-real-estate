@@ -500,7 +500,7 @@ export class SensayPersonalityIntegration {
       currentTopic: intent,
       userIntent: intent,
       conversationStage: this.determineConversationStage(intent, userProfile),
-      emotionalState: this.personalityEngine['detectEmotionalState'](message),
+      emotionalState: this.personalityEngine.detectEmotionalState(message),
       userType: userProfile.type,
       platform: context.platform || 'web',
       language: context.language || 'en'
@@ -510,7 +510,7 @@ export class SensayPersonalityIntegration {
   /**
    * Determine conversation stage based on intent and history
    */
-  private determineConversationStage(intent: string, userProfile: UserProfile): string {
+  public determineConversationStage(intent: string, userProfile: UserProfile): string {
     const historyLength = userProfile.interactionHistory.length;
     
     if (historyLength === 0) return 'greeting';
@@ -566,7 +566,7 @@ export class SensayPersonalityIntegration {
   /**
    * Adapt streamed content with personality
    */
-  private adaptStreamedContent(chunk: string, personalityResponse: PersonalityResponse): string {
+  public adaptStreamedContent(chunk: string, personalityResponse: PersonalityResponse): string {
     // Apply tone and style to streamed content
     return chunk;
   }
@@ -620,7 +620,7 @@ export class SensayPersonalityIntegration {
   /**
    * Generate property recommendations
    */
-  private generatePropertyRecommendations(
+  public generatePropertyRecommendations(
     analysis: any,
     userProfile: UserProfile,
     analysisType: string

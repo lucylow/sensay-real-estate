@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Progress } from '@/components/ui/progress';
+import { LoadingState } from '@/components/ui/LoadingState';
 import { 
   MessageCircle, 
   Globe, 
@@ -24,6 +28,7 @@ import {
   Bot,
   Webhook,
   Key,
+  Clock,
   Activity
 } from 'lucide-react';
 import { sensayAPI } from '@/services/api/sensay';
@@ -186,54 +191,102 @@ const MultiChannelDeployment: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center space-y-4">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center space-y-4"
+      >
         <div className="flex items-center justify-center gap-2">
-          <Globe className="h-8 w-8 text-primary" />
-          <h2 className="text-2xl font-bold">Multi-Channel Deployment</h2>
+          <motion.div
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+          >
+            <Globe className="h-8 w-8 text-primary" />
+          </motion.div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Multi-Channel Deployment
+          </h2>
         </div>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-muted-foreground max-w-2xl mx-auto"
+        >
           Deploy your PropGuard AI assistant across multiple channels to reach customers wherever they are.
-          Powered by Sensay's Wisdom Engine for consistent, intelligent responses.
-        </p>
-      </div>
+          Powered by Sensay's advanced Wisdom Engine for consistent, intelligent responses.
+        </motion.p>
+      </motion.div>
 
       {/* Platform Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {platforms.map((platform) => {
-          const deployment = deployments[platform.id];
-          return (
-            <Card key={platform.id} className="cursor-pointer hover:shadow-md transition-shadow">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`p-2 rounded-lg ${platform.color} text-white`}>
-                    {platform.icon}
-                  </div>
-                  {getStatusIcon(deployment.status)}
-                </div>
-                <h3 className="font-semibold mb-1">{platform.name}</h3>
-                <p className="text-sm text-muted-foreground mb-3">{platform.description}</p>
-                <div className="flex items-center justify-between">
-                  {getStatusBadge(deployment.status)}
-                  <Switch
-                    checked={deployment.enabled}
-                    onCheckedChange={(checked) => {
-                      setDeployments(prev => ({
-                        ...prev,
-                        [platform.id]: { ...deployment, enabled: checked }
-                      }));
-                    }}
-                  />
-                </div>
-                {deployment.lastDeployed && (
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Last deployed: {deployment.lastDeployed.toLocaleDateString()}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <AnimatePresence>
+          {platforms.map((platform, index) => {
+            const deployment = deployments[platform.id];
+            return (
+              <motion.div
+                key={platform.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <motion.div
+                        whileHover={{ rotate: 15 }}
+                        className={`p-3 rounded-xl ${platform.color} text-white shadow-lg`}
+                      >
+                        {platform.icon}
+                      </motion.div>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          {getStatusIcon(deployment.status)}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{deployment.status.charAt(0).toUpperCase() + deployment.status.slice(1)} Status</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <h3 className="font-semibold mb-1 text-gray-900">{platform.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{platform.description}</p>
+                    <div className="flex items-center justify-between">
+                      {getStatusBadge(deployment.status)}
+                      <Switch
+                        checked={deployment.enabled}
+                        onCheckedChange={(checked) => {
+                          setDeployments(prev => ({
+                            ...prev,
+                            [platform.id]: { ...deployment, enabled: checked }
+                          }));
+                        }}
+                      />
+                    </div>
+                    {deployment.lastDeployed && (
+                      <motion.p 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-xs text-muted-foreground mt-2 flex items-center"
+                      >
+                        <Clock className="h-3 w-3 mr-1" />
+                        Last deployed: {deployment.lastDeployed.toLocaleDateString()}
+                      </motion.p>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </motion.div>
 
       {/* Configuration Tabs */}
       <Tabs value={activePlatform} onValueChange={setActivePlatform}>

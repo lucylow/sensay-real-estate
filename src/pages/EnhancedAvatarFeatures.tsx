@@ -20,7 +20,7 @@ import {
   Play, 
   Settings, 
   Key, 
-  Avatar,
+  User,
   Bot,
   Sparkles,
   CheckCircle,

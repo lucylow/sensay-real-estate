@@ -257,7 +257,7 @@ export class SensayPersonalityEngine {
   /**
    * Adapt tone based on user type and emotional context
    */
-  private adaptToneForUser(profile: UserProfile, emotionalResponse: EmotionalResponse): ToneSettings {
+  public adaptToneForUser(profile: UserProfile, emotionalResponse: EmotionalResponse): ToneSettings {
     const userType = SENSAY_PERSONALITY_CONFIG.userTypes[profile.type];
     const baseTone = userType.preferredTone;
     const emotionalAdjustment = emotionalResponse.toneAdjustment;
@@ -275,7 +275,7 @@ export class SensayPersonalityEngine {
   /**
    * Select appropriate response template based on context
    */
-  private selectResponseTemplate(
+  public selectResponseTemplate(
     intent: string,
     context: ConversationContext,
     profile: UserProfile
@@ -298,7 +298,7 @@ export class SensayPersonalityEngine {
   /**
    * Generate content based on template and user context
    */
-  private generateContent(
+  public generateContent(
     template: ResponseTemplate,
     message: string,
     profile: UserProfile,
@@ -324,7 +324,7 @@ export class SensayPersonalityEngine {
   /**
    * Replace placeholders in templates with dynamic content
    */
-  private replacePlaceholders(
+  public replacePlaceholders(
     content: string,
     message: string,
     profile: UserProfile,
@@ -346,7 +346,7 @@ export class SensayPersonalityEngine {
   /**
    * Apply language-specific adaptations
    */
-  private applyLanguageAdaptations(content: string, languageSettings: LanguageSettings): string {
+  public applyLanguageAdaptations(content: string, languageSettings: LanguageSettings): string {
     // Apply cultural adaptations
     if (languageSettings.culturalAdaptations.includes('Warmer, more personal communication')) {
       content = this.addWarmthToContent(content);
@@ -362,7 +362,7 @@ export class SensayPersonalityEngine {
   /**
    * Apply platform-specific formatting
    */
-  private applyPlatformFormatting(content: string, platform: string): string {
+  public applyPlatformFormatting(content: string, platform: string): string {
     const platformAdaptation = SENSAY_PERSONALITY_CONFIG.platformAdaptations[platform];
 
     switch (platformAdaptation.responseLength) {
@@ -384,7 +384,7 @@ export class SensayPersonalityEngine {
   /**
    * Detect emotional state from message content
    */
-  private detectEmotionalState(message: string): string {
+  public detectEmotionalState(message: string): string {
     const messageLower = message.toLowerCase();
     
     for (const emotionalResponse of SENSAY_PERSONALITY_CONFIG.emotionalResponses) {
@@ -399,7 +399,7 @@ export class SensayPersonalityEngine {
   /**
    * Get emotional response configuration
    */
-  private getEmotionalResponse(message: string): EmotionalResponse {
+  public getEmotionalResponse(message: string): EmotionalResponse {
     const emotion = this.detectEmotionalState(message);
     
     return SENSAY_PERSONALITY_CONFIG.emotionalResponses.find(
@@ -412,7 +412,7 @@ export class SensayPersonalityEngine {
   /**
    * Analyze emotional keywords in message
    */
-  private analyzeEmotionalKeywords(message: string): string[] {
+  public analyzeEmotionalKeywords(message: string): string[] {
     const messageLower = message.toLowerCase();
     const detectedKeywords: string[] = [];
 
@@ -467,7 +467,7 @@ export class SensayPersonalityEngine {
   /**
    * Extract entities from message
    */
-  private extractEntities(message: string): Record<string, string> {
+  public extractEntities(message: string): Record<string, string> {
     const entities: Record<string, string> = {};
 
     // Extract property count
@@ -494,7 +494,7 @@ export class SensayPersonalityEngine {
   /**
    * Generate next steps based on intent and context
    */
-  private generateNextSteps(intent: string, context: ConversationContext, profile: UserProfile): string[] {
+  public generateNextSteps(intent: string, context: ConversationContext, profile: UserProfile): string[] {
     const userType = SENSAY_PERSONALITY_CONFIG.userTypes[profile.type];
     
     // Return priority actions for user type
@@ -504,7 +504,7 @@ export class SensayPersonalityEngine {
   /**
    * Generate actionable items
    */
-  private generateActions(intent: string, context: ConversationContext, profile: UserProfile): string[] {
+  public generateActions(intent: string, context: ConversationContext, profile: UserProfile): string[] {
     const actions: string[] = [];
 
     switch (intent) {
@@ -527,7 +527,7 @@ export class SensayPersonalityEngine {
   /**
    * Calculate confidence score for response
    */
-  private calculateConfidence(intent: string, context: ConversationContext, profile: UserProfile): number {
+  public calculateConfidence(intent: string, context: ConversationContext, profile: UserProfile): number {
     let confidence = 0.8; // Base confidence
 
     // Increase confidence based on user type familiarity
@@ -566,7 +566,7 @@ export class SensayPersonalityEngine {
   /**
    * Add warmth to content
    */
-  private addWarmthToContent(content: string): string {
+  public addWarmthToContent(content: string): string {
     const warmPhrases = ['I\'m delighted to help', 'I\'m thrilled to assist', 'It\'s my pleasure to help'];
     const randomPhrase = warmPhrases[Math.floor(Math.random() * warmPhrases.length)];
     return `${randomPhrase}! ${content}`;
@@ -575,14 +575,14 @@ export class SensayPersonalityEngine {
   /**
    * Add community focus to content
    */
-  private addCommunityFocus(content: string): string {
+  public addCommunityFocus(content: string): string {
     return content.replace('property', 'home for your family');
   }
 
   /**
    * Truncate content to specified length
    */
-  private truncateContent(content: string, maxLength: number): string {
+  public truncateContent(content: string, maxLength: number): string {
     if (content.length <= maxLength) return content;
     
     const truncated = content.substring(0, maxLength - 3);

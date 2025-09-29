@@ -516,7 +516,7 @@ export const DiscordCommunityDemo: React.FC = () => {
                     💬 property-discussion
                   </div>
                   <div className={`flex items-center gap-2 p-1 rounded text-sm cursor-pointer ${
-                    activeChannel === 'agent-help' ? 'bg-blue-600 text-white' : 'hover:bg-gray-800' : 'hover:bg-gray-800'
+                    activeChannel === 'agent-help' ? 'bg-blue-600 text-white' : 'hover:bg-gray-800'
                   }`}>
                     <Users className="h-4 w-4" />
                     🤝 agent-help

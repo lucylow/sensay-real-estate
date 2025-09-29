@@ -15,7 +15,8 @@ import {
   Share2,
   Download,
   Phone,
-  Video
+  Video,
+  CreditCard
 } from 'lucide-react';
 
 interface PropertyCard {
@@ -266,7 +267,7 @@ mockProperties[0].agent.name}</div>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CardIcon className="h-5 w-5 text-blue-500" />
+            <CreditCard className="h-5 w-5 text-blue-500" />
             Automated Booking Flow
           </CardTitle>
         </CardHeader>

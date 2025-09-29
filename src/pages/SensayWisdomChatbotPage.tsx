@@ -167,7 +167,7 @@ export default function SensayWisdomChatbotPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Response Time</span>
                     <Badge variant="outline" className="text-xs">
-                      < 2s
+                      &lt; 2s
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
