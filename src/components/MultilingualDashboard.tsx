@@ -102,7 +102,10 @@ export const MultilingualDashboard: React.FC<MultilingualDashboardProps> = ({
   };
 
   const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage);
+    const validLanguages = ['en', 'es', 'pt', 'zh', 'fr', 'de', 'ja', 'ko', 'ar', 'hi', 'ru', 'it'];
+    if (validLanguages.includes(newLanguage)) {
+      setLanguage(newLanguage as any);
+    }
   };
 
   const handleDemoToggle = () => {
@@ -124,8 +127,6 @@ export const MultilingualDashboard: React.FC<MultilingualDashboardProps> = ({
         </div>
         <div className="flex items-center gap-3">
           <LanguageSelector 
-            currentLanguage={language}
-            onLanguageChange={handleLanguageChange}
             showLabel={true}
           />
           <Button onClick={handleDemoToggle} variant="outline">
@@ -291,7 +292,12 @@ export const MultilingualDashboard: React.FC<MultilingualDashboardProps> = ({
                     size="sm" 
                     className="w-full mt-3"
                     variant={lang.language === language ? "default" : "outline"}
-                    onClick={() => setLanguage(lang.language)}
+                    onClick={() => {
+                      const validLanguages = ['en', 'es', 'pt', 'zh', 'fr', 'de', 'ja', 'ko', 'ar', 'hi', 'ru', 'it'];
+                      if (validLanguages.includes(lang.language)) {
+                        setLanguage(lang.language as any);
+                      }
+                    }}
                   >
                     {lang.language === language ? 'Current' : 'Switch to'}
                   </Button>

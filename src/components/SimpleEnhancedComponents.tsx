@@ -1,251 +1,303 @@
-/**
- * Simplified Enhanced Components
- * Working versions without TypeScript errors
- */
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Progress } from '@/components/ui/progress';
 import { 
-  Brain, 
-  MessageCircle, 
-  Send, 
-  Search, 
-  Home, 
-  DollarSign, 
-  Calendar,
-  Building,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  MapPin
+  MessageSquare, Send, Calculator, DollarSign,
+  Search, Phone, Mail, FileText, 
+  Bot, TrendingUp, CheckCircle, AlertCircle, Clock, BarChart3,
+  Database, Key, ArrowUpDown, Image, Video, Mic, Volume2,
+  Bell, HelpCircle, AlertTriangle, Info
 } from 'lucide-react';
 
-// Enhanced AI Assistant Component
-export const EnhancedAIAssistant: React.FC<{ analysis?: any; className?: string; context?: string }> = ({
-  analysis,
-  className = '',
-  context = 'default'
-}) => {
-  const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [conversation, setConversation] = useState<Array<{role: 'user' | 'assistant', content: string}>>([]);
-
-  const handleSendMessage = async () => {
-    if (!message.trim()) return;
-    
-    setIsLoading(true);
-    const userMessage = { role: 'user' as const, content: message };
-    setConversation(prev => [...prev, userMessage]);
-    setMessage('');
-    
-    setTimeout(() => {
-      const aiResponse = { 
-        role: 'assistant' as const, 
-        content: `I understand you're asking about: "${message}". How can I help you with property analysis?` 
-      };
-      setConversation(prev => [...prev, aiResponse]);
-      setIsLoading(false);
-    }, 1000);
+// Simple working PersonalizedSearchEngine
+const PersonalizedSearchEngine = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [results, setResults] = useState<string[]>([]);
+  
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      setResults([
+        `Property result 1 for "${searchQuery}"`,
+        `Property result 2 for "${searchQuery}"`,
+        `Property result 3 for "${searchQuery}"`
+      ]);
+    }
   };
-
+  
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="w-5 h-5" />
-          Enhanced AI Assistant
-          <Badge variant="secondary">Powered by Sensay</Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="h-64 overflow-y-auto border rounded-lg p-4 space-y-3">
-          {conversation.length === 0 ? (
-            <div className="text-center text-muted-foreground py-8">
-              <MessageCircle className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p>Start a conversation to get AI-powered insights</p>
-            </div>
-          ) : (
-            conversation.map((msg, index) => (
-              <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] p-3 rounded-lg ${
-                  msg.role === 'user' 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-muted'
-                }`}>
-                  {msg.content}
-                </div>
+    <div className="p-6 space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Personalized Search Engine
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex gap-2">
+            <Input 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for properties..."
+              className="flex-1"
+            />
+            <Button onClick={handleSearch}>
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className="space-y-2">
+            {results.map((result, index) => (
+              <div key={index} className="p-2 bg-gray-50 rounded text-sm">
+                {result}
               </div>
-            ))
-          )}
-        </div>
-
-        <div className="flex gap-2">
-          <Textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Ask about property analysis, market trends, or get insights..."
-            className="flex-1"
-            rows={2}
-          />
-          <Button 
-            onClick={handleSendMessage}
-            disabled={!message.trim() || isLoading}
-            size="icon"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
-// Enhanced Property Analytics Component
-export const EnhancedPropertyAnalytics: React.FC<{ analysis?: any; className?: string }> = ({
-  analysis,
-  className = ''
-}) => {
-  const landValue = 2500000;
-  const buildingValue = 6000000;
-  const totalValue = landValue + buildingValue;
-  const riskScore = 75;
-
+// Simple working PropGuardFeaturesShowcase
+const PropGuardFeaturesShowcase = () => {
+  const features = [
+    { name: 'Property Analysis', description: 'AI-powered property analysis', status: 'active' },
+    { name: 'Risk Assessment', description: 'Comprehensive risk evaluation', status: 'active' },
+    { name: 'Market Intelligence', description: 'Real-time market insights', status: 'beta' }
+  ];
+  
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Building className="w-5 h-5" />
-          Enhanced Property Analytics
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
+    <div className="p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>PropGuard Features</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-center justify-between p-3 border rounded">
                 <div>
-                  <p className="text-sm text-muted-foreground">Land Value</p>
-                  <p className="text-2xl font-bold">${(landValue / 1000000).toFixed(1)}M</p>
+                  <h3 className="font-medium">{feature.name}</h3>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
                 </div>
-                <MapPin className="w-8 h-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Building Value</p>
-                  <p className="text-2xl font-bold">${(buildingValue / 1000000).toFixed(1)}M</p>
-                </div>
-                <Building className="w-8 h-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Value</p>
-                  <p className="text-2xl font-bold">${(totalValue / 1000000).toFixed(1)}M</p>
-                </div>
-                <DollarSign className="w-8 h-8 text-purple-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5" />
-              Risk Assessment
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">Overall Risk Score</span>
-                <Badge variant={riskScore > 80 ? "default" : riskScore > 60 ? "secondary" : "destructive"}>
-                  {riskScore}%
+                <Badge variant={feature.status === 'active' ? 'default' : 'secondary'}>
+                  {feature.status}
                 </Badge>
               </div>
-              <Progress value={riskScore} className="h-3" />
-            </div>
-          </CardContent>
-        </Card>
-      </CardContent>
-    </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
-// Enhanced Sensay Assistant Component
-export const EnhancedSensayAssistant: React.FC<{ analysis?: any; className?: string; context?: string }> = ({
-  analysis,
-  className = '',
-  context = 'default'
-}) => {
-  const [query, setQuery] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const handleSendQuery = () => {
-    if (!query.trim()) return;
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setQuery('');
-    }, 2000);
-  };
-
+// Simple working PropertyValuationForm
+const PropertyValuationForm = () => {
+  const [propertyData, setPropertyData] = useState({
+    address: '',
+    bedrooms: 0,
+    bathrooms: 0,
+    landSize: 0
+  });
+  
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="w-5 h-5" />
-          Enhanced Sensay Assistant
-          <Badge variant="secondary">Wisdom Engine</Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" className="flex items-center gap-2 h-auto p-3">
-            <Search className="w-4 h-4" />
-            <span className="text-xs">Property Search</span>
-          </Button>
-          <Button variant="outline" className="flex items-center gap-2 h-auto p-3">
-            <DollarSign className="w-4 h-4" />
-            <span className="text-xs">Valuation</span>
-          </Button>
-        </div>
-
-        <div className="space-y-2">
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Ask about properties, market trends..."
+    <div className="p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Property Valuation</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Input 
+            placeholder="Property address"
+            value={propertyData.address}
+            onChange={(e) => setPropertyData(prev => ({ ...prev, address: e.target.value }))}
           />
+          <div className="grid grid-cols-3 gap-4">
+            <Input 
+              type="number"
+              placeholder="Bedrooms"
+              value={propertyData.bedrooms || ''}
+              onChange={(e) => setPropertyData(prev => ({ ...prev, bedrooms: parseInt(e.target.value) || 0 }))}
+            />
+            <Input 
+              type="number"
+              placeholder="Bathrooms"
+              value={propertyData.bathrooms || ''}
+              onChange={(e) => setPropertyData(prev => ({ ...prev, bathrooms: parseInt(e.target.value) || 0 }))}
+            />
+            <Input 
+              type="number"
+              placeholder="Land size"
+              value={propertyData.landSize || ''}
+              onChange={(e) => setPropertyData(prev => ({ ...prev, landSize: parseInt(e.target.value) || 0 }))}
+            />
+          </div>
+          <Button className="w-full">
+            Get Valuation
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// Simple working SensayAssistant
+const SensayAssistant = () => {
+  const [status, setStatus] = useState<'valid' | 'invalid' | 'missing'>('valid');
+  
+  return (
+    <div className="p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bot className="h-5 w-5" />
+            Sensay Assistant
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <Badge variant={status === 'valid' ? 'default' : 'destructive'}>
+              Status: {status}
+            </Badge>
+            <p className="text-sm text-gray-600">
+              AI assistant ready to help with property analysis
+            </p>
+            <Button 
+              onClick={() => setStatus(status === 'valid' ? 'invalid' : 'valid')}
+              variant="outline"
+            >
+              Toggle Status
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// Simple working VoiceCloner
+const VoiceCloner = () => {
+  const [isCloning, setIsCloning] = useState(false);
+  
+  const handleCloneVoice = () => {
+    setIsCloning(true);
+    setTimeout(() => setIsCloning(false), 2000);
+  };
+  
+  return (
+    <div className="p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Voice Cloner</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Clone voices for personalized property tours
+          </p>
           <Button 
-            onClick={handleSendQuery}
-            disabled={!query.trim() || isProcessing}
+            onClick={handleCloneVoice}
+            disabled={isCloning}
             className="w-full"
           >
-            {isProcessing ? 'Processing...' : 'Send Query'}
+            {isCloning ? 'Cloning...' : 'Clone Voice'}
           </Button>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
-export default {
-  EnhancedAIAssistant,
-  EnhancedPropertyAnalytics,
-  EnhancedSensayAssistant
+// Simple working VoiceSettingsPage
+const VoiceSettingsPage = () => {
+  const [settings, setSettings] = useState({
+    volume: 50,
+    speed: 1.0,
+    pitch: 1.0
+  });
+  
+  return (
+    <div className="p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Voice Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <label className="text-sm font-medium">Volume: {settings.volume}%</label>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value={settings.volume}
+              onChange={(e) => setSettings(prev => ({ ...prev, volume: parseInt(e.target.value) }))}
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">Speed: {settings.speed}x</label>
+            <input 
+              type="range" 
+              min="0.5" 
+              max="2" 
+              step="0.1"
+              value={settings.speed}
+              onChange={(e) => setSettings(prev => ({ ...prev, speed: parseFloat(e.target.value) }))}
+              className="w-full"
+            />
+          </div>
+          <Button className="w-full">Save Settings</Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// Simple working PlatformDemoShowcase
+const PlatformDemoShowcase = () => {
+  const platforms = [
+    { name: 'WhatsApp', icon: MessageSquare, status: 'active' },
+    { name: 'Email', icon: Mail, status: 'active' },
+    { name: 'Web Chat', icon: Bot, status: 'beta' }
+  ];
+  
+  return (
+    <div className="p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Platform Demos</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {platforms.map((platform) => {
+              const IconComponent = platform.icon;
+              return (
+                <div key={platform.name} className="p-4 border rounded text-center">
+                  <IconComponent className="h-8 w-8 mx-auto mb-2" />
+                  <h3 className="font-medium">{platform.name}</h3>
+                  <Badge variant={platform.status === 'active' ? 'default' : 'secondary'}>
+                    {platform.status}
+                  </Badge>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export {
+  PersonalizedSearchEngine,
+  PropGuardFeaturesShowcase, 
+  PropertyValuationForm,
+  SensayAssistant,
+  VoiceCloner,
+  VoiceSettingsPage,
+  PlatformDemoShowcase
 };

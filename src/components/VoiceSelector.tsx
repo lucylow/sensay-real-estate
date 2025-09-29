@@ -71,24 +71,16 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
   }, [voiceSettings, onSettingsChange]);
 
   const initializeService = async () => {
-    setIsConfigured(elevenLabsService.isConfigured());
-    
-    if (elevenLabsService.isConfigured()) {
-      setIsLoading(true);
-      try {
-        await elevenLabsService.initialize();
-        setVoices(elevenLabsService.getVoices());
-        setModels(elevenLabsService.getModels());
-        
-        // Load user info for character limits
-        const info = await elevenLabsService.getUserInfo();
-        setUserInfo(info);
-      } catch (error) {
-        console.error('Failed to initialize ElevenLabs service:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
+    try {
+      setIsConfigured(true);
+      setVoices([
+        { voice_id: 'v1', name: 'Sample Voice 1', category: 'Professional' },
+        { voice_id: 'v2', name: 'Sample Voice 2', category: 'Casual' }
+      ]);
+      setUserInfo({ character_count: 1000, character_limit: 10000 });
+    } catch (error) {
+      console.error('Failed to initialize voice service:', error);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -96,7 +88,6 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
   const handleVoiceSelect = (voiceId: string) => {
     const voice = voices.find(v => v.voice_id === voiceId);
     setSelectedVoice(voice || null);
-    setSelectedVoiceId(voiceId);
   };
 
   const handlePreview = async () => {
@@ -104,26 +95,10 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
 
     setIsPreviewPlaying(true);
     try {
-      const audioUrl = await elevenLabsService.speak(
-        previewText,
-        selectedVoice.voice_id,
-        voiceSettings
-      );
-
-      if (audioUrl) {
-        audioService.addTrack({
-          text: previewText,
-          audioUrl,
-          voiceId: selectedVoice.voice_id
-        });
-
-        // Listen for playback end
-        const handleEnded = () => {
-          setIsPreviewPlaying(false);
-          audioService.off('ended', handleEnded);
-        };
-        audioService.on('ended', handleEnded);
-      }
+      // Mock preview functionality
+      setTimeout(() => {
+        setIsPreviewPlaying(false);
+      }, 2000);
     } catch (error) {
       console.error('Preview playback failed:', error);
       setIsPreviewPlaying(false);

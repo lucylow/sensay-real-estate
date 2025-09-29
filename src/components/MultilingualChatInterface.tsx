@@ -133,9 +133,12 @@ export const MultilingualChatInterface: React.FC<MultilingualChatInterfaceProps>
 
       // Auto-switch language if confidence is high and different from current
       if (response.confidence > 0.8 && response.language !== language) {
-        setLanguage(response.language);
-        setShowLanguageDetection(true);
-        setTimeout(() => setShowLanguageDetection(false), 5000);
+        const validLanguages = ['en', 'es', 'pt', 'zh', 'fr', 'de', 'ja', 'ko', 'ar', 'hi', 'ru', 'it'];
+        if (validLanguages.includes(response.language)) {
+          setLanguage(response.language as any);
+          setShowLanguageDetection(true);
+          setTimeout(() => setShowLanguageDetection(false), 5000);
+        }
       }
 
     } catch (error) {
