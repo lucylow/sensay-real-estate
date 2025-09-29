@@ -12,12 +12,12 @@ import { Suspense } from "react";
 // Core Pages
 import LandingPage from "@/components/LandingPage";
 import Index from "@/pages/Index";
-import NotFound from "./pages<｜tool▁sep｜>NotFound";
+import NotFound from "./pages/NotFound";
 
 // Main Application Pages
 import { EnhancedDashboard } from "@/components/propguard/EnhancedDashboard";
-import { PropertySearchPage } from "@/pages/PropertySearchPage";
-import { PropertyDetailPage } from "@/pages/PropertyDetailPage";
+import PropertySearchPage from "@/pages/PropertySearchPage";
+import PropertyDetailPage from "@/pages/PropertyDetailPage";
 import { MarketAnalysisPage } from "@/pages/MarketAnalysisPage";
 import { ValuationReportPage } from "@/pages/ValuationReportPage";
 

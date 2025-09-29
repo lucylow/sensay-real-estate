@@ -1,925 +1,378 @@
-/**
- * Comprehensive Sensay API Testing Utilities
- * Provides automated testing and validation for all Sensay API endpoints
- */
+// Sensay API Testing Utilities
+// Comprehensive testing suite for Sensay API endpoints and functionality
 
-import { 
-  sensayComprehensiveAPI, 
-  propGuardSensayWrapper,
-  SensayDetailedReplica,
-  SensayCredentials 
-} from '@/services/sensayComprehensiveAPI';
-
-export interface APITestResult {
+export interface SensayTestResult {
   endpoint: string;
   method: string;
   success: boolean;
   responseTime: number;
+  response: any;
   error?: string;
-  response?: any;
 }
 
-export interface TestSuiteResult {
-  suiteName: string;
+export interface SensayTestSuite {
+  name: string;
+  results: SensayTestResult[];
   totalTests: number;
   passedTests: number;
   failedTests: number;
-  totalTime: number;
-  results: APITestResult[];
+  averageResponseTime: number;
 }
 
-export class SensayAPITester {
-  private credentials?: SensayCredentials;
-  private testReplicaId?: string;
-
-  constructor(credentials?: SensayCredentials) {
-    this.credentials = credentials;
-  }
-
-  /**
-   * Run comprehensive API test suite
-   */
-  async runCompleteTestSuite(): Promise<TestSuiteResult[]> {
-    const startTime = Date.now();
-    const results: TestSuiteResult[] = [];
-
-    // Test Credential Validation
-    results.push(await this.testCredentialValidation());
-
-    // Test Core API Endpoints
-    results.push(await this.testReplicasAPI());
-    results.push(await this.testUsersAPI());
-    results.push(await this.testKnowledgeBaseAPI());
-    results.push(await this.testConversationsAPI());
-    results.push(await this.testAnalyticsAPI());
-    results.push(await this.testChatCompletionsAPI());
-    results.push(await this.testUsageAPI());
-
-    // Test Integration Endpoints
-    results.push(await this.testTelegramIntegration());
-    results.push(await this.testDiscordIntegration());
-    results.push(await this.testChatWidgetIntegration());
-
-    // Test Experimental Endpoints
-    results.push(await this.testExperimentalAPI());
-
-    console.log(`Complete test suite finished in ${Date.now() - startTime}ms`);
-    return results;
-  }
-
-  /**
-   * Test credential validation
-   */
-  private async testCredentialValidation(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-    
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.validateCredentials();
-      });
-      
-      results.push({
-        endpoint: '/validation',
-       <｜tool▁sep｜> method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: '/validation',
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Credential Validation', results);
-  }
-
-  /**
-   * Test Replicas API endpoints
-   */
-  private async testReplicasAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    // Test list replicas
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.listReplicas({ page_size: 5 });
-      });
-      
-      results.push({
-        endpoint: '/replicas',
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-
-      // Store first replica ID for other tests
-      if (result.success && result.data?.items?.length > 0) {
-        this.testReplicaId = result.data.items[0].uuid;
-      }
-    } catch (error) {
-      results.push({
-        endpoint: '/replicas',
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    // Test get replica details if we have a replica ID
-    if (this.testReplicaId) {
-      try {
-        const result = await this.timeExecution(async () => {
-          return await sensayComprehensiveAPI.getReplicaDetails(this.testReplicaId!);
-        });
-        
-        results.push({
-          endpoint: `/replicas/${this.testReplicaId}`,
-          method: 'GET',
-          success: result.success,
-          responseTime: result.time,
-          response: result.data
-        });
-      } catch (error) {
-        results.push({
-          endpoint: `/replicas/${this.testReplicaId}`,
-          method: 'GET',
-          success: false,
-          responseTime: 0,
-          error: error instanceof Error ? error.message : 'Unknown error'
-        });
-      }
-    }
-
-    return this.createTestSuiteResult('Replicas API', results);
-  }
-
-  /**
-   * Test Users API endpoints
-   */
-  private async testUsersAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-    const testUserId = 'sensay-api-test-user';
-
-    // Test create user
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.createUser({
-          name: 'API Test用户',
-          email: 'test@propguardai.com'
-        });
-      });
-      
-      results.push({
-        endpoint: '/users',
-        method: 'POST',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: '/users',
-        method: 'POST',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    // Test get user by ID
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getUserById(testUserId);
-      });
-      
-      results.push({
-        endpoint: `/users/${testUserId}`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/users/${testUserId}`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Users API', results);
-  }
-
-  /**
-   * Test Knowledge Base API endpoints
-   */
-  private async testKnowledgeBaseAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Knowledge Base API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test list knowledge base entries
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.listKnowledgeBaseEntries(this.testReplicaId!, { page_size: 10 });
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/knowledge-base`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/knowledge-base`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    // Test create knowledge base entry
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.createKnowledgeBaseEntryFromText(this.testReplicaId!, {
-          title: 'PropGuard API Test Knowledge',
-          content: 'This is a test knowledge entry created by the PropGuard comprehensive API tester.',
-          language: 'en'
-        });
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/knowledge-base/text`,
-        method: 'POST',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/knowledge-base/text`,
-        method: 'POST',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Knowledge Base API', results);
-  }
-
-  /**
-   * Test Conversations API endpoints
-   */
-  private async testConversationsAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Conversations API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test list conversations
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.listConversations(this.testReplicaId!, { limit: 10 });
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/conversations`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/conversations`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    // Test get chat history
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getChatHistory(this.testReplicaId!, { limit: 10 });
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Conversations API', results);
-  }
-
-  /**
-   * Test Analytics API endpoints
-   */
-  private async testAnalyticsAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Analytics API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test historical analytics
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getHistoricalConversationAnalytics(this.testReplicaId!);
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/analytics/conversations/historical`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/analytics/conversations/historical`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    // Test source analytics
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getSourceAnalytics(this.testReplicaId!);
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/analytics/conversations/sources`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/analytics/conversations/sources`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Analytics API', results);
-  }
-
-  /**
-   * Test Chat Completions API endpoints
-   */
-  private async testChatCompletionsAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Chat Completions API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test chat completion
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.generateChatCompletion(this.testReplicaId!, {
-          content: 'Hello PropGuard AI! Please test the property analysis API.',
-          source: 'web',
-          store: true
-        });
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/completions`,
-        method: 'POST',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/completions`,
-        method: 'POST',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Chat Completions API', results);
-  }
-
-  /**
-   * Test Usage API endpoints
-   */
-  private async testUsageAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    // Test combined usage
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getCombinedUsage();
-      });
-      
-      results.push({
-        endpoint: '/usage',
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: '/usage',
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    // Test conversation usage
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getConversationUsage();
-      });
-      
-      results.push({
-        endpoint: '/usage/conversations',
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: '/usage/conversations',
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Usage API', results);
-  }
-
-  /**
-   * Test Telegram Integration API endpoints
-   */
-  private async testTelegramIntegration(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Telegram Integration API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test get Telegram chat history
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getTelegramChatHistory(this.testReplicaId!);
-      });
- });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history/telegram`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history/telegram`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Telegram Integration API', results);
-  }
-
-  /**
-   * Test Discord Integration API endpoints
-   */
-  private async testDiscordIntegration(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Discord Integration API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test get Discord chat history
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getDiscordChatHistory(this.testReplicaId!);
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history/discord`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history/discord`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Discord Integration API', results);
-  }
-
-  /**
-   * Test Chat Widget Integration API endpoints
-   */
-  private async testChatWidgetIntegration(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Chat Widget Integration API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test get embed chat history
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.getEmbedChatHistory(this.testReplicaId!);
-      });
-      
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history/embed`,
-        method: 'GET',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/replicas/${this.testReplicaId}/chat/history/embed`,
-        method: 'GET',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Chat Widget Integration API', results);
-  }
-
-  /**
-   * Test Experimental API endpoints
-   */
-  private async testExperimentalAPI(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Experimental API', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    // Test OpenAI-compatible completion
-    try {
-      const result = await this.timeExecution(async () => {
-        return await sensayComprehensiveAPI.generateExperimentalCompletion(this.testReplicaId!, {
-          messages: [
-            {
-              role: 'user',
-              content: 'Test OpenAI-compatible chat completion for PropGuard AI.'
-            }
-          ],
-          store: true,
-          source: 'web'
-        });
-      });
-      
-      results.push({
-        endpoint: `/experimental/replicas/${this.testReplicaId}/chat/completions`,
-        method: 'POST',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: `/experimental/replicas/${this.testReplicaId}/chat/completions`,
-        method: 'POST',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Experimental API', results);
-  }
-
-  /**
-   * Time execution of a function call
-   */
-  private async timeExecution<T>(fn: () => Promise<T>): Promise<{ data: T | undefined; time: number; success: boolean }> {
-    const startTime = Date.now();
-    try {
-      const result = await fn();
-      const endTime = Date.now();
-      return {
-        data: result,
-        time: endTime - startTime,
-        success: true
-      };
-    } catch (error) {
-      const endTime = Date.now();
-      return {
-        data: undefined,
-        time: endTime - startTime,
-        success: false
-      };
-    }
-  }
-
-  /**
-   * Create test suite result
-   */
-  private createTestSuiteResult(suiteName: string, results: APITestResult[]): TestSuiteResult {
-    const passedTests = results.filter(r => r.success).length;
-    const totalTime = results.reduce((sum, r) => sum + r.responseTime, 0);
-
-    return {
-      suiteName,
-      totalTests: results.length,
-      passedTests,
-      failedTests: results.length - passedTests,
-      totalTime,
-      results
-    };
-  }
-
-  /**
-   * Generate test report
-   */
-  generateTestReport(testResults: TestSuiteResult[]): string {
-    let report = `# Sensay API Test Report\\n\\n`;
-    report += `Generated: ${new Date().toISOString()}\\n\\n`;
-
-    const overallStats = {
-      totalSuites: testResults.length,
-      totalTests: testResults.reduce((sum, suite) => sum + suite.totalTests, 0),
-      totalPassed: testResults.reduce((sum, suite) => sum + suite.passedTests, 0),
-      totalFailed: testResults.reduce((sum, suite) => sum + suite.failedTests, 0),
-      totalTime: testResults.reduce((sum, suite) => sum + suite.totalTime, 0)
-    };
-
-    report += `## Overall Statistics\\n`;
-    report += `- **Test Suites**: ${overallStats.totalSuites}\\n`;
-    report += `- **Total Tests**: ${overallStats.totalTests}\\n`;
-    report += `- **Passed**: ${overallStats.totalPassed} (${((overallStats.totalPassed / overallStats.totalTests) * 100).toFixed(1)}%)\\n`;
-    report += `- **Failed**: ${overallStats.totalFailed} (${((overallStats.totalFailed / overallStats.totalTests) * 100).toFixed(1)}%)\\n`;
-    report += `- **Total Time**: ${(overallStats.totalTime / 1000).toFixed(2)}s\\n\\n`;
-
-    report += `## Test Suite Results\\n\\n`;
-    
-    testResults.forEach(suite => {
-      report += `### ${suite.suiteName}\\n`;
-      report += `- **Tests**: ${suite.passedTests}/${suite.totalTests} passed\\n`;
-      report += `- **Time**: ${suite.totalTime}ms\\n`;
-      report += `- **Status**: ${suite.failedTests === 0 ? '✅ All Passed' : '❌ Issues Found'}\\n\\n`;
-      
-      if (suite.failedTests > 0) {
-        report += `**Failed Tests:**\\n`;
-        suite.results.filter(r => !r.success).filter(r => r.error).forEach(result => {
-          report += `- ${result.endpoint} (**${result.method}**): ${result.error}\\n`;
-        });
-        report += `\\n\\n`;
-      }
-    });
-
-    return report;
-  }
-
-  /**
-   * Run PropGuard-specific tests
-   */
-  async runPropGuardTests(): Promise<TestSuiteResult[]> {
-    const results: TestSuiteResult[] = [];
-
-    // Test property analysis intent
-    const intentResult = await this.testPropertyAnalysisIntent();
-    results.push(intentResult);
-
-    // Test property-specific replica creation
-    const replicaResult = await this.testPropGuardReplicaCreation();
-    results.push(replicaResult);
-
-    // Test knowledge base with property data
-    const knowledgeResult = await this.testPropertyKnowledgeBase();
-    results.push(knowledgeResult);
-
-    return results;
-  }
-
-  private async testPropertyAnalysisIntent(): Promise<TestSuiteResult> {
-    const testCases = [
-      'What\'s the value of this property?',
-      'Show me environmental risks for this address',
-      'How is the market performing in this area?',
-      'Analyze investment potential of this property'
-    ];
-
-    const results: APITestResult[] = [];
-
-    testCases.forEach(message => {
-      const intentAnalysis = propGuardSensayWrapper.analyzePropertyIntent(message);
-      results.push({
-        endpoint: 'Property Intent Analysis',
-        method: 'LOCAL',
-        success: intentAnalysis.confidence > 0.5,
-        responseTime: 1, // Mock timing for local analysis
-        response: intentAnalysis
-      });
-    });
-
-    return this.createTestSuiteResult('Property Analysis Intent', results);
-  }
-
-  private async testPropGuardReplicaCreation(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    try {
-      const result = await this.timeExecution(async () => {
-        return await propGuardSensayWrapper.createPropGuardReplica(
-          'Automated Test Replica',
-          'test-user-123'
-        );
-      });
-
-      results.push({
-        endpoint: '/replicas (PropGuard)',
-        method: 'POST',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: '/replicas (PropGuard)',
-        method: 'POST',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('PropGuard Replica Creation', results);
-  }
-
-  private async testPropertyKnowledgeBase(): Promise<TestSuiteResult> {
-    const results: APITestResult[] = [];
-
-    if (!this.testReplicaId) {
-      return this.createTestSuiteResult('Property Knowledge Base', [{
-        endpoint: 'N/A - No test replica',
-        method: 'N/A',
-        success: false,
-        responseTime: 0,
-        error: 'No test replica available'
-      }]);
-    }
-
-    try {
-      const result = await this.timeExecution(async () => {
-        return await propGuardSensayWrapper.addPropertyKnowledge(
-          this.testReplicaId!,
-          'PropGuard API Testing Guide',
-          'Property analysis fundamentals and best practices for PropGuard AI integration.'
-        );
-      });
-
-      results.push({
-        endpoint: '/knowledge-base (Property)',
-        method: 'POST',
-        success: result.success,
-        responseTime: result.time,
-        response: result.data
-      });
-    } catch (error) {
-      results.push({
-        endpoint: '/knowledge-base (Property)',
-        method: 'POST',
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-
-    return this.createTestSuiteResult('Property Knowledge Base', results);
-  }
-}
-
-// Export singleton instance
-export const sensayAPITester = new SensayAPITester();
-
-// Utility function to run comprehensive tests
-export async function runComprehensiveTests(credentials?: SensayCredentials): Promise<{
-  apiResults: TestSuiteResult[];
-  propguardResults: TestSuiteResult[];
-  report: string;
-}> {
-  const tester = new SensayAPITester(credentials);
+/**
+ * Test Sensay API connectivity and basic functionality
+ */
+export async function testSensayConnectivity(): Promise<SensayTestResult> {
+  const startTime = Date.now();
   
-  const [apiResults, propguardResults] = await Promise.all([
-    tester.runCompleteTestSuite(),
-    tester.runPropGuardTests()
-  ]);
+  try {
+    const response = await fetch('https://api.sensay.io/v1/health', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const responseTime = Date.now() - startTime;
+    const data = await response.json();
+    
+    return {
+      endpoint: '/health',
+      method: 'GET',
+      success: response.ok,
+      responseTime,
+      response: data,
+      error: response.ok ? undefined : `HTTP ${response.status}: ${response.statusText}`
+    };
+  } catch (error) {
+    return {
+      endpoint: '/health',
+      method: 'GET',
+      success: false,
+      responseTime: Date.now() - startTime,
+      response: null,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
 
-  const allResults = [...apiResults, ...propguardResults];
-  const report = tester.generateTestReport(allResults);
+/**
+ * Test Sensay authentication
+ */
+export async function testSensayAuthentication(apiKey: string, organizationId: string): Promise<SensayTestResult> {
+  const startTime = Date.now();
+  
+  try {
+    const response = await fetch('https://api.sensay.io/v1/auth/validate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'X-Organization-ID': organizationId,
+      },
+    });
+    
+    const responseTime = Date.now() - startTime;
+    const data = await response.json();
+    
+    return {
+      endpoint: '/auth/validate',
+      method: 'POST',
+      success: response.ok,
+      responseTime,
+      response: data,
+      error: response.ok ? undefined : `HTTP ${response.status}: ${response.statusText}`
+    };
+  } catch (error) {
+    return {
+      endpoint: '/auth/validate',
+      method: 'POST',
+      success: false,
+      responseTime: Date.now() - startTime,
+      response: null,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
 
+/**
+ * Test Sensay chat functionality
+ */
+export async function testSensayChat(
+  message: string,
+  apiKey: string,
+  organizationId: string,
+  context?: any
+): Promise<SensayTestResult> {
+  const startTime = Date.now();
+  
+  try {
+    const response = await fetch('https://api.sensay.io/v1/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'X-Organization-ID': organizationId,
+      },
+      body: JSON.stringify({
+        message,
+        context: context || {},
+        replica_id: 'propguard-real-estate-agent',
+        organization_id: organizationId
+      }),
+    });
+    
+    const responseTime = Date.now() - startTime;
+    const data = await response.json();
+    
+    return {
+      endpoint: '/chat',
+      method: 'POST',
+      success: response.ok,
+      responseTime,
+      response: data,
+      error: response.ok ? undefined : `HTTP ${response.status}: ${response.statusText}`
+    };
+  } catch (error) {
+    return {
+      endpoint: '/chat',
+      method: 'POST',
+      success: false,
+      responseTime: Date.now() - startTime,
+      response: null,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+/**
+ * Test Sensay replica management
+ */
+export async function testSensayReplicas(apiKey: string, organizationId: string): Promise<SensayTestResult> {
+  const startTime = Date.now();
+  
+  try {
+    const response = await fetch('https://api.sensay.io/v1/replicas', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'X-Organization-ID': organizationId,
+      },
+    });
+    
+    const responseTime = Date.now() - startTime;
+    const data = await response.json();
+    
+    return {
+      endpoint: '/replicas',
+      method: 'GET',
+      success: response.ok,
+      responseTime,
+      response: data,
+      error: response.ok ? undefined : `HTTP ${response.status}: ${response.statusText}`
+    };
+  } catch (error) {
+    return {
+      endpoint: '/replicas',
+      method: 'GET',
+      success: false,
+      responseTime: Date.now() - startTime,
+      response: null,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+/**
+ * Run comprehensive Sensay API test suite
+ */
+export async function runSensayTestSuite(
+  apiKey?: string,
+  organizationId?: string
+): Promise<SensayTestSuite> {
+  const results: SensayTestResult[] = [];
+  
+  // Test 1: Basic connectivity
+  console.log('Testing Sensay connectivity...');
+  const connectivityTest = await testSensayConnectivity();
+  results.push(connectivityTest);
+  
+  // If credentials are provided, run authenticated tests
+  if (apiKey && organizationId) {
+    // Test 2: Authentication
+    console.log('Testing Sensay authentication...');
+    const authTest = await testSensayAuthentication(apiKey, organizationId);
+    results.push(authTest);
+    
+    // Test 3: Chat functionality
+    console.log('Testing Sensay chat...');
+    const chatTest = await testSensayChat(
+      'Hello, this is a test message for PropGuard AI integration.',
+      apiKey,
+      organizationId,
+      { source: 'testing', timestamp: new Date().toISOString() }
+    );
+    results.push(chatTest);
+    
+    // Test 4: Replica management
+    console.log('Testing Sensay replicas...');
+    const replicasTest = await testSensayReplicas(apiKey, organizationId);
+    results.push(replicasTest);
+  }
+  
+  // Calculate metrics
+  const passedTests = results.filter(r => r.success).length;
+  const failedTests = results.length - passedTests;
+  const averageResponseTime = results.length > 0 
+    ? results.reduce((sum, r) => sum + r.responseTime, 0) / results.length 
+    : 0;
+  
   return {
-    apiResults,
-    propguardResults,
-    report
+    name: 'Sensay API Test Suite',
+    results,
+    totalTests: results.length,
+    passedTests,
+    failedTests,
+    averageResponseTime
   };
 }
+
+/**
+ * Test Sensay Edge Function integration
+ */
+export async function testSensayEdgeFunction(
+  message: string,
+  context?: any,
+  credentials?: { apiKey?: string; organizationId?: string }
+): Promise<SensayTestResult> {
+  const startTime = Date.now();
+  
+  try {
+    const { supabase } = await import('@/integrations/supabase/client');
+    
+    const response = await supabase.functions.invoke('sensay-chat', {
+      body: {
+        message,
+        context,
+        credentials,
+        endpoint: '/chat',
+        method: 'POST'
+      }
+    });
+    
+    const responseTime = Date.now() - startTime;
+    
+    return {
+      endpoint: 'sensay-chat (Edge Function)',
+      method: 'POST',
+      success: !response.error,
+      responseTime,
+      response: response.data,
+      error: response.error ? response.error.message : undefined
+    };
+  } catch (error) {
+    return {
+      endpoint: 'sensay-chat (Edge Function)',
+      method: 'POST',
+      success: false,
+      responseTime: Date.now() - startTime,
+      response: null,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+/**
+ * Mock data for testing when Sensay API is not available
+ */
+export function generateMockSensayResponse(message: string): any {
+  const responses = [
+    {
+      response: "I'd be happy to help you analyze that property. Based on the location you've mentioned, I can provide insights on market trends, risk factors, and investment potential.",
+      confidence: 92,
+      suggestions: [
+        "Get detailed market analysis",
+        "Check flood and fire risk",
+        "Compare with similar properties",
+        "Calculate ROI potential"
+      ]
+    },
+    {
+      response: "Let me pull up the latest market data for that area. The property market has been showing positive trends with steady growth over the past 12 months.",
+      confidence: 88,
+      suggestions: [
+        "View price history",
+        "See comparable sales",
+        "Check neighborhood amenities",
+        "Review investment timeline"
+      ]
+    },
+    {
+      response: "That's an interesting property choice! I can see why you're considering it. Let me help you understand the key factors that make this a solid investment opportunity.",
+      confidence: 90,
+      suggestions: [
+        "Risk assessment report",
+        "Financial projections",
+        "Local market insights",
+        "Property inspection tips"
+      ]
+    }
+  ];
+  
+  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+  
+  return {
+    ...randomResponse,
+    conversationId: `mock-${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    insights: {
+      marketTrend: "positive",
+      riskLevel: "low",
+      investmentPotential: "high"
+    }
+  };
+}
+
+/**
+ * Utility to format test results for display
+ */
+export function formatTestResults(testSuite: SensayTestSuite): string {
+  const { name, totalTests, passedTests, failedTests, averageResponseTime, results } = testSuite;
+  
+  let output = `\n=== ${name} ===\n`;
+  output += `Total Tests: ${totalTests}\n`;
+  output += `Passed: ${passedTests}\n`;
+  output += `Failed: ${failedTests}\n`;
+  output += `Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%\n`;
+  output += `Average Response Time: ${averageResponseTime.toFixed(0)}ms\n\n`;
+  
+  output += "Individual Test Results:\n";
+  results.forEach((result, index) => {
+    output += `${index + 1}. ${result.endpoint} (${result.method})\n`;
+    output += `   Status: ${result.success ? '✅ PASS' : '❌ FAIL'}\n`;
+    output += `   Response Time: ${result.responseTime}ms\n`;
+    if (result.error) {
+      output += `   Error: ${result.error}\n`;
+    }
+    output += '\n';
+  });
+  
+  return output;
+}
+
+/**
+ * Export test functions for external use
+ */
+export const SensayAPITesting = {
+  testConnectivity: testSensayConnectivity,
+  testAuthentication: testSensayAuthentication,
+  testChat: testSensayChat,
+  testReplicas: testSensayReplicas,
+  testEdgeFunction: testSensayEdgeFunction,
+  runTestSuite: runSensayTestSuite,
+  generateMockResponse: generateMockSensayResponse,
+  formatResults: formatTestResults
+};
+
+export default SensayAPITesting;

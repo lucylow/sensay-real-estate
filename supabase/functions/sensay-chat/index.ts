@@ -39,8 +39,8 @@ serve(async (req) => {
   }
 
   try {
-    const requestData: SensayChatRequest = await req.json();
-    const { message, context, credentials, endpoint, method, data } = requestData;
+    const requestBody: SensayChatRequest = await req.json();
+    const { message, context, credentials, endpoint, method, data } = requestBody;
     
     console.log('Sensay Request:', { 
       message: message?.substring(0, 100) + '...', 
@@ -62,7 +62,6 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           status: 'warning',
-          response: 'Sensory API credentials are not configured, but I can still help you with property analysis using our local AI features.',
           ...fallbackResponse,
           error: 'Missing SENSAY_API_KEY or SENSAY_ORGANIZATION_ID',
           timestamp: new Date().toISOString()
@@ -77,11 +76,11 @@ serve(async (req) => {
     // Determine the target endpoint
     const targetEndpoint = endpoint || '/chat';
     const requestMethod = method || 'POST';
-    const requestData = data || { message, context: context || {} };
+    const requestPayload = data || { message, context: context || {} };
 
     // Prepare Sensay API request
     const sensayRequest = {
-      ...requestData,
+      ...requestPayload,
       replica_id: 'propguard-real-estate-agent',
       organization_id: sensayOrgId
     };

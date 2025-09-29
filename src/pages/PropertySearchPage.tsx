@@ -396,3 +396,5 @@ export const PropertySearchPage: React.FC = () => {
     </div>
   );
 };
+
+export default PropertySearchPage;
