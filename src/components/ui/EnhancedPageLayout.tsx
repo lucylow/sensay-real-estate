@@ -1,4 +1,5 @@
 import React, { useState, ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { GlobalNavigation } from './GlobalNavigation';
 import { Breadcrumb } from './Breadcrumb';
@@ -42,6 +43,8 @@ export const EnhancedPageLayout: React.FC<EnhancedPageLayoutProps> = ({
   actions
 }) => {
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+  const location = useLocation();
+  const showGlobalNavigation = location.pathname !== '/';
 
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -66,8 +69,8 @@ export const EnhancedPageLayout: React.FC<EnhancedPageLayoutProps> = ({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Global Navigation */}
-      <GlobalNavigation user={user} />
+      {/* Global Navigation (hidden on landing to avoid double headers) */}
+      {showGlobalNavigation && <GlobalNavigation user={user} />}
 
       {/* Main Content Area */}
       <div className="pt-16">
