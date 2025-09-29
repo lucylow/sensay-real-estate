@@ -314,3 +314,5 @@ export const SensayFeaturesDashboard: React.FC = () => {
     </div>
   );
 };
+
+export default SensayFeaturesDashboard;

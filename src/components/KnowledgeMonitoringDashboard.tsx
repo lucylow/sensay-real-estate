@@ -833,3 +833,5 @@ export const KnowledgeMonitoringDashboard: React.FC<KnowledgeMonitoringDashboard
     </div>
   );
 };
+
+export default KnowledgeMonitoringDashboard;

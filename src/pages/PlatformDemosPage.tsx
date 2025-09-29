@@ -10,3 +10,5 @@ export const PlatformDemosPage: React.FC = () => {
     </div>
   );
 };
+
+export default PlatformDemosPage;

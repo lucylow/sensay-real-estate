@@ -410,3 +410,5 @@ export const SensayHackathonShowcase: React.FC<SensayHackathonShowcaseProps> = (
     </div>
   );
 };
+
+export default SensayHackathonShowcase;

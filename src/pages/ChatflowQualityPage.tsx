@@ -570,3 +570,5 @@ export const ChatflowQualityPage: React.FC = () => {
     </div>
   );
 };
+
+export default ChatflowQualityPage;

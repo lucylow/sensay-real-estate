@@ -301,3 +301,5 @@ export const SensayIntegrationPage: React.FC = () => {
     </div>
   );
 };
+
+export default SensayIntegrationPage;
