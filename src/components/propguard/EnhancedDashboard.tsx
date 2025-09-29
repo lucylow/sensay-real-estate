@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Dashboard } from '@/components/dashboard/Dashboard';
 import { PropertyShowcase } from '@/components/PropertyShowcase';
-import { EnhancedNavigation } from '@/components/navigation/EnhancedNavigation';
-import { MobileNavigation } from '@/components/navigation/MobileNavigation';
-import { BreadcrumbNavigation } from '@/components/navigation/BreadcrumbNavigation';
+// Navigation is now provided by the shared NavigationLayout wrapper
+// Remove local navigation to avoid duplicate headers/footers
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -87,17 +86,6 @@ export const EnhancedDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      {/* Enhanced Navigation */}
-      <div className="hidden md:block">
-        <EnhancedNavigation />
-      </div>
-      
-      {/* Mobile Navigation */}
-      <MobileNavigation />
-
-      {/* Breadcrumbs */}
-      <BreadcrumbNavigation />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Dashboard Header */}
         <div className="py-8">

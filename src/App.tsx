@@ -26,10 +26,8 @@ import { PropertyShowcase } from "@/components/PropertyShowcase";
 import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
 
-// Navigation Components
-import { EnhancedNavigation } from "@/components/navigation/EnhancedNavigation";
-import { MobileNavigation } from "@/components/navigation/MobileNavigation";
-import { BreadcrumbNavigation } from "@/components/navigation/BreadcrumbNavigation";
+// Shared Navigation Layout
+import { NavigationLayout } from "@/components/layout/NavigationLayout";
 
 const queryClient = new QueryClient();
 
@@ -60,30 +58,33 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Landing Page - Marketing and introduction */}
+            {/* Landing Page - Marketing and introduction (no shared layout) */}
             <Route path="/" element={<LandingPageSimple />} />
-            
-            {/* Main App Entry Point - Clear transition from landing */}
-            <Route path="/app" element={<IndexSimple />} />
-            
-            {/* Core Real Estate Functionality */}
-            <Route path="/dashboard" element={<EnhancedDashboard />} />
-            <Route path="/search" element={<PropertySearchPageSimple />} />
-            <Route path="/property/:id" element={<PropertyDetailPageSimple />} />
-            <Route path="/market-analysis" element={<MarketAnalysisPageSimple />} />
-            <Route path="/report/:reportId" element={<ValuationReportPageSimple />} />
-            
-            {/* AI Integration - Consolidated Sensay functionality */}
-            <Route path="/sensay" element={<SensayIntegrationPage />} />
-            <Route path="/chat" element={<PropGuardAIChatbot />} />
-            
-            {/* Essential Real Estate Features */}
-            <Route path="/showcase" element={<PropertyShowcase />} />
-            <Route path="/leads" element={<LeadDashboard />} />
-            <Route path="/appointments" element={<AppointmentManager />} />
-            
-            {/* Catch-all Route */}
-            <Route path="*" element={<NotFound />} />
+
+            {/* All application pages use a single shared layout to avoid duplicate headers/footers */}
+            <Route element={<NavigationLayout />}> 
+              {/* Main App Entry Point - Clear transition from landing */}
+              <Route path="/app" element={<IndexSimple />} />
+              
+              {/* Core Real Estate Functionality */}
+              <Route path="/dashboard" element={<EnhancedDashboard />} />
+              <Route path="/search" element={<PropertySearchPageSimple />} />
+              <Route path="/property/:id" element={<PropertyDetailPageSimple />} />
+              <Route path="/market-analysis" element={<MarketAnalysisPageSimple />} />
+              <Route path="/report/:reportId" element={<ValuationReportPageSimple />} />
+              
+              {/* AI Integration - Consolidated Sensay functionality */}
+              <Route path="/sensay" element={<SensayIntegrationPage />} />
+              <Route path="/chat" element={<PropGuardAIChatbot />} />
+              
+              {/* Essential Real Estate Features */}
+              <Route path="/showcase" element={<PropertyShowcase />} />
+              <Route path="/leads" element={<LeadDashboard />} />
+              <Route path="/appointments" element={<AppointmentManager />} />
+
+              {/* Catch-all Route within layout */}
+              <Route path="*" element={<NotFound />} />
+            </Route>
           </Routes>
           
         </BrowserRouter>

@@ -19,6 +19,7 @@ import {
   Heart,
   Share2
 } from 'lucide-react';
+import PropertyMap from '@/components/PropertyMap';
 
 interface Property {
   id: string;
@@ -102,6 +103,8 @@ export const PropertySearchPageSimple: React.FC = () => {
   const [bedrooms, setBedrooms] = useState('all');
   const [results, setResults] = useState<Property[]>(mockProperties);
   const [isLoading, setIsLoading] = useState(false);
+
+  const showCollinsDemo = searchLocation.trim().toLowerCase().includes('123 collins');
 
   const handleSearch = async () => {
     setIsLoading(true);
@@ -236,6 +239,29 @@ export const PropertySearchPageSimple: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Demo Map: show instantly when typing 123 Collins Street */}
+        {showCollinsDemo && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                123 Collins Street, Melbourne VIC
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PropertyMap
+                property={{
+                  address: '123 Collins Street, Melbourne VIC',
+                  coordinates: { lat: -37.8136, lng: 144.9631 },
+                  riskData: { flood: 72, fire: 45, coastal: 30 }
+                }}
+                riskData={{ flood: 72, fire: 45, coastalErosion: 30, subsidence: 10 }}
+                activeLayers={{ flood: true, fire: true, erosion: true }}
+              />
+            </CardContent>
+          </Card>
+        )}
 
         {/* Results */}
         <div className="mb-4 flex items-center justify-between">
