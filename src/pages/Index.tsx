@@ -70,6 +70,7 @@ const Index = () => {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'sensay', label: 'Sensay AI', icon: Bot },
+    { id: 'sensay-leads', label: 'Lead Generation', icon: Users },
     { id: 'map', label: 'Risk Analysis', icon: Map },
     { id: 'nft', label: 'Blockchain', icon: Coins },
     { id: 'compliance', label: 'APRA Compliance', icon: CheckCircle },
@@ -521,6 +522,63 @@ const Index = () => {
                     sentiment={propertyData?.sentiment} 
                     isLoading={isLoading}
                   />
+                </div>
+              </div>
+            )}
+
+            {/* Sensay Lead Generation */}
+            {activeTab === 'sensay-leads' && (
+              <div className="space-y-6">
+                <div className="text-center space-y-4">
+                  <div className="flex items-center justify-center gap-2">
+                    <Users className="h-8 w-8 text-primary" />
+                    <h1 className="text-3xl font-bold">Sensay Lead Generation</h1>
+                    <Badge variant="secondary" className="text-sm">
+                      <Sparkles className="h-3 w-3 mr-1" />
+                      AI Powered
+                    </Badge>
+                  </div>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Advanced lead generation and qualification system powered by Sensay AI.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="bg-card rounded-xl shadow-lg p-6 border">
+                    <h3 className="text-lg font-semibold mb-4">Lead Generation Dashboard</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Access the full lead generation dashboard with real-time analytics and chatbot management.
+                    </p>
+                    <Link 
+                      to="/sensay-leads"
+                      className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      <Users className="h-4 w-4" />
+                      Open Dashboard
+                    </Link>
+                  </div>
+
+                  <div className="bg-card rounded-xl shadow-lg p-6 border">
+                    <h3 className="text-lg font-semibold mb-4">Key Features</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm">24/7 Lead Capture</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm">Smart Qualification</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm">Real-time Analytics</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm">ROI Tracking</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

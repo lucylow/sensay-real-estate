@@ -129,7 +129,7 @@ const LandingPage = () => {
                 onClick={() => navigate('/sensay-leads')}
                 className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               >
-                Demo
+                Sensay Demo
               </button>
             </div>
 
@@ -203,6 +203,24 @@ const LandingPage = () => {
                 className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
               >
                 Market Analysis
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/sensay-leads');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Sensay Lead Generation
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/sensay-chatbot');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg"
+              >
+                Sensay Chatbot
               </button>
               <button 
                 onClick={() => {

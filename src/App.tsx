@@ -36,6 +36,7 @@ import { SmartFAQ } from "@/components/SmartFAQ";
 import { VirtualTourBooking } from "@/components/VirtualTourBooking";
 import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
+import { BlockchainIntegrationPage } from "@/pages/BlockchainIntegrationPage";
 
 // Test & Development Pages
 import { HeyGenTestPage } from "@/pages/HeyGenTestPage";
@@ -80,6 +81,7 @@ const App = () => (
             <Route path="/virtual-tours" element={<VirtualTourBooking />} />
             <Route path="/leads" element={<LeadDashboard />} />
             <Route path="/appointments" element={<AppointmentManager />} />
+            <Route path="/blockchain" element={<BlockchainIntegrationPage />} />
             
             {/* Test & Development Routes */}
             <Route path="/heygen-test" element={<HeyGenTestPage />} />

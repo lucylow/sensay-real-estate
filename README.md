@@ -160,16 +160,22 @@ npm run dev
 ```
 
 5. **Access the Application**
-- Main App: `http://localhost:5173`
-- Sensay Chatbot: `http://localhost:5173/sensay-leads`
-- Analytics Dashboard: `http://localhost:5173/sensay-leads` (Analytics tab)
+- Main App: `http://localhost:5173/app`
+- Landing Page: `http://localhost:5173/`
+- Sensay Lead Generation: `http://localhost:5173/sensay-leads`
+- Sensay Chatbot: `http://localhost:5173/sensay-chatbot`
+- Sensay Wisdom: `http://localhost:5173/sensay-wisdom`
+- Sensay Features: `http://localhost:5173/sensay-features`
+- Property Search: `http://localhost:5173/search`
+- Market Analysis: `http://localhost:5173/market-analysis`
+- Blockchain Integration: `http://localhost:5173/blockchain`
 
 ## 📱 Usage
 
 ### For Real Estate Professionals
 
 1. **Access Lead Generation Dashboard**
-   - Navigate to `/sensay-leads`
+   - Navigate to `/sensay-leads` or use the "Lead Generation" tab in the main app
    - View real-time lead metrics and performance
    - Monitor chatbot conversations and conversions
 
@@ -183,10 +189,16 @@ npm run dev
    - Analyze conversation quality
    - Monitor property search patterns
 
+4. **Access Sensay AI Features**
+   - Navigate to `/sensay` for the main AI assistant
+   - Use `/sensay-wisdom` for advanced AI insights
+   - Explore `/sensay-features` for feature overview
+
 ### For Property Buyers/Sellers
 
 1. **Start a Conversation**
-   - Click the floating chatbot button
+   - Click the floating chatbot button on any page
+   - Navigate to `/sensay-chatbot` for dedicated chatbot interface
    - Ask questions about properties, valuations, or market trends
    - Get personalized property recommendations
 
@@ -199,6 +211,11 @@ npm run dev
    - Request instant property valuations
    - Receive risk assessments and market insights
    - Access detailed property reports
+
+4. **Explore Properties**
+   - Use `/search` for property search functionality
+   - Access `/market-analysis` for market insights
+   - View `/property-showcase` for featured properties
 
 ## 🎯 Lead Generation Workflow
 
