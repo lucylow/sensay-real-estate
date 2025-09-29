@@ -32,7 +32,7 @@ import { SensayFeaturesDashboard } from "@/components/sensay/SensayFeaturesDashb
 // AI & Chatbot Pages
 import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
 import { SensayHackathonShowcase } from "@/components/SensayHackathonShowcase";
-import { KnowledgeMonitoringDashboard } from "@/components/KnowledgeMonitoringDashboard";
+import KnowledgeMonitoringDashboard from "@/components/KnowledgeMonitoringDashboard";
 
 // Feature Pages
 import { PropertyShowcase } from "@/components/PropertyShowcase";

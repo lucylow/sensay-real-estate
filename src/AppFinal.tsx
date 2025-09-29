@@ -25,7 +25,7 @@ import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
 import { PropGuardAIChatbot } from "@/pages/PropGuardAIChatbot";
 import { SensayHackathonShowcase } from "@/components/SensayHackathonShowcase";
-import { KnowledgeMonitoringDashboard } from "@/components/KnowledgeMonitoringDashboard";
+import KnowledgeMonitoringDashboard from "@/components/KnowledgeMonitoringDashboard";
 
 const queryClient = new QueryClient();
 

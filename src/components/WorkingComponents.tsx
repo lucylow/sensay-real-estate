@@ -5,14 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { 
+  AlertCircle, CheckCircle, Clock, BarChart3, 
   MessageSquare, Send, Calculator, DollarSign,
-  Search, Phone, Mail, FileText, 
-  Bot, TrendingUp, CheckCircle, AlertCircle, Clock, BarChart3
+  Search, Phone, Mail, FileText, Key as KeyIcon,
+  Bot, TrendingUp
 } from 'lucide-react';
 
-// Simple working replacements to fix critical TypeScript errors
+// Simple working replacements for problematic components
 
-const QualityControlledAssistant = () => {
+export const QualityControlledAssistant = () => {
   const [message, setMessage] = useState('');
   const [responses, setResponses] = useState<string[]>([]);
   
@@ -73,7 +74,7 @@ const QualityControlledAssistant = () => {
   );
 };
 
-const SensayConversationAnalytics = () => {
+export const SensayConversationAnalytics = () => {
   return (
     <div className="p-6">
       <Card>
@@ -105,13 +106,13 @@ const SensayConversationAnalytics = () => {
   );
 };
 
-const SensayMultimodalIntegration = () => {
+export const SensayMultimodalIntegration = () => {
   return (
     <div className="p-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Bot className="h-5 w-5" />
+            <KeyIcon className="h-5 w-5" />
             Multimodal Integration
           </CardTitle>
         </CardHeader>
@@ -127,7 +128,7 @@ const SensayMultimodalIntegration = () => {
   );
 };
 
-const SystemHealth = () => {
+export const SystemHealth = () => {
   const services = [
     { name: 'PropGuard', status: 'healthy' },
     { name: 'LLM Service', status: 'healthy' },
@@ -160,7 +161,7 @@ const SystemHealth = () => {
   );
 };
 
-const SensayWisdomEngine = () => {
+export const SensayWisdomEngine = () => {
   return (
     <div className="p-6">
       <Card>
@@ -196,7 +197,7 @@ const SensayWisdomEngine = () => {
   );
 };
 
-const SensayRealEstateChatbot = () => {
+export const SensayRealEstateChatbot = () => {
   return (
     <div className="p-6">
       <Card>
@@ -223,13 +224,4 @@ const SensayRealEstateChatbot = () => {
       </Card>
     </div>
   );
-};
-
-export default QualityControlledAssistant;
-export { 
-  SensayConversationAnalytics, 
-  SensayMultimodalIntegration, 
-  SystemHealth, 
-  SensayWisdomEngine, 
-  SensayRealEstateChatbot 
 };

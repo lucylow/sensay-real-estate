@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, Star, TrendingUp, Calendar, Mail, Phone, MessageCircle,
   CheckCircle, AlertCircle, Clock, Target, DollarSign, Home,
-  Building, MapPin, UserCheck, Zap, BarChart3, Send
+  Building, MapPin, UserCheck, Zap, BarChart3, Send, FileText
 } from 'lucide-react';
 import { sensayAPI } from '@/services/api/sensay';
 
@@ -344,7 +344,7 @@ export const LeadQualificationAutomation: React.FC<LeadQualificationProps> = ({
               variant="outline"
               onClick={() => handleSendNurtureMessage(lead.id, 'investment guide')}
             >
-              <File className="h-3 w-3 mr-1" />
+              <FileText className="h-3 w-3 mr-1" />
               Investment Guide
             </Button>
             <Button 
