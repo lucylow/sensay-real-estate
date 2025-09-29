@@ -16,7 +16,7 @@ import {
   Monitor,
   Tablet,
   Database,
-  Memory,
+  Brain,
   Cpu,
   HardDrive,
   Wifi,
@@ -823,7 +823,7 @@ export const ContextualMemory: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Memory className="h-5 w-5" />
+                  <Brain className="h-5 w-5" />
                   Memory Performance
                 </CardTitle>
               </CardHeader>

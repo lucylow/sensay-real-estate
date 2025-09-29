@@ -10,7 +10,7 @@ import {
   Calendar, 
   Globe, 
   BarChart3, 
-  Memory,
+  Brain,
   Zap,
   Target,
   TrendingUp,
@@ -77,7 +77,7 @@ export const SensayFeaturesDashboard: React.FC = () => {
       id: 'contextual-memory',
       title: 'Contextual Memory',
       description: 'Persistent user profiles and predictive flows',
-      icon: <Memory className="h-6 w-6" />,
+      icon: <Brain className="h-6 w-6" />,
       metrics: { profiles: 1247, accuracy: 89.7, sync: 94.2 },
       status: 'active'
     }
