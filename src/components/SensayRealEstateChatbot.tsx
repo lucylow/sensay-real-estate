@@ -1168,4 +1168,5 @@ This helps me match you with the perfect properties and agent!`;
   );
 };
 
+export { SensayRealEstateChatbot };
 export default SensayRealEstateChatbot;

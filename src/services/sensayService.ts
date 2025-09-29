@@ -480,7 +480,7 @@ export class SensayService {
     // Simple FAQ responses - in production, integrate with knowledge base
     const faqResponses: Record<string, string> = {
       'how does propguard work': 'PropGuard AI uses advanced machine learning to analyze property data, environmental risks, and market trends to provide accurate valuations and risk assessments.',
-      'what is apra compliance': 'APRA CPS 230 compliance ensures our property valuations meet Australian banking regulatory standards for risk assessment and lending decisions.',
+      'what is apra compliance': 'APRA CPS 230 compliance ensures our property valuations meet global banking regulatory standards for risk assessment and lending decisions.',
       'how accurate are valuations': 'Our AI-powered valuations achieve 92% accuracy compared to actual sale prices, using real-time market data and comprehensive risk analysis.',
       'what environmental risks': 'We assess flood risk, fire risk, coastal erosion, and other environmental factors using NASA data and climate projections.',
       'how to schedule viewing': 'You can schedule virtual or in-person viewings directly through our chat interface. Just let me know which property interests you!'

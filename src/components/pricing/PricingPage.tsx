@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckoutDialog } from './CheckoutDialog';
+import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
+import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 
 export const PricingPage: React.FC = () => {
   const plans = [
@@ -60,6 +62,10 @@ export const PricingPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* Sensay AI Assistant for Pricing */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <div className="space-y-8">
       {/* Main Pricing Plans */}
       <div>
         <div className="text-center mb-8">
@@ -242,6 +248,15 @@ export const PricingPage: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+          </div>
+        </div>
+        <div>
+          <EnhancedSensayAssistant 
+            className="h-[600px]"
+            context="pricing"
+          />
+        </div>
+      </div>
     </div>
   );
 };

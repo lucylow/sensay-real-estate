@@ -340,34 +340,34 @@ export const COLLINS_STREET_MOCK_DATA = {
 };
 
 // Helper functions
-export const isCollinsStreetAddress = (address: string): boolean => {
-  return address.toLowerCase().includes('123 collins street') || 
-         address.toLowerCase().includes('collins street, melbourne');
+export const isMainStreetAddress = (address: string): boolean => {
+  return address.toLowerCase().includes('123 main street') || 
+         address.toLowerCase().includes('main street, new york');
 };
 
-export const getCollinsStreetPropertyAnalysis = (): PropertyAnalysis => 
+export const getMainStreetPropertyAnalysis = (): PropertyAnalysis => 
   COLLINS_STREET_MOCK_DATA.propertyAnalysis;
 
-export const getCollinsStreetSentiment = (): SentimentAnalysis => 
+export const getMainStreetSentiment = (): SentimentAnalysis => 
   COLLINS_STREET_MOCK_DATA.sentimentAnalysis;
 
-export const getCollinsStreetMarketSentiment = (): MarketSentiment => 
+export const getMainStreetMarketSentiment = (): MarketSentiment => 
   COLLINS_STREET_MOCK_DATA.marketSentiment;
 
-export const getCollinsStreetRiskData = () => 
+export const getMainStreetRiskData = () => 
   COLLINS_STREET_MOCK_DATA.propertyAnalysis.analysis_result.risk;
 
-export const getCollinsStreetSystemHealth = () => 
+export const getMainStreetSystemHealth = () => 
   COLLINS_STREET_MOCK_DATA.systemHealth;
 
-export const getCollinsStreetBlockchainData = () =>
+export const getMainStreetBlockchainData = () =>
   COLLINS_STREET_MOCK_DATA.blockchain;
 
-export const getCollinsStreetFinancialData = () =>
+export const getMainStreetFinancialData = () =>
   COLLINS_STREET_MOCK_DATA.financialMetrics;
 
-export const getCollinsStreetReports = () =>
+export const getMainStreetReports = () =>
   COLLINS_STREET_MOCK_DATA.reports;
 
-export const getCollinsStreetPricing = () =>
+export const getMainStreetPricing = () =>
   COLLINS_STREET_MOCK_DATA.pricing;

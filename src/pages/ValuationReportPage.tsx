@@ -465,7 +465,7 @@ export const ValuationReportPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-primary" />
                 <span className="font-medium">PropGuard AI</span>
-                <Badge variant="outline">Powered by Australian Property Data</Badge>
+                <Badge variant="outline">Powered by Global Property Data</Badge>
               </div>
               <div className="text-right text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">

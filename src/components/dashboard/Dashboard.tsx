@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { PropertySearch } from './PropertySearch';
 import { PropertyDetails } from '@/components/PropertyDetails';
 import PropertyMap from '@/components/PropertyMap';
-import { SystemHealth } from '@/components/SystemHealth';
 
 import { EnhancedPropertyAnalytics } from '@/components/EnhancedPropertyAnalytics';
 import { EnhancedRiskAnalysis } from '@/components/EnhancedRiskAnalysis';
@@ -16,8 +15,10 @@ import { PricingPage } from '../pricing/PricingPage';
 import { AIAssistant } from '@/components/AIAssistant';
 import { AIPredictiveAnalytics } from '@/components/AIPredictiveAnalytics';
 import { AIInsights } from '@/components/AIInsights';
+// import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
+import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
+import { MultilingualChatInterface } from '@/components/MultilingualChatInterface';
 import { usePropertyAnalysis } from '@/hooks/usePropertyAnalysis';
-import { useSystemHealth } from '@/hooks/useSystemHealth';
 import { COLLINS_STREET_MOCK_DATA } from '@/data/mockData';
 import { WalletConnection } from '@/components/WalletConnection';
 
@@ -72,7 +73,6 @@ export const Dashboard: React.FC = () => {
     checkAPIHealth();
   }, [checkAPIHealth]);
   
-  const { health } = useSystemHealth();
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard' },
@@ -108,7 +108,12 @@ export const Dashboard: React.FC = () => {
                       property={selectedProperty}
                     />
                   </div>
-                  <div>
+                  <div className="space-y-6">
+                    <EnhancedSensayAssistant 
+                      property={selectedProperty}
+                      analysis={analysis || propertyValuation}
+                      className="h-[400px]"
+                    />
                     <AIAssistant 
                       property={selectedProperty}
                       analysis={analysis || propertyValuation}
@@ -117,13 +122,20 @@ export const Dashboard: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-20 mt-8">
-                <div className="glass-card max-w-md mx-auto p-8 rounded-2xl shadow-lg">
-                  <div className="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">🏠</span>
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8">
+                <div className="text-center py-20">
+                  <div className="glass-card max-w-md mx-auto p-8 rounded-2xl shadow-lg">
+                    <div className="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🏠</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Ready to Analyze</h3>
+                    <p className="text-muted-foreground">Enter a property address above to unlock comprehensive AI-powered analysis</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Ready to Analyze</h3>
-                  <p className="text-muted-foreground">Enter a property address above to unlock comprehensive AI-powered analysis</p>
+                </div>
+                <div>
+                  <MultilingualChatInterface 
+                    className="h-[500px]"
+                  />
                 </div>
               </div>
             )}
@@ -146,7 +158,12 @@ export const Dashboard: React.FC = () => {
                     analysis={analysis || propertyValuation}
                   />
                 </div>
-                <div>
+                <div className="space-y-6">
+                  <EnhancedSensayAssistant 
+                    property={selectedProperty}
+                    analysis={analysis || propertyValuation}
+                    className="h-[300px]"
+                  />
                   <AIAssistant 
                     property={selectedProperty}
                     analysis={analysis || propertyValuation}
@@ -154,13 +171,20 @@ export const Dashboard: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-20">
-                <div className="glass-card max-w-md mx-auto p-8 rounded-2xl shadow-lg">
-                  <div className="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">🤖</span>
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div className="text-center py-20">
+                  <div className="glass-card max-w-md mx-auto p-8 rounded-2xl shadow-lg">
+                    <div className="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🤖</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">AI Insights Awaiting</h3>
+                    <p className="text-muted-foreground">Enter a property address above to access advanced AI predictions and market intelligence</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">AI Insights Awaiting</h3>
-                  <p className="text-muted-foreground">Enter a property address above to access advanced AI predictions and market intelligence</p>
+                </div>
+                <div>
+                  <SensayRealEstateChatbot 
+                    className="h-[500px]"
+                  />
                 </div>
               </div>
             )}
@@ -179,16 +203,36 @@ export const Dashboard: React.FC = () => {
                 <PropertyMap 
                   property={selectedProperty}
                 />
-                <EnhancedRiskAnalysis />
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                  <div className="xl:col-span-2">
+                    <EnhancedRiskAnalysis />
+                  </div>
+                  <div>
+                    <EnhancedSensayAssistant 
+                      property={selectedProperty}
+                      analysis={analysis || propertyValuation}
+                      className="h-[400px]"
+                      context="risk-analysis"
+                    />
+                  </div>
+                </div>
               </div>
             ) : (
-              <div className="text-center py-20">
-                <div className="glass-card max-w-md mx-auto p-8 rounded-2xl shadow-lg">
-                  <div className="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">⚠️</span>
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div className="text-center py-20">
+                  <div className="glass-card max-w-md mx-auto p-8 rounded-2xl shadow-lg">
+                    <div className="w-16 h-16 gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">⚠️</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Risk Analysis Ready</h3>
+                    <p className="text-muted-foreground">Enter a property address above to view comprehensive climate and market risk assessment</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Risk Analysis Ready</h3>
-                  <p className="text-muted-foreground">Enter a property address above to view comprehensive climate and market risk assessment</p>
+                </div>
+                <div>
+                  <SensayRealEstateChatbot 
+                    className="h-[500px]"
+                    context="risk-analysis"
+                  />
                 </div>
               </div>
             )}

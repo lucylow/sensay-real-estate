@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import ValuationReport from '../ValuationReport';
+import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
+import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 
 export const ReportsPage: React.FC = () => {
   const [selectedProperty, setSelectedProperty] = useState('123 Collins Street');
@@ -380,7 +382,10 @@ PropGuard AI • APRA CPS 230 Compliant • ASIC Regulatory Technology Provider 
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="library" className="w-full">
+      {/* Sensay AI Assistant for Reports */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <Tabs defaultValue="library" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="library">Report Library</TabsTrigger>
           <TabsTrigger value="generate">Generate Report</TabsTrigger>
@@ -575,6 +580,14 @@ PropGuard AI • APRA CPS 230 Compliant • ASIC Regulatory Technology Provider 
           <div className="whitespace-pre-wrap text-sm">{dialogContent}</div>
         </DialogContent>
       </Dialog>
+        </div>
+        <div>
+          <EnhancedSensayAssistant 
+            className="h-[600px]"
+            context="reports"
+          />
+        </div>
+      </div>
     </div>
   );
 };

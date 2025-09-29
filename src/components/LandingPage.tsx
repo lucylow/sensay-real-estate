@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowRight, Shield, TrendingUp, Users, CheckCircle, Star, Play, BarChart3, Zap, Globe, Menu, X, MessageCircle, Search, Building, FileText, Map, Bot, Video, Mic, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { EnhancedSensayFeatures } from '@/components/EnhancedSensayFeatures';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -287,14 +288,9 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="flex items-center mb-4">
-                <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-                  🚀 OpenxAI Hackathon Submission
-                </span>
-              </div>
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
                 AI-Powered Property Risk Assessment for 
-                <span className="text-blue-600"> Australian Lenders</span>
+                <span className="text-blue-600"> Global Lenders</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Revolutionize mortgage lending with real-time climate risk analysis, 
@@ -306,7 +302,7 @@ const LandingPage = () => {
                   onClick={() => navigate('/app')}
                   className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center"
                 >
-                  Try Demo: 123 Collins Street
+                  Try Demo: 123 Main Street
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
                 <button className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:border-gray-400 transition flex items-center justify-center">
@@ -337,7 +333,7 @@ const LandingPage = () => {
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">123 Collins Street, Melbourne</span>
+                    <span className="text-gray-600">123 Main Street, New York</span>
                     <span className="font-bold text-green-600">$8.5M</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -375,7 +371,7 @@ const LandingPage = () => {
       <section className="bg-gray-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <p className="text-gray-600">Trusted by leading Australian financial institutions</p>
+            <p className="text-gray-600">Trusted by leading global financial institutions</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60">
             <div className="text-center">
@@ -398,87 +394,8 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Sensay Wisdom Integration */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <Brain className="w-7 h-7 text-white" />
-              </div>
-              <div className="text-left">
-                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Sensay Wisdom Integration
-                </h2>
-                <div className="flex items-center gap-3 mt-2">
-                  <span className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-                    🏆 Hackathon Winner 2024
-                  </span>
-                  <span className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                    💰 $10,000 Prize
-                  </span>
-                </div>
-              </div>
-            </div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-              Experience enhanced AI-powered property analysis with Sensay's Wisdom Engine. 
-              Get sophisticated insights, risk assessments, and investment advice powered by 
-              advanced artificial intelligence.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => navigate('/sensay-wisdom')}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-semibold transition flex items-center justify-center shadow-lg"
-              >
-                <Brain className="mr-2 h-5 w-5" />
-                Explore Sensay Wisdom
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </button>
-              <button 
-                onClick={() => navigate('/sensay-wisdom')}
-                className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center justify-center"
-              >
-                <Play className="mr-2 h-5 w-5" />
-                Live Demo
-              </button>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Enhanced AI</h3>
-              <p className="text-gray-600 text-sm">Powered by Sensay's Wisdom Engine for sophisticated conversations</p>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Market Intelligence</h3>
-              <p className="text-gray-600 text-sm">Advanced market analysis and trend predictions</p>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Risk Assessment</h3>
-              <p className="text-gray-600 text-sm">Comprehensive risk analysis with mitigation strategies</p>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center mb-4">
-                <FileText className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Smart Reports</h3>
-              <p className="text-gray-600 text-sm">Generate detailed property analysis reports</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Enhanced Sensay Features */}
+      <EnhancedSensayFeatures />
 
       {/* Key Features */}
       <section id="features" className="py-20">
@@ -554,7 +471,7 @@ const LandingPage = () => {
             </div>
             <div>
               <div className="text-4xl font-bold text-white mb-2">$2.3T</div>
-              <div className="text-blue-100">Australian Mortgage Market</div>
+              <div className="text-blue-100">Global Mortgage Market</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-white mb-2">98%</div>
@@ -643,14 +560,14 @@ const LandingPage = () => {
             Ready to Transform Your Property Lending?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join leading Australian lenders using PropGuard AI to reduce risk and ensure compliance.
+            Join leading global lenders using PropGuard AI to reduce risk and ensure compliance.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => navigate('/app')}
               className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition"
             >
-              Try Demo: 123 Collins Street
+              Try Demo: 123 Main Street
             </button>
             <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition">
               Schedule Demo Call
@@ -669,7 +586,7 @@ const LandingPage = () => {
                 <span className="ml-2 text-xl font-bold">PropGuard AI</span>
               </div>
               <p className="text-gray-400 mb-4">
-                AI-powered property risk assessment for the Australian lending market.
+                AI-powered property risk assessment for the global lending market.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white">Twitter</a>

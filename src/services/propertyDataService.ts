@@ -4,10 +4,10 @@ import { realtyBaseAPI } from '@/services/api/realtybase';
 import { supabase } from '@/integrations/supabase/client';
 import { APP_CONSTANTS } from '@/config/constants';
 import { 
-  isCollinsStreetAddress, 
-  getCollinsStreetPropertyAnalysis, 
-  getCollinsStreetSentiment, 
-  getCollinsStreetMarketSentiment 
+  isMainStreetAddress, 
+  getMainStreetPropertyAnalysis, 
+  getMainStreetSentiment, 
+  getMainStreetMarketSentiment 
 } from '@/data/mockData';
 import { searchProperties } from '@/data/mockProperties';
 
@@ -160,11 +160,11 @@ class PropertyDataService {
       }
     }
 
-    // Fallback to Collins Street
+    // Fallback to Main Street
     return {
-      analysis: getCollinsStreetPropertyAnalysis(),
-      sentiment: getCollinsStreetSentiment(),
-      marketSentiment: getCollinsStreetMarketSentiment(),
+      analysis: getMainStreetPropertyAnalysis(),
+      sentiment: getMainStreetSentiment(),
+      marketSentiment: getMainStreetMarketSentiment(),
       fireRisk: {
         riskScore: 0.72,
         riskLevel: 'High',
@@ -445,12 +445,12 @@ class PropertyDataService {
 
   // Helper function to extract coordinates from address query
   private extractCoordinates(query: string): { lat: number; lng: number } {
-    // For Collins Street demo
-    if (isCollinsStreetAddress(query)) {
-      return { lat: -37.8136, lng: 144.9631 };
+    // For Main Street demo
+    if (isMainStreetAddress(query)) {
+      return { lat: 40.7589, lng: -73.9851 }; // New York coordinates
     }
     
-    // For other Australian cities (rough coordinates)
+    // For other global cities (rough coordinates)
     const cityCoords: Record<string, { lat: number; lng: number }> = {
       'sydney': { lat: -33.8688, lng: 151.2093 },
       'melbourne': { lat: -37.8136, lng: 144.9631 },

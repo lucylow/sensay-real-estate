@@ -15,6 +15,8 @@ import {
 import { COLLINS_STREET_MOCK_DATA } from '@/data/mockData';
 import { NFTMintDialog } from '@/components/blockchain/NFTMintDialog';
 import { PropertyAnalysis } from '@/types/property';
+import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
+import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 
 interface BlockchainDashboardProps {
   analysis?: PropertyAnalysis | null;
@@ -39,6 +41,10 @@ export const BlockchainDashboard: React.FC<BlockchainDashboardProps> = ({ analys
 
   return (
     <div className="space-y-6">
+      {/* Sensay AI Assistant for Blockchain */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <div className="space-y-6">
       {/* NFT Collection Overview */}
       <Card>
         <CardHeader>
@@ -310,6 +316,16 @@ export const BlockchainDashboard: React.FC<BlockchainDashboardProps> = ({ analys
             </div>
           </CardContent>
         </Card>
+      </div>
+          </div>
+        </div>
+        <div>
+          <EnhancedSensayAssistant 
+            analysis={analysis}
+            className="h-[600px]"
+            context="blockchain"
+          />
+        </div>
       </div>
     </div>
   );

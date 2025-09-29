@@ -14,6 +14,8 @@ import {
   DollarSign 
 } from 'lucide-react';
 import { COLLINS_STREET_MOCK_DATA } from '@/data/mockData';
+import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
+import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 
 export const APRAComplianceDashboard = () => {
   const data = COLLINS_STREET_MOCK_DATA;
@@ -42,6 +44,10 @@ export const APRAComplianceDashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sensay AI Assistant for Compliance */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <div className="space-y-6">
       {/* Compliance Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {Object.entries(data.propertyAnalysis.analysis_result.compliance.detailed).map(([key, compliance]: [string, any]) => (
@@ -300,6 +306,16 @@ export const APRAComplianceDashboard = () => {
           </div>
         </CardContent>
       </Card>
+          </div>
+        </div>
+        <div>
+          <EnhancedSensayAssistant 
+            analysis={data.propertyAnalysis}
+            className="h-[600px]"
+            context="compliance"
+          />
+        </div>
+      </div>
     </div>
   );
 };

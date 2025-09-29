@@ -9,6 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Search, MapPin, Bed, Bath, Car, Square, DollarSign } from 'lucide-react';
 import { realtyBaseAPI, PropertySearchParams, PropertyDetails } from '@/services/api/realtybase';
 import { useToast } from '@/hooks/use-toast';
+import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
+import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 
 export const PropertySearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -72,6 +74,10 @@ export const PropertySearchPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Sensay AI Assistant for Property Search */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+          <div className="xl:col-span-2">
+            <div className="space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -377,6 +383,15 @@ export const PropertySearchPage: React.FC = () => {
             )}
           </div>
         )}
+            </div>
+          </div>
+          <div>
+            <EnhancedSensayAssistant 
+              className="h-[600px]"
+              context="property-search"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -11,11 +11,12 @@ import NFTVerifier from '@/components/NFTVerifier';
 import ValuationReport from '@/components/ValuationReport';
 import Web3Monetization from '@/components/Web3Monetization';
 import { PropertyAnalytics } from '@/components/PropertyAnalytics';
-import { SystemHealth } from '@/components/SystemHealth';
 import { Badge } from '@/components/ui/badge';
 import { propGuardAPI } from '@/config/api';
-import { Shield, Building, TrendingUp, BarChart3, Map, FileText, Coins, Menu, X, CheckCircle, AlertTriangle, Clock, Search, Globe, Zap, Users } from 'lucide-react';
+import { Shield, Building, TrendingUp, BarChart3, Map, FileText, Coins, Menu, X, CheckCircle, AlertTriangle, Clock, Search, Globe, Zap, Users, Bot, Sparkles } from 'lucide-react';
 import { MessageCircle } from 'lucide-react';
+import { SensayAssistantFixed } from '@/components/SensayAssistantFixed';
+import { RealTimeDataIntegration } from '@/components/RealTimeDataIntegration';
 
 interface PropertyData {
   address: string;
@@ -68,6 +69,7 @@ const Index = () => {
 
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+    { id: 'sensay', label: 'Sensay AI', icon: Bot },
     { id: 'map', label: 'Risk Analysis', icon: Map },
     { id: 'nft', label: 'Blockchain', icon: Coins },
     { id: 'compliance', label: 'APRA Compliance', icon: CheckCircle },
@@ -464,8 +466,6 @@ const Index = () => {
           </div>
         </motion.div>
 
-        {/* System Health Status */}
-        <SystemHealth className="mb-8" />
 
         {/* Tab Content with Animations */}
         <AnimatePresence mode="wait">
@@ -521,6 +521,119 @@ const Index = () => {
                     sentiment={propertyData?.sentiment} 
                     isLoading={isLoading}
                   />
+                </div>
+              </div>
+            )}
+
+            {/* Sensay AI Assistant */}
+            {activeTab === 'sensay' && (
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="text-center space-y-4">
+                  <div className="flex items-center justify-center gap-2">
+                    <Bot className="h-8 w-8 text-primary" />
+                    <h1 className="text-3xl font-bold">Sensay AI Real Estate Assistant</h1>
+                    <Badge variant="secondary" className="text-sm">
+                      <Sparkles className="h-3 w-3 mr-1" />
+                      AI Powered
+                    </Badge>
+                  </div>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Get instant property analysis, market insights, and investment advice 
+                    powered by advanced AI technology.
+                  </p>
+                </div>
+
+                {/* Main Content */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* AI Assistant */}
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold">Enhanced AI Assistant</h2>
+                    <SensayAssistantFixed className="h-[600px]" />
+                  </div>
+
+                  {/* Features and Capabilities */}
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold">Capabilities</h2>
+                    
+                    <div className="bg-card rounded-xl shadow-lg p-6 border">
+                      <h3 className="text-lg font-semibold mb-4">Property Analysis</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm">Comprehensive valuation analysis</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm">Market comparison insights</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm">Investment potential assessment</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-card rounded-xl shadow-lg p-6 border">
+                      <h3 className="text-lg font-semibold mb-4">Risk Management</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-sm">Environmental risk factors</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-sm">Market volatility analysis</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-sm">Mitigation strategies</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-card rounded-xl shadow-lg p-6 border">
+                      <h3 className="text-lg font-semibold mb-4">Market Intelligence</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span className="text-sm">Trend analysis and predictions</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span className="text-sm">Sentiment scoring</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span className="text-sm">Competitive positioning</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* API Status */}
+                    <div className="bg-card rounded-xl shadow-lg p-6 border">
+                      <h3 className="text-lg font-semibold mb-4">API Status</h3>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Sensay AI Engine</span>
+                          <Badge variant="default">Active</Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Local AI Fallback</span>
+                          <Badge variant="default">Active</Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Demo Mode - Full functionality available
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Live Data Integration */}
+                <div className="mt-8">
+                  <h2 className="text-xl font-semibold mb-4">Live Market Data</h2>
+                  <RealTimeDataIntegration />
                 </div>
               </div>
             )}
