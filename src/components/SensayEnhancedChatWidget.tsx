@@ -5,7 +5,6 @@ import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { ScrollArea } from './ui/scroll-area';
 import { Input } from './ui/input';
-import { Alert, AlertDescription } from './ui/alert';
 import { 
   MessageCircle, 
   X, 
@@ -420,19 +419,6 @@ What would you like to explore?`,
               </Avatar>
               <div>
                 <CardTitle className="text-sm">PropGuard AI</CardTitle>
-                <div className="flex items-center gap-1">
-                  {sensayAuth.isAuthenticated ? (
-                    <>
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span className="text-xs">Sensay Powered</span>
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                      <span className="text-xs">Fallback Mode</span>
-                    </>
-                  )}
-                </div>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -507,14 +493,6 @@ What would you like to explore?`,
                         
                         <div className="flex items-center gap-1 text-xs opacity-70 mt-1">
                           <span>{message.timestamp.toLocaleTimeString()}</span>
-                          {message.metadata?.source && (
-                            <>
-                              <span>•</span>
-                              <Badge variant="outline" className="text-xs">
-                                {message.metadata.source === 'sensay' ? '🤖 Sensay AI' : '🔧 PropGuard AI'}
-                              </Badge>
-                            </>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -532,7 +510,7 @@ What would you like to explore?`,
                       <div className="bg-gray-100 rounded-lg px-3 py-2">
                         <div className="flex items-center gap-2 text-sm">
                           <Loader2 className="h-3 w-3 animate-spin" />
-                          PropGuard AI is thinking...
+                          Typing...
                         </div>
                       </div>
                     </div>
@@ -570,9 +548,7 @@ What would you like to explore?`,
                 </Button>
               </div>
               
-              <div className="text-xs text-gray-500 mt-2 text-center">
-                Powered by PropGuard AI {sensayAuth.isAuthenticated && '+ Sensay API'}
-              </div>
+              
             </div>
           </CardContent>
         )}

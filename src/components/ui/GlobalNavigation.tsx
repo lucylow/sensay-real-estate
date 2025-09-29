@@ -87,7 +87,7 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
         },
         {
           label: 'Valuation Reports',
-          href: '/reports',
+          href: '/report/demo',
           icon: FileText,
           description: 'Property Reports'
         }
@@ -98,7 +98,7 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
       items: [
         {
           label: 'AI Assistant',
-          href: '/sensay-chatbot',
+          href: '/chat',
           icon: Bot,
           description: 'Chat with PropGuard AI',
           featured: true,
@@ -106,13 +106,13 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
         },
         {
           label: 'Lead Generation',
-          href: '/sensay-leads',
+          href: '/leads',
           icon: MessageCircle,
           description: 'Automated lead capture'
         },
         {
           label: 'Analytics',
-          href: '/sensay-analytics',
+          href: '/dashboard',
           icon: Activity,
           description: 'Conversation insights'
         },
@@ -131,7 +131,7 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
         },
         {
           label: 'Showcase',
-          href: '/sensay-showcase',
+          href: '/showcase',
           icon: Zap,
           description: 'See Sensay in action'
         }
@@ -142,7 +142,7 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
       items: [
         {
           label: 'Virtual Tours',
-          href: '/virtual-tours',
+          href: '/showcase',
           icon: Camera,
           description: 'Interactive property tours',
           featured: true,
@@ -150,7 +150,7 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
         },
         {
           label: 'Property Showcase',
-          href: '/property-showcase',
+          href: '/showcase',
           icon: Monitor,
           description: 'Present properties beautifully'
         },
@@ -162,7 +162,7 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
         },
         {
           label: 'Property Details',
-          href: '/property/showcase',
+          href: '/search',
           icon: Building,
           description: 'Detailed property views'
         }
@@ -179,19 +179,19 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
         },
         {
           label: 'Smart FAQ',
-          href: '/smart-faq',
+          href: '/chat',
           icon: HelpCircle,
           description: 'AI-powered support'
         },
         {
           label: 'Platform Demos',
-          href: '/platform-demos',
+          href: '/app',
           icon: Play,
           description: 'Feature demonstrations'
         },
         {
           label: 'Knowledge Dashboard',
-          href: '/knowledge-dashboard',
+          href: '/dashboard',
           icon: PieChart,
           description: 'Monitor AI knowledge base'
         }
@@ -202,19 +202,19 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
       items: [
         {
           label: 'Blockchain Integration',
-          href: '/blockchain',
+          href: '/dashboard',
           icon: Wallet,
           description: 'NFT property certificates'
         },
         {
           label: 'Risk Analysis',
-          href: '/risk-analysis',
+          href: '/market-analysis',
           icon: Shield,
           description: 'Property risk assessment'
         },
         {
           label: 'Compliance',
-          href: '/compliance',
+          href: '/dashboard',
           icon: Layers,
           description: 'Regulatory compliance'
         }
@@ -236,21 +236,21 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
     },
     {
       label: 'AI Assistant',
-      href: '/sensay-chatbot',
+      href: '/chat',
       icon: Bot
     },
     {
       label: 'Virtual Tours',
-      href: '/virtual-tours',
+      href: '/showcase',
        icon: Camera
     }
   ];
 
   const quickActions = [
     { label: 'New Property Analysis', action: () => navigate('/search') },
-    { label: 'Generate Report', action: () => navigate('/reports') },
+    { label: 'Generate Report', action: () => navigate('/report/demo') },
     { label: 'Check Market Trends', action: () => navigate('/market-analysis') },
-    { label: 'AI Assistant Help', action: () => navigate('/sensay-chatbot') }
+    { label: 'AI Assistant Help', action: () => navigate('/chat') }
   ];
 
   useEffect(() => {
@@ -414,7 +414,7 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
                       <p className="text-xs text-gray-500">Use search or �+K for quick access</p>
                     </div>
                     <Button variant="outline" size="sm" asChild>
-                      <Link to="/platform-demos">
+                      <Link to="/app">
                         <Play className="h-3 w-3 mr-1" />
                         Demo All
                       </Link>

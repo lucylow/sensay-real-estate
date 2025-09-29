@@ -172,7 +172,7 @@ const LandingPage = () => {
               </button>
               <button 
                 onClick={() => {
-                  navigate('/sensay-wisdom');
+                  navigate('/sensay');
                   setIsMobileMenuOpen(false);
                 }}
                 className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
@@ -181,7 +181,7 @@ const LandingPage = () => {
               </button>
               <button 
                 onClick={() => {
-                  navigate('/page-directory');
+                  navigate('/app');
                   setIsMobileMenuOpen(false);
                 }}
                 className="block w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
@@ -447,7 +447,7 @@ const LandingPage = () => {
               <ul className="space-y-2 text-gray-400">
                 <li><button onClick={() => navigate('/search')} className="hover:text-white transition">Property Search</button></li>
                 <li><button onClick={() => navigate('/market-analysis')} className="hover:text-white transition">Market Analysis</button></li>
-                <li><button onClick={() => navigate('/sensay-chatbot')} className="hover:text-white transition">AI Assistant</button></li>
+                <li><button onClick={() => navigate('/chat')} className="hover:text-white transition">AI Assistant</button></li>
                 <li><button onClick={() => navigate('/sensay')} className="hover:text-white transition">Sensay Wisdom</button></li>
               </ul>
             </div>
@@ -457,7 +457,7 @@ const LandingPage = () => {
                 <li><button onClick={() => navigate('/app')} className="hover:text-white transition">All Features</button></li>
                 <li><button onClick={() => navigate('/dashboard')} className="hover:text-white transition">Dashboard</button></li>
                 <li><button onClick={() => navigate('/sensay')} className="hover:text-white transition">Sensay Features</button></li>
-                <li><button onClick={() => navigate('/showcase')} className="hover:text-white transition">Blockchain</button></li>
+                <li><button onClick={() => navigate('/dashboard')} className="hover:text-white transition">Blockchain</button></li>
               </ul>
             </div>
             <div>

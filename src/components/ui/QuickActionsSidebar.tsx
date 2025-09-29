@@ -64,7 +64,7 @@ export const QuickActionsSidebar: React.FC<QuickActionsSidebarProps> = ({
       label: 'AI Assistant',
       description: 'Chat with Sensay-powered AI',
       icon: Bot,
-      href: '/sensay-chatbot',
+      href: '/chat',
       color: 'from-purple-500 to-purple-600',
       badge: 'New'
     },
@@ -81,7 +81,7 @@ export const QuickActionsSidebar: React.FC<QuickActionsSidebarProps> = ({
       label: 'Generate Report',
       description: 'Create valuation report',
       icon: FileText,
-      href: '/reports',
+      href: '/report/demo',
       color: 'from-orange-500 to-orange-600'
     },
     {
@@ -97,7 +97,7 @@ export const QuickActionsSidebar: React.FC<QuickActionsSidebarProps> = ({
           label: 'Lead Analytics',
           description: 'Track conversation metrics',
           icon: BarChart3,
-          href: '/sensay-analytics',
+          href: '/dashboard',
           color: 'from-teal-500 to-teal-600'
         },
         {
@@ -127,7 +127,7 @@ export const QuickActionsSidebar: React.FC<QuickActionsSidebarProps> = ({
   const recentActions = [
     { label: 'Property Search', href: '/search', icon: Search },
     { label: 'Market Analysis', href: '/market-analysis', icon: TrendingUp },
-    { label: 'AI Chat', href: '/sensay-chatbot', icon: Bot }
+    { label: 'AI Chat', href: '/chat', icon: Bot }
   ];
 
   return (
