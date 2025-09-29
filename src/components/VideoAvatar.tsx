@@ -42,15 +42,26 @@ export const VideoAvatar: React.FC<VideoAvatarProps> = ({
 
   useEffect(() => {
     // Check configuration on mount
-    const status = heyGenService.getConfigStatus();
-    setConfigStatus(status);
-    setIsConfigured(status.configured);
+    const checkConfig = async () => {
+      try {
+        const status = await heyGenService.getConfigStatus();
+        setConfigStatus(status);
+        setIsConfigured(status.configured);
+        
+        if (!status.configured) {
+          const errorMsg = `HeyGen API not configured in Supabase. Please set ${status.missing.join(', ')} in Supabase environment variables.`;
+          setError(errorMsg);
+          onError?.(errorMsg);
+        }
+      } catch (error) {
+        const errorMsg = 'Failed to check HeyGen configuration';
+        setError(errorMsg);
+        onError?.(errorMsg);
+      }
+    };
     
-    if (!status.configured) {
-      setError(`Missing configuration: ${status.missing.join(', ')}`);
-      onError?.(error);
-    }
-  }, [error, onError]);
+    checkConfig();
+  }, [onError]);
 
   const generateAvatarVideo = async (text: string) => {
     if (!isConfigured) {

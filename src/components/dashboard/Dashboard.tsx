@@ -15,7 +15,7 @@ import { PricingPage } from '../pricing/PricingPage';
 import { AIAssistant } from '@/components/AIAssistant';
 import { AIPredictiveAnalytics } from '@/components/AIPredictiveAnalytics';
 import { AIInsights } from '@/components/AIInsights';
-// import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
+import { SensayRealEstateChatbot } from '@/components/SensayRealEstateChatbot';
 import { EnhancedSensayAssistant } from '@/components/EnhancedSensayAssistant';
 import { MultilingualChatInterface } from '@/components/MultilingualChatInterface';
 import { usePropertyAnalysis } from '@/hooks/usePropertyAnalysis';

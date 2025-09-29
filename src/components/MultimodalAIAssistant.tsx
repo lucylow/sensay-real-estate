@@ -321,10 +321,15 @@ export const MultimodalAIAssistant: React.FC<MultimodalAIAssistantProps> = ({
           <Alert className="m-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              <div className="space-y-1">
-                <div>Missing configuration:</div>
-                {!configStatus.heygen && <div>• HeyGen API (VITE_HEYGEN_API_KEY)</div>}
-                {!configStatus.elevenlabs && <div>• Eleven Labs API (VITE_ELEVENLABS_API_KEY)</div>}
+              <div className="space-y-2">
+                <div className="font-medium">API Configuration Required</div>
+                <div className="text-sm space-y-1">
+                  {!configStatus.heygen && <div>• HeyGen API key needs to be set in Supabase</div>}
+                  {!configStatus.elevenlabs && <div>• ElevenLabs API key needs to be set in Supabase</div>}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  The APIs are now managed through Supabase Edge Functions. Please configure the API keys in your Supabase project environment variables.
+                </div>
               </div>
             </AlertDescription>
           </Alert>

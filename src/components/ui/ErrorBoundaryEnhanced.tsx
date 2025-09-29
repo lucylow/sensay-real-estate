@@ -27,7 +27,6 @@ export class ErrorBoundaryEnhanced extends Component<Props, State> {
   static getDerivedStateFromError(error: Error): State {
     return {
       hasError: true,
-      hasError: true,
       error,
       errorId: `ERR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     };

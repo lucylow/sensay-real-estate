@@ -76,37 +76,19 @@ export const APITestingComponent: React.FC = () => {
     try {
       updateElevenLabsConfig(elevenLabsKey);
       
-      // Test 1: Check if service is configured
-      if (!elevenLabsService.isConfigured()) {
+      // Test 1: Check if service is configured through Supabase
+      const isConfigured = await elevenLabsService.isConfigured();
+      if (!isConfigured) {
         return {
           service: 'ElevenLabs',
           status: 'error',
-          message: 'API key not configured'
+          message: 'ElevenLabs API not configured in Supabase. Please set ELEVENLABS_API_KEY in Supabase environment variables.'
         };
       }
 
-      // Test 2: Fetch voices
-      const voices = await elevenLabsService.fetchVoices();
-      if (!voices || voices.length === 0) {
-        return {
-          service: 'ElevenLabs',
-          status: 'error',
-          message: 'No voices available'
-        };
-      }
-
-      // Test 3: Generate test audio
+      // Test 2: Generate test audio using Supabase function
       const testText = 'Hello! This is a test of the ElevenLabs API integration for Sensay Real Estate.';
-      const audioResult = await elevenLabsService.textToSpeech({
-        text: testText,
-        voice_id: voices[0].voice_id,
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75,
-          style: 0.2,
-          use_speaker_boost: true
-        }
-      });
+      const audioResult = await elevenLabsService.generateAlexSpeech(testText);
 
       if (!audioResult.success) {
         return {
@@ -119,9 +101,8 @@ export const APITestingComponent: React.FC = () => {
       return {
         service: 'ElevenLabs',
         status: 'success',
-        message: `Successfully connected! Found ${voices.length} voices.`,
+        message: 'Successfully connected through Supabase!',
         details: {
-          voices: voices.length,
           testText,
           audioGenerated: true
         },
@@ -140,12 +121,13 @@ export const APITestingComponent: React.FC = () => {
     try {
       updateHeyGenConfig(heyGenKey, heyGenAvatarId);
       
-      // Test 1: Check if service is configured
-      if (!heyGenService.isConfigured()) {
+      // Test 1: Check if service is configured through Supabase
+      const isConfigured = await heyGenService.isConfigured();
+      if (!isConfigured) {
         return {
           service: 'HeyGen',
           status: 'error',
-          message: 'API key or avatar ID not configured'
+          message: 'HeyGen API not configured in Supabase. Please set HEYGEN_API_KEY in Supabase environment variables.'
         };
       }
 
@@ -164,7 +146,7 @@ export const APITestingComponent: React.FC = () => {
       return {
         service: 'HeyGen',
         status: 'success',
-        message: 'Successfully connected! Video generation started.',
+        message: 'Successfully connected through Supabase!',
         details: {
           taskId: videoResult.task_id,
           testText,
