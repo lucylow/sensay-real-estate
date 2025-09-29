@@ -27,7 +27,7 @@ import {
   HelpCircle,
   ChevronRight
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+// import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 export interface MenuCategory {
@@ -429,23 +429,20 @@ export const SmartMenuCategories: React.FC = () => {
               </div>
             </CardHeader>
 
-            <AnimatePresence>
+{/*             <AnimatePresence>
               {expandedCategory === category.id && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
+                  initial={{ height: 0, opacity: . }))
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                >
+                > */}
+              {expandedCategory === category.id && (
+                <div>
                   <CardContent className="pt-0">
                     <div className="space-y-2">
                       {category.pages.map((page) => (
-                        <motion.div
-                          key={page.id}
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          transition={{ delay: 0.1 }}
-                        >
+                        <div key={page.id}>
                           <Card 
                             className={`p-3 cursor-pointer hover:shadow-md transition-shadow bg-white border border-gray-200 hover:border-gray-300`}
                             onClick={() => handlePageClick(page.path)}
@@ -477,13 +474,13 @@ export const SmartMenuCategories: React.FC = () => {
                               </div>
                             </div>
                           </Card>
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
                   </CardContent>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
+            {/* </AnimatePresence> */ }
           </Card>
         ))}
       </div>

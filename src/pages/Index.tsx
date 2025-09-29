@@ -59,8 +59,39 @@ const Index = () => {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [auditLog, setAuditLog] = useState<any[]>([]);
-  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  
+interface AuditLogEntry {
+  timestamp: Date;
+  action: string;
+  user?: string;
+  details: string | { query: string };
+  status: 'APPROVED' | 'REVIEW' | 'REJECTED' | 'COMPLETED' | 'IN_PROGRESS';
+}
+
+interface AnalysisResult {
+  property?: {
+    address: string;
+    valuation?: number;
+    risk?: Record<string, number>;
+    analysis_result?: {
+      current_valuation?: number;
+      risk_score?: number;
+      climate_risk?: string;
+      lvr?: number;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+  sentiment?: {
+    sentiment_analysis?: string;
+    [key: string]: unknown;
+  };
+  market?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+  const [auditLog, setAuditLog] = useState<AuditLogEntry[]>([]);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [riskLayers, setRiskLayers] = useState({
     flood: true,
     fire: true,
@@ -84,7 +115,7 @@ const Index = () => {
     setError('');
     
     // Add to audit log
-    const auditEntry = {
+    const auditEntry: AuditLogEntry = {
       timestamp: new Date(),
       action: 'PROPERTY_ANALYSIS_INITIATED',
       user: 'system',
@@ -108,11 +139,11 @@ const Index = () => {
           market: marketData.status === 'fulfilled' ? marketData.value : null
         };
 
-        setAnalysisResult(result);
+        setAnalysisResult(result as AnalysisResult);
         
         // Convert to legacy format for existing components
         if (result.property) {
-          const property = result.property as any;
+          const property = result.property as AnalysisResult['property'];
           const legacyData: PropertyData = {
             address: property.address || command,
             valuation: property.valuation || property.analysis_result?.current_valuation || 0,
@@ -120,7 +151,7 @@ const Index = () => {
             climateRisk: property.analysis_result?.climate_risk || 'Medium',
             lvrRatio: property.analysis_result?.lvr || 0.65,
             story: property.story || "AI-powered analysis complete",
-            sentiment: (result.sentiment as any)?.sentiment_analysis,
+            sentiment: result.sentiment?.sentiment_analysis,
             risk: property.risk || {
               flood: Math.random() * 0.8,
               fire: Math.random() * 0.7,

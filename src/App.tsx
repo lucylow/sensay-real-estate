@@ -8,15 +8,15 @@ import SensayEnhancedChatWidget from "@/components/SensayEnhancedChatWidget";
 
 // Core Pages - Essential navigation flow
 import LandingPage from "@/components/LandingPage";
-import Index from "@/pages/Index";
+import IndexSimple from "@/pages/IndexSimple";
 import NotFound from "./pages/NotFound";
 
 // Main Application Pages - Core real estate functionality
 import { EnhancedDashboard } from "@/components/propguard/EnhancedDashboard";
-import { PropertySearchPage } from "@/pages/PropertySearchPage";
-import { PropertyDetailPage } from "@/pages/PropertyDetailPage";
-import { MarketAnalysisPage } from "@/pages/MarketAnalysisPage";
-import { ValuationReportPage } from "@/pages/ValuationReportPage";
+import { PropertySearchPageSimple } from "@/pages/PropertySearchPageSimple";
+import { PropertyDetailPageSimple } from "@/pages/PropertyDetailPageSimple";
+import { MarketAnalysisPageSimple } from "@/pages/MarketAnalysisPageSimple";
+import { ValuationReportPageSimple } from "@/pages/ValuationReportPageSimple";
 
 // AI & Chatbot - Consolidated Sensay integration
 import { SensayIntegrationPage } from "@/pages/SensayIntegrationPage";
@@ -60,14 +60,14 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             
             {/* Main App Entry Point - Clear transition from landing */}
-            <Route path="/app" element={<Index />} />
+            <Route path="/app" element={<IndexSimple />} />
             
             {/* Core Real Estate Functionality */}
             <Route path="/dashboard" element={<EnhancedDashboard />} />
-            <Route path="/search" element={<PropertySearchPage />} />
-            <Route path="/property/:id" element={<PropertyDetailPage />} />
-            <Route path="/market-analysis" element={<MarketAnalysisPage />} />
-            <Route path="/report/:reportId" element={<ValuationReportPage />} />
+            <Route path="/search" element={<PropertySearchPageSimple />} />
+            <Route path="/property/:id" element={<PropertyDetailPageSimple />} />
+            <Route path="/market-analysis" element={<MarketAnalysisPageSimple />} />
+            <Route path="/report/:reportId" element={<ValuationReportPageSimple />} />
             
             {/* AI Integration - Consolidated Sensay functionality */}
             <Route path="/sensay" element={<SensayIntegrationPage />} />

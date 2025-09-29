@@ -14,13 +14,27 @@ interface Message {
   content: string;
   timestamp: Date;
   suggestions?: string[];
-  data?: any;
+  data?: Record<string, unknown>;
   audioUrl?: string;
 }
 
+interface PropertyData {
+  address?: string;
+  valuation?: number;
+  coordinates?: { lat: number; lng: number };
+  [key: string]: unknown;
+}
+
+interface AnalysisData {
+  riskScore?: number;
+  confidence?: number;
+  factors?: string;
+  [key: string]: unknown;
+}
+
 interface AIAssistantProps {
-  property?: any;
-  analysis?: any;
+  property?: PropertyData;
+  analysis?: AnalysisData;
   className?: string;
 }
 

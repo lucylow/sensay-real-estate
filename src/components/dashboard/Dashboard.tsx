@@ -22,10 +22,32 @@ import { usePropertyAnalysis } from '@/hooks/usePropertyAnalysis';
 import { COLLINS_STREET_MOCK_DATA } from '@/data/mockData';
 import { WalletConnection } from '@/components/WalletConnection';
 
+interface Property {
+  address: string;
+  coordinates: { lat: number; lng: number };
+  riskData?: {
+    flood?: string | number;
+    fire?: string | number;
+    coastal?: string | number;
+  };
+  [key: string]: unknown;
+}
+
+interface PropertyValuation {
+  analysis_result?: {
+    risk?: {
+      flood?: string | number;
+      fire?: string | number;
+      coastalErosion?: string | number;
+    };
+  };
+  [key: string]: unknown;
+}
+
 export const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedProperty, setSelectedProperty] = useState<any>(null);
-  const [propertyValuation, setPropertyValuation] = useState<any>(null);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [propertyValuation, setPropertyValuation] = useState<PropertyValuation | null>(null);
   
   const { 
     isLoading, 
@@ -41,7 +63,7 @@ export const Dashboard: React.FC = () => {
     setDataMode
   } = usePropertyAnalysis();
 
-  const handlePropertyAnalysis = async (address: string, propertyData?: any) => {
+  const handlePropertyAnalysis = async (address: string, propertyData?: Property): Promise<{ success: boolean; property?: Property; error?: string }> => {
     try {
       console.log('Analyzing property:', address, propertyData);
       
@@ -50,7 +72,7 @@ export const Dashboard: React.FC = () => {
       
       // Set property data based on input
       if (address.toLowerCase().includes('collins street') || propertyData === COLLINS_STREET_MOCK_DATA) {
-        const newPropertyData = {
+        const newPropertyData: Property = {
           ...COLLINS_STREET_MOCK_DATA.propertyData,
           address,
           coordinates: { lat: -37.8136, lng: 144.9631 },
@@ -64,7 +86,7 @@ export const Dashboard: React.FC = () => {
         setPropertyValuation(COLLINS_STREET_MOCK_DATA.propertyAnalysis);
         return { success: true, property: newPropertyData };
       } else {
-        const newPropertyData = propertyData || { 
+        const newPropertyData: Property = propertyData || { 
           address,
           coordinates: { lat: -33.8688, lng: 151.2093 } // Default Sydney coordinates
         };
