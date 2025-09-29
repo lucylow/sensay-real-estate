@@ -39,8 +39,14 @@ import {
 
 // Import Sensay components
 import SensayRealEstateChatbot from '@/components/SensayRealEstateChatbot';
+import { SensayWisdomEngine } from '@/components/SensayWisdomEngine';
+import { SensayAdvancedAIFeatures } from '@/components/SensayAdvancedAIFeatures';
 
 export const SensayWisdomPage: React.FC = () => {
+  return <SensayWisdomEngine />;
+};
+
+const SensayWisdomPageOriginal: React.FC = () => {
   const [activeDemo, setActiveDemo] = useState('overview');
 
   const wisdomFeatures = [

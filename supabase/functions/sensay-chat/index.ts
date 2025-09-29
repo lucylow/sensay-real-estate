@@ -55,16 +55,20 @@ serve(async (req) => {
     const sensayOrgId = credentials?.organizationId || Deno.env.get('SENSAY_ORGANIZATION_ID');
 
     if (!sensayApiKey || !sensayOrgId) {
-      console.error('Missing Sensay credentials');
+      console.warn('Missing Sensay credentials - using fallback mode');
+      // Instead of throwing error, provide helpful fallback response
+      const fallbackResponse = await generateFallbackResponse(message || 'Hello', context || {});
+      
       return new Response(
         JSON.stringify({
-          status: 'error',
-          response: 'Sensay API credentials are not configured. Please check your environment variables.',
+          status: 'warning',
+          response: 'Sensory API credentials are not configured, but I can still help you with property analysis using our local AI features.',
+          ...fallbackResponse,
           error: 'Missing SENSAY_API_KEY or SENSAY_ORGANIZATION_ID',
           timestamp: new Date().toISOString()
         }),
         {
-          status: 400,
+          status: 200, // Changed from 400 to 200 to allow graceful fallback
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
