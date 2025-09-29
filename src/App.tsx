@@ -26,6 +26,7 @@ import AIServicesPage from "@/pages/AIServicesPage";
 import SensayLeadGenerationPage from "@/pages/SensayLeadGenerationPage";
 import SensayChatbotIntegrationPage from "@/pages/SensayChatbotIntegrationPage";
 import SensayConversationAnalyticsPage from "@/pages/SensayConversationAnalyticsPage";
+import SensayWisdomChatbotPage from "@/pages/SensayWisdomChatbotPage";
 import { SensayFeaturesDashboard } from "@/components/sensay/SensayFeaturesDashboard";
 
 // AI & Chatbot Pages
@@ -73,6 +74,7 @@ const App = () => (
                    <Route path="/ai-services" element={<AIServicesPage />} />
             <Route path="/sensay-leads" element={<SensayLeadGenerationPage />} />
             <Route path="/sensay-chatbot" element={<SensayChatbotIntegrationPage />} />
+            <Route path="/sensay-wisdom-chatbot" element={<SensayWisdomChatbotPage />} />
             <Route path="/sensay-analytics" element={<SensayConversationAnalyticsPage />} />
             <Route path="/sensay-showcase" element={<SensayHackathonShowcase />} />
             <Route path="/sensay-dashboard" element={<SensayFeaturesDashboard />} />

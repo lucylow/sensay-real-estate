@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import SensayWisdomChatbot from '@/components/SensayWisdomChatbot';
 import { 
   Bot, 
   Zap, 
@@ -349,8 +350,9 @@ export const PropGuardAIChatbot: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="chat">AI Chat</TabsTrigger>
+          <TabsTrigger value="sensay-wisdom">Sensay Wisdom</TabsTrigger>
           <TabsTrigger value="properties">Properties</TabsTrigger>
           <TabsTrigger value="faq">Smart FAQ</TabsTrigger>
           <TabsTrigger value="tours">Virtual Tours</TabsTrigger>
@@ -403,6 +405,66 @@ export const PropGuardAIChatbot: React.FC = () => {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="sensay-wisdom" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                Sensay Wisdom Engine
+                <Badge className="bg-blue-100 text-blue-800 text-xs">
+                  Organization ID: E0b1218c-e817-4994-a45b-43e092bd6d4b
+                </Badge>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Advanced AI-powered property analysis with Sensay's Wisdom Engine for sophisticated insights and risk assessments
+              </p>
+            </CardHeader>
+            <CardContent>
+              <SensayWisdomChatbot className="w-full h-[600px]" />
+            </CardContent>
+          </Card>
+
+          {/* Sensay Features Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Bot className="h-5 w-5 text-blue-600" />
+                  <span className="font-semibold text-sm">Enhanced AI</span>
+                </div>
+                <p className="text-xs text-gray-600">Advanced conversation engine with context awareness</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <TrendingUp className="h-5 w-5 text-green-600" />
+                  <span className="font-semibold text-sm">Market Intelligence</span>
+                </div>
+                <p className="text-xs text-gray-600">Real-time market analysis and trend predictions</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Shield className="h-5 w-5 text-red-600" />
+                  <span className="font-semibold text-sm">Risk Assessment</span>
+                </div>
+                <p className="text-xs text-gray-600">Comprehensive risk analysis with mitigation strategies</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FileText className="h-5 w-5 text-purple-600" />
+                  <span className="font-semibold text-sm">Smart Reports</span>
+                </div>
+                <p className="text-xs text-gray-600">Automated property analysis reports with insights</p>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="properties" className="space-y-6">

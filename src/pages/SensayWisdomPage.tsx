@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import SensayWisdomChatbot from '@/components/SensayWisdomChatbot';
 import { 
   Brain, 
   TrendingUp, 
@@ -400,6 +401,17 @@ export default function SensayWisdomPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Interactive Chatbot Demo */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-bold text-center mb-8">Try Sensay Wisdom Engine</h3>
+          <p className="text-center text-gray-600 mb-8">
+            Experience the power of Sensay's advanced AI in real-time conversation
+          </p>
+          <Card className="h-96">
+            <SensayWisdomChatbot className="h-full" />
+          </Card>
+        </div>
 
         {/* Call to Action */}
         <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-12">
