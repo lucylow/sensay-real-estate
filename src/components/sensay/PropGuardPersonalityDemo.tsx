@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +16,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Progress } from '@/components/ui/progress';
 import { 
   Bot, 
   MessageCircle, 
@@ -353,156 +358,294 @@ export const PropGuardPersonalityDemo: React.FC = () => {
   );
 
   const renderChatInterface = () => (
-    <Card className="h-[600px] flex flex-col">
-      <CardHeader className="flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" />
-            PropGuard AI Chat
-            <Badge variant="secondary" className="ml-2">
-              {state.userType.replace('_', ' ')}
-            </Badge>
-            <Badge variant="outline" className="ml-1">
-              {state.language.toUpperCase()}
-            </Badge>
-          </CardTitle>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={runPersonalityTest}
-              disabled={state.isTyping}
-            >
-              <Play className="h-4 w-4 mr-1" />
-              Test
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearConversation}
-            >
-              <RotateCcw className="h-4 w-4 mr-1" />
-              Clear
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="flex-1 flex flex-col p-0">
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {state.conversation.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.1 }}
+    >
+      <Card className="h-[600px] flex flex-col border-0 shadow-lg bg-gradient-to-br from-white to-gray-50">
+        <CardHeader className="flex-shrink-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-white/20 text-white">
+                  <Bot className="h-4 w-4" />
+                </AvatarFallback>
+              </Avatar>
+              PropGuard AI Chat
+              <Badge className="bg-white/20 text-white border-white/30">
+                {state.userType.replace('_', ' ')}
+              </Badge>
+              <Badge className="bg-white/20 text-white border-white/30">
+                {state.language.toUpperCase()}
+              </Badge>
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={runPersonalityTest}
+                disabled={state.isTyping}
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
               >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
-                  }`}
+                <Play className="h-4 w-4 mr-1" />
+                Test
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearConversation}
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+              >
+                <RotateCcw className="h-4 w-4 mr-1" />
+                Clear
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-1 flex flex-col p-0">
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4">
+              <AnimatePresence>
+                {state.conversation.map((message, index) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                    transition={{ delay: index * 0.05 }}
+                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className="flex items-start space-x-2 max-w-[80%]">
+                      {message.role === 'assistant' && (
+                        <Avatar className="h-8 w-8 mt-1">
+                          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xs">
+                            <Bot className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      
+                      <motion.div
+                        className={`rounded-2xl p-4 shadow-sm ${
+                          message.role === 'user'
+                            ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white ml-12'
+                            : 'bg-white border border-gray-200 mr-12'
+                        }`}
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className="text-sm leading-relaxed">{message.content}</div>
+                        {message.personality && (
+                          <div className="mt-3 flex items-center justify-between">
+                            <div className="flex gap-2">
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Badge variant="outline" className="text-xs">
+                                    {message.emotionalState}
+                                  </Badge>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Emotional State: {message.emotionalState}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Badge variant="outline" className="text-xs">
+                                Tone: {Math.round(message.personality.tone?.warmth || 0)}
+                              </Badge>
+                            </div>
+                            <span className="text-xs opacity-70">
+                              {new Date(message.timestamp).toLocaleTimeString()}
+                            </span>
+                          </div>
+                        )}
+                      </motion.div>
+                      
+                      {message.role === 'user' && (
+                        <Avatar className="h-8 w-8 mt-1">
+                          <AvatarFallback className="bg-gradient-to-br from-green-500 to-teal-600 text-white text-xs">
+                            <User className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              
+              {state.isTyping && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
                 >
-                  <div className="text-sm">{message.content}</div>
-                  {message.personality && (
-                    <div className="mt-2 text-xs opacity-70">
-                      <div className="flex gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          {message.emotionalState}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          Tone: {Math.round(message.personality.tone?.warmth || 0)}
-                        </Badge>
+                  <div className="flex items-start space-x-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xs">
+                        <Bot className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          <motion.div 
+                            className="w-2 h-2 bg-gray-400 rounded-full"
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                          />
+                          <motion.div 
+                            className="w-2 h-2 bg-gray-400 rounded-full"
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                          />
+                          <motion.div 
+                            className="w-2 h-2 bg-gray-400 rounded-full"
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                          />
+                        </div>
+                        <span className="text-sm text-gray-600">PropGuard AI is thinking...</span>
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            ))}
-            {state.isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-muted rounded-lg p-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                    <span className="text-sm text-muted-foreground">PropGuard AI is thinking...</span>
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
           </div>
           <div ref={messagesEndRef} />
         </ScrollArea>
-        <div className="p-4 border-t">
-          <div className="flex gap-2">
-            <Input
-              value={state.currentMessage}
-              onChange={(e) => setState(prev => ({ ...prev, currentMessage: e.target.value }))}
-              placeholder="Ask me anything about real estate..."
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              disabled={state.isTyping}
-            />
-            <Button onClick={handleSendMessage} disabled={state.isTyping || !state.currentMessage.trim()}>
-              <MessageCircle className="h-4 w-4" />
-            </Button>
-          </div>
+        <div className="p-4 border-t bg-gray-50">
+          <motion.div 
+            className="flex gap-3"
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="flex-1 relative">
+              <Input
+                value={state.currentMessage}
+                onChange={(e) => setState(prev => ({ ...prev, currentMessage: e.target.value }))}
+                placeholder="Ask me anything about real estate..."
+                onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+                disabled={state.isTyping}
+                className="border-0 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 rounded-full pr-12"
+              />
+              {state.currentMessage.trim() && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                >
+                  <Badge variant="secondary" className="text-xs">
+                    {state.currentMessage.length}/500
+                  </Badge>
+                </motion.div>
+              )}
+            </div>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button 
+                onClick={handleSendMessage} 
+                disabled={state.isTyping || !state.currentMessage.trim()}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 rounded-full h-10 w-10 p-0"
+              >
+                {state.isTyping ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </motion.div>
+                ) : (
+                  <MessageCircle className="h-4 w-4" />
+                )}
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </CardContent>
     </Card>
   );
 
   const renderAnalytics = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5" />
-          Personality Analytics
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold">{state.conversation.length}</div>
-              <div className="text-sm text-muted-foreground">Total Messages</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">
-                {state.conversation.filter(m => m.role === 'assistant').length}
-              </div>
-              <div className="text-sm text-muted-foreground">AI Responses</div>
-            </div>
-          </div>
-          
-          <div>
-            <h4 className="font-medium mb-2">Current Configuration</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>User Type:</span>
-                <Badge variant="outline">{state.userType}</Badge>
-              </div>
-              <div className="flex justify-between">
-                <span>Language:</span>
-                <Badge variant="outline">{state.language.toUpperCase()}</Badge>
-              </div>
-              <div className="flex justify-between">
-                <span>Platform:</span>
-                <Badge variant="outline">{state.platform}</Badge>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-medium mb-2">Personality Traits</h4>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {Object.entries(SENSAY_PERSONALITY_CONFIG.corePersonality).map(([trait, value]) => (
-                <div key={trait} className="flex items-center gap-2">
-                  {value ? <CheckCircle className="h-3 w-3 text-green-500" /> : <AlertCircle className="h-3 w-3 text-red-500" />}
-                  <span className="capitalize">{trait.replace(/([A-Z])/g, ' $1').trim()}</span>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+    >
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg">
+          <CardTitle className="flex items-center gap-2 text-white">
+            <BarChart3 className="h-5 w-5" />
+            Personality Analytics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <motion.div 
+                className="text-center p-4 bg-white rounded-lg shadow-sm"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="text-3xl font-bold text-blue-600">{state.conversation.length}</div>
+                <div className="text-sm text-gray-600">Total Messages</div>
+              </motion.div>
+              <motion.div 
+                className="text-center p-4 bg-white rounded-lg shadow-sm"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="text-3xl font-bold text-purple-600">
+                  {state.conversation.filter(m => m.role === 'assistant').length}
                 </div>
-              ))}
+                <div className="text-sm text-gray-600">AI Responses</div>
+              </motion.div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-4 shadow-sm">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Settings className="h-4 w-4 text-blue-600" />
+                Current Configuration
+              </h4>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">User Type:</span>
+                  <Badge className="bg-blue-100 text-blue-800">{state.userType.replace('_', ' ')}</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">Language:</span>
+                  <Badge className="bg-green-100 text-green-800">{state.language.toUpperCase()}</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">Platform:</span>
+                  <Badge className="bg-purple-100 text-purple-800">{state.platform}</Badge>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg p-4 shadow-sm">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Heart className="h-4 w-4 text-pink-600" />
+                Personality Traits
+              </h4>
+              <div className="grid grid-cols-1 gap-2">
+                {Object.entries(SENSAY_PERSONALITY_CONFIG.corePersonality).map(([trait, value]) => (
+                  <motion.div 
+                    key={trait} 
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50"
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {value ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <AlertCircle className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className="text-sm font-medium capitalize">
+                      {trait.replace(/([A-Z])/g, ' $1').trim()}
+                    </span>
+                  </motion.div>
+                ))}
             </div>
           </div>
         </div>
@@ -511,23 +654,77 @@ export const PropGuardPersonalityDemo: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Bot className="h-6 w-6 text-primary" />
-        <h1 className="text-3xl font-bold">PropGuard AI Sensay Personality Demo</h1>
-        <Badge variant="secondary" className="ml-auto">
-          <Zap className="h-3 w-3 mr-1" />
-          Advanced AI Personality
-        </Badge>
-      </div>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="container mx-auto p-6 space-y-6"
+    >
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-8"
+      >
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          >
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-full p-3">
+              <Bot className="h-8 w-8 text-white" />
+            </div>
+          </motion.div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            PropGuard AI Sensay Personality Demo
+          </h1>
+        </div>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          Experience the advanced emotional intelligence and multilingual capabilities of our AI-powered real estate assistant
+        </p>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex items-center justify-center gap-2 mt-4"
+        >
+          <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2">
+            <Zap className="h-4 w-4 mr-2" />
+            Advanced AI Personality
+          </Badge>
+          <Badge variant="outline" className="px-4 py-2">
+            <Brain className="h-4 w-4 mr-2" />
+            Emotional Intelligence
+          </Badge>
+          <Badge variant="outline" className="px-4 py-2">
+            <Globe className="h-4 w-4 mr-2" />
+            Multilingual Support
+          </Badge>
+        </motion.div>
+      </motion.div>
 
-      <Tabs value={state.selectedDemo} onValueChange={(value) => setState(prev => ({ ...prev, selectedDemo: value }))}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="chat">Interactive Chat</TabsTrigger>
-          <TabsTrigger value="personality">Personality Traits</TabsTrigger>
-          <TabsTrigger value="multilingual">Multilingual</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Tabs value={state.selectedDemo} onValueChange={(value) => setState(prev => ({ ...prev, selectedDemo: value }))}>
+          <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-xl">
+            <TabsTrigger value="chat" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Interactive Chat
+            </TabsTrigger>
+            <TabsTrigger value="personality" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Heart className="h-4 w-4 mr-2" />
+              Personality Traits
+            </TabsTrigger>
+            <TabsTrigger value="multilingual" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Globe className="h-4 w-4 mr-2" />
+              Multilingual
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Analytics
+            </TabsTrigger>
+          </TabsList>
 
         <TabsContent value="chat" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

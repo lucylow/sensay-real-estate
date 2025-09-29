@@ -1,286 +1,318 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+/**
+ * Accessibility Enhancements Component
+ * 
+ * Provides accessibility features and utilities for the PropGuard AI Sensay chatbot
+ * to ensure inclusive user experience for all users.
+ */
 
-// Accessibility Focus Trap Hook
-export const useFocusTrap = (isActive: boolean) => {
-  const ref = React.useRef<HTMLElement>(null);
+import React, { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
-  React.useEffect(() => {
-    if (!isActive || !ref.current) return;
+interface ScreenReaderTextProps {
+  children: React.ReactNode;
+  className?: string;
+}
 
-    const focusableElements = ref.current.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+export const ScreenReaderText: React.FC<ScreenReaderTextProps> = ({
+  children,
+  className = ''
+}) => {
+  return (
+    <span
+      className={cn(
+        'sr-only',
+        className
+      )}
+      aria-live="polite"
+    >
+      {children}
+    </span>
+  );
+};
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Tab') {
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            lastElement.focus();
-            e.preventDefault();
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            firstElement.focus();
-            e.preventDefault();
-          }
+interface KeyboardNavigationProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const KeyboardNavigation: React.FC<KeyboardNavigationProps> = ({
+  children,
+  className = ''
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!containerRef.current) return;
+
+      const focusableElements = containerRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (event.key === 'Tab') {
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement?.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement?.focus();
         }
       }
-      
-      if (e.key === 'Escape') {
-        // Escape key handling will be implemented by parent components
+
+      if (event.key === 'Escape') {
+        const activeElement = document.activeElement as HTMLElement;
+        activeElement?.blur();
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    firstElement?.focus();
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isActive]);
-
-  return ref;
-};
-
-// Skip to content link for accessibility
-export const SkipToContent: React.FC<{ targetId: string; children?: React.ReactNode }> = ({ 
-  targetId, 
-  children = 'Skip to main content' 
-}) => (
-  <motion.a
-    href={`#${targetId}`}
-    className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-    whileFocus={{ scale: 1.05 }}
-    onFocus={() => {
-      document.getElementById(targetId)?.focus();
-    }}
-  >
-    {children}
-  </motion.a>
-);
-
-// Screen reader announcements
-export const ScreenReaderAnnouncement: React.FC<{ 
-  announcement: string; 
-  priority?: 'polite' | 'assertive';
-}> = ({ announcement, priority = 'polite' }) => {
-  const announcerRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (announcerRef.current && announcement) {
-      announcerRef.current.textContent = announcement;
-    }
-  }, [announcement]);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div
-      ref={announcerRef}
-      aria-live={priority}
-      aria-atomic="true"
-      className="sr-only"
-    />
+      ref={containerRef}
+      className={cn(
+        'focus:outline-none',
+        className
+      )}
+      role="region"
+      aria-label="Interactive content"
+    >
+      {children}
+    </div>
   );
 };
 
-// Enhanced button with accessibility features
-export const AccessibleButton: React.FC<{
-  children: React.ReactNode;
-  onClick: () => void;
-  disabled?: boolean;
-  loading?: boolean;
-  ariaLabel?: string;
+interface HighContrastToggleProps {
+  isEnabled: boolean;
+  onToggle: (enabled: boolean) => void;
   className?: string;
-  variant?: 'primary' | 'secondary';
-}> = ({ 
-  children, 
-  onClick, 
-  disabled = false, 
-  loading = false, 
-  ariaLabel,
-  className = '',
-  variant = 'primary'
-}) => (
-  <motion.button
-    onClick={onClick}
-    disabled={disabled || loading}
-    aria-label={ariaLabel}
-    aria-busy={loading}
-    className={`
-      ${variant === 'primary' 
-        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-        : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
-      } 
-      px-4 py-2 rounded-lg font-medium transition-colors
-      disabled:opacity-50 disabled:cursor-not-allowed
-      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-      ${className}
-    `}
-    whileTap={{ scale: 0.95 }}
-    whileFocus={{ scale: 1.02 }}
-  >
-    {loading ? (
-      <div className="flex items-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          className="h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"
-        />
-        Loading...
-      </div>
-    ) : (
-      children
-    )}
-  </motion.button>
-);
+}
 
-// Accessible navigation landmark
-export const AccessibleNavigation: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-}> = ({ children, className = '' }) => (
-  <nav 
-    role="navigation" 
-    aria-label="Main navigation"
-    className={`focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${className}`}
-  >
-    {children}
-  </nav>
-);
-
-// Accessible main content landmark
-export const AccessibleMain: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-}> = ({ children, className = '' }) => (
-  <main 
-    role="main"
-    className={className}
-    id="main-content"
-    tabIndex={-1}
-  >
-    {children}
-  </main>
-);
-
-// Accessible sidebar landmark
-export const AccessibleAside: React.FC<{
-  children: React.ReactNode;
-  ariaLabel: string;
-  className?: string;
-}> = ({ children, ariaLabel, className = '' }) => (
-  <aside 
-    role="complementary" 
-    aria-label={ariaLabel}
-    className={className}
-  >
-    {children}
-  </aside>
-);
-
-// Enhanced form field with accessibility
-export const AccessibleInput: React.FC<{
-  label: string;
-  id: string;
-  type?: string;
-  placeholder?: string;
-  required?: boolean;
-  error?: string;
-  helperText?: string;
-  className?: string;
-}> = ({ 
-  label, 
-  id, 
-  type = 'text', 
-  placeholder, 
-  required = false, 
-  error,
-  helperText,
+export const HighContrastToggle: React.FC<HighContrastToggleProps> = ({
+  isEnabled,
+  onToggle,
   className = ''
-}) => (
-  <div className={`mb-4 ${className}`}>
-    <label 
-      htmlFor={id}
-      className="block text-sm font-medium text-gray-700 mb-2"
+}) => {
+  return (
+    <button
+      onClick={() => onToggle(!isEnabled)}
+      className={cn(
+        'p-2 rounded-lg',
+        'border border-gray-300',
+        'hover:bg-gray-100',
+        'focus:outline-none focus:ring-2 focus:ring-blue-500',
+        'transition-colors duration-200',
+        isEnabled && 'bg-blue-100 border-blue-500',
+        className
+      )}
+      aria-label={`${isEnabled ? 'Disable' : 'Enable'} high contrast mode`}
+      aria-pressed={isEnabled}
     >
-      {label}
-      {required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
-    </label>
-    
-    <input
-      type={type}
-      id={id}
-      placeholder={placeholder}
-      required={required}
-      aria-describedby={`${id}-helper ${error ? `${id}-error` : ''}`}
-      aria-invalid={error ? 'true' : 'false'}
-      className={`
-        block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-        disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-        ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
-      `}
-    />
-    
-    {helperText && (
-      <p id={`${id}-helper`} className="mt-1 text-sm text-gray-500">
-        {helperText}
-      </p>
-    )}
-    
-    {error && (
-      <p id={`${id}-error`} className="mt-1 text-sm text-red-600 flex items-center">
-        <span className="sr-only">Error: </span>
-        {error}
-      </p>
-    )}
-  </div>
-);
-
-// Accessibility utilities
-export const accessibilityUtils = {
-  // Announce page changes to screen readers
-  announcePageChange: (pageTitle: string) => {
-    const announcement = document.createElement('div');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.className = 'sr-only';
-    announcement.textContent = `Page changed to: ${pageTitle}`;
-    
-    document.body.appendChild(announcement);
-    
-    setTimeout(() => {
-      document.body.removeChild(announcement);
-    }, 1000);
-  },
-
-  // Check for reduced motion preference
-  prefersReducedMotion: () => {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  },
-
-  // Check for high contrast mode
-  prefersHighContrast: () => {
-    return window.matchMedia('(prefers-contrast: high)').matches;
-  },
-
-  // Get user's color scheme preference
-  getColorScheme: () => {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+        />
+      </svg>
+    </button>
+  );
 };
 
-export default {
-  useFocusTrap,
-  SkipToContent,
-  ScreenReaderAnnouncement,
-  AccessibleButton,
-  AccessibleNavigation,
-  AccessibleMain,
-  AccessibleAside,
-  AccessibleInput,
-  accessibilityUtils
+interface FontSizeControlProps {
+  fontSize: 'sm' | 'base' | 'lg' | 'xl';
+  onFontSizeChange: (size: 'sm' | 'base' | 'lg' | 'xl') => void;
+  className?: string;
+}
+
+export const FontSizeControl: React.FC<FontSizeControlProps> = ({
+  fontSize,
+  onFontSizeChange,
+  className = ''
+}) => {
+  const sizes = [
+    { key: 'sm', label: 'Small', icon: 'A' },
+    { key: 'base', label: 'Medium', icon: 'A' },
+    { key: 'lg', label: 'Large', icon: 'A' },
+    { key: 'xl', label: 'Extra Large', icon: 'A' }
+  ] as const;
+
+  return (
+    <div className={cn('flex gap-1 p-1 bg-gray-100 rounded-lg', className)}>
+      {sizes.map((size) => (
+        <button
+          key={size.key}
+          onClick={() => onFontSizeChange(size.key as any)}
+          className={cn(
+            'px-3 py-2 rounded-md',
+            'transition-colors duration-200',
+            'focus:outline-none focus:ring-2 focus:ring-blue-500',
+            fontSize === size.key
+              ? 'bg-white shadow-sm text-blue-600'
+              : 'text-gray-600 hover:text-gray-900'
+          )}
+          aria-label={`Set font size to ${size.label}`}
+          aria-pressed={fontSize === size.key}
+        >
+          <span
+            className={cn(
+              'font-bold',
+              size.key === 'sm' && 'text-sm',
+              size.key === 'base' && 'text-base',
+              size.key === 'lg' && 'text-lg',
+              size.key === 'xl' && 'text-xl'
+            )}
+          >
+            {size.icon}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+};
+
+interface AnnouncementProps {
+  message: string;
+  priority?: 'polite' | 'assertive';
+  className?: string;
+}
+
+export const Announcement: React.FC<AnnouncementProps> = ({
+  message,
+  priority = 'polite',
+  className = ''
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (message) {
+      setIsVisible(true);
+      const timer = setTimeout(() => setIsVisible(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+      className={cn(
+        'fixed top-4 right-4 z-50',
+        'px-4 py-2',
+        'bg-blue-600 text-white',
+        'rounded-lg shadow-lg',
+        'transform transition-transform duration-300',
+        'focus:outline-none focus:ring-2 focus:ring-blue-500',
+        className
+      )}
+      role="status"
+      aria-live={priority}
+      aria-atomic="true"
+      tabIndex={-1}
+    >
+      {message}
+    </div>
+  );
+};
+
+interface FocusIndicatorProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const FocusIndicator: React.FC<FocusIndicatorProps> = ({
+  children,
+  className = ''
+}) => {
+  return (
+    <div
+      className={cn(
+        'focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2',
+        'focus-within:outline-none',
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+interface SkipLinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const SkipLink: React.FC<SkipLinkProps> = ({
+  href,
+  children,
+  className = ''
+}) => {
+  return (
+    <a
+      href={href}
+      className={cn(
+        'sr-only focus:not-sr-only',
+        'absolute top-0 left-0 z-50',
+        'px-4 py-2',
+        'bg-blue-600 text-white',
+        'rounded-br-lg',
+        'focus:outline-none focus:ring-2 focus:ring-blue-500',
+        className
+      )}
+    >
+      {children}
+    </a>
+  );
+};
+
+interface ARIAButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
+  className?: string;
+}
+
+export const ARIAButton: React.FC<ARIAButtonProps> = ({
+  children,
+  onClick,
+  disabled = false,
+  ariaLabel,
+  ariaDescribedBy,
+  className = ''
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedBy}
+      className={cn(
+        'px-4 py-2',
+        'bg-blue-600 text-white',
+        'rounded-lg',
+        'hover:bg-blue-700',
+        'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'transition-colors duration-200',
+        className
+      )}
+    >
+      {children}
+    </button>
+  );
 };

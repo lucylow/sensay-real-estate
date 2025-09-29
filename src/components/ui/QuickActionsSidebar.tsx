@@ -192,7 +192,6 @@ export const QuickActionsSidebar: React.FC<QuickActionsSidebarProps> = ({
                       </div>
                     </Card>
                   )}
-}
 
                   {/* Quick Actions Grid */}
                   <div>

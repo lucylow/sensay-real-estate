@@ -101,8 +101,8 @@ export class ErrorBoundaryEnhanced extends Component<Props, State> {
                     }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
-                </          
-             
+                </div>
+
                 <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
                   Oops! Something went wrong
                 </CardTitle>

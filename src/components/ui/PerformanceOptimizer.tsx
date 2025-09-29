@@ -14,6 +14,10 @@ interface PerformanceMetrics {
   score: number;
 }
 
+interface PerformanceMemory {
+  usedJSHeapSize?: number;
+}
+
 export const PerformanceOptimizer: React.FC<PerformanceOptimizerProps> = ({
   children,
   fallback,
@@ -25,12 +29,12 @@ export const PerformanceOptimizer: React.FC<PerformanceOptimizerProps> = ({
 
   useEffect(() => {
     const startTime = performance.now();
-    const startMemory = (performance as any).memory?.usedJSHeapSize || 0;
+    const startMemory = (performance as PerformanceMemory).memory?.usedJSHeapSize || 0;
 
     // Simulate async component loading
     const loadTimer = setTimeout(() => {
       const endTime = performance.now();
-      const endMemory = (performance as any).memory?.usedJSHeapSize || 0;
+      const endMemory = (performance as PerformanceMemory).memory?.usedJSHeapSize || 0;
       
       const loadTime = endTime - startTime;
       const renderTime = performance.now() - startTime;
@@ -136,14 +140,14 @@ export const usePerformanceMetrics = () => {
 
   const measurePerformance = (callback: () => void) => {
     const startTime = performance.now();
-    const startMemory = (performance as any).memory?.usedJSHeapSize || 0;
+    const startMemory = (performance as PerformanceMemory).memory?.usedJSHeapSize || 0;
 
     requestAnimationFrame(() => {
       callback();
       
       requestAnimationFrame(() => {
         const endTime = performance.now();
-        const endMemory = (performance as any).memory?.usedJSHeapSize || 0;
+        const endMemory = (performance as PerformanceMemory).memory?.usedJSHeapSize || 0;
 
         setMetrics({
           loadTime: endTime - startTime,
