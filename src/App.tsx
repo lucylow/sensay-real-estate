@@ -26,6 +26,11 @@ import { PropertyShowcase } from "@/components/PropertyShowcase";
 import { LeadDashboard } from "@/components/LeadDashboard";
 import { AppointmentManager } from "@/components/AppointmentManager";
 
+// Navigation Components
+import { EnhancedNavigation } from "@/components/navigation/EnhancedNavigation";
+import { MobileNavigation } from "@/components/navigation/MobileNavigation";
+import { BreadcrumbNavigation } from "@/components/navigation/BreadcrumbNavigation";
+
 const queryClient = new QueryClient();
 
 /**

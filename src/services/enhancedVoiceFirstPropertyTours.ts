@@ -412,7 +412,7 @@ export class EnhancedVoiceFirstPropertyTours {
   ): Promise<{ transcript: string; visualCues?: any }> {
     try {
       let response = '';
-      let visualCues: any = {};
+      const visualCues: any = {};
 
       switch (voiceCommand.intent) {
         case 'navigate':

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { VideoAvatar } from '@/components/VideoAvatar';
 import { heyGenAPI } from '@/services/api/heygen';
+import { heyGenServiceFallback } from '@/config/heygen-fallback';
 import { propGuardAPI } from '@/config/api';
 
 export const HeyGenTestPage: React.FC = () => {
@@ -32,15 +33,37 @@ export const HeyGenTestPage: React.FC = () => {
 
   const runHealthChecks = async () => {
     try {
-      const [health, config] = await Promise.all([
-        heyGenAPI.checkHealth(),
-        heyGenAPI.getConfigStatus()
-      ]);
-      
-      setHealthStatus(health);
-      setConfigStatus(config);
+      // Try Supabase service first
+      try {
+        const [health, config] = await Promise.all([
+          heyGenAPI.checkHealth(),
+          heyGenAPI.getConfigStatus()
+        ]);
+        
+        setHealthStatus(health);
+        setConfigStatus(config);
+      } catch (supabaseError) {
+        console.log('Supabase service failed, trying fallback:', supabaseError);
+        
+        // Fallback to direct API service
+        const [health, config] = await Promise.all([
+          heyGenServiceFallback.checkHealth(),
+          heyGenServiceFallback.getConfigStatus()
+        ]);
+        
+        setHealthStatus(health);
+        setConfigStatus(config);
+      }
     } catch (error) {
       console.error('Health check failed:', error);
+      setHealthStatus({
+        status: 'error',
+        message: 'All HeyGen services failed. Please check your API configuration.'
+      });
+      setConfigStatus({
+        configured: false,
+        missing: ['VITE_HEYGEN_API_KEY in .env file', 'Supabase Edge Functions']
+      });
     }
   };
 
@@ -53,10 +76,17 @@ export const HeyGenTestPage: React.FC = () => {
     try {
       const startTime = Date.now();
       
-      const response = await heyGenAPI.generateVideo({
-        text: testText,
-        voice: 'en_us_female_001'
-      });
+      // Try Supabase service first, then fallback
+      let response;
+      try {
+        response = await heyGenAPI.generateVideo({
+          text: testText,
+          voice: 'en_us_female_001'
+        });
+      } catch (supabaseError) {
+        console.log('Supabase HeyGen service failed, trying fallback:', supabaseError);
+        response = await heyGenServiceFallback.generateAvatarVideo(testText, 'en_us_female_001');
+      }
 
       const endTime = Date.now();
       const duration = endTime - startTime;
@@ -117,6 +147,28 @@ export const HeyGenTestPage: React.FC = () => {
         <TestTube className="h-6 w-6 text-primary" />
         <h1 className="text-3xl font-bold">HeyGen Integration Test</h1>
       </div>
+
+      {/* Troubleshooting Section */}
+      <Alert className="mb-6">
+        <Settings className="h-4 w-4" />
+        <AlertDescription>
+          <div className="space-y-2">
+            <h4 className="font-semibold">HeyGen API Setup Required</h4>
+            <p className="text-sm">
+              To use HeyGen avatar generation, you need to:
+            </p>
+            <ol className="text-sm list-decimal list-inside space-y-1 ml-2">
+              <li>Create a <code>.env</code> file in your project root</li>
+              <li>Add: <code>VITE_HEYGEN_API_KEY=your-heygen-api-key</code></li>
+              <li>Get your API key from <a href="https://heygen.com" target="_blank" className="text-blue-600 underline">heygen.com</a></li>
+              <li>Restart the development server</li>
+            </ol>
+            <p className="text-sm font-medium text-green-700">
+              Note: This page will try both Supabase Edge Functions and direct API calls automatically.
+            </p>
+          </div>
+        </AlertDescription>
+      </Alert>
 
       {/* Status Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
