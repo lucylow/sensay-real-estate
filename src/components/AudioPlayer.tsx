@@ -57,8 +57,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     audioService.on('trackRemoved', updateQueue);
     audioService.on('queueCleared', updateQueue);
     audioService.on('timeupdate', updateTime);
-    audioService.on('volumeChanged', (vol) => setVolume(vol));
-    audioService.on('playbackRateChanged', (rate) => setPlaybackRate(rate));
+    audioService.on('volumeChanged', (vol: number) => setVolume(vol));
+    audioService.on('playbackRateChanged', (rate: number) => setPlaybackRate(rate));
 
     // Initialize with current state
     setVolume(audioService.getQueue().volume);

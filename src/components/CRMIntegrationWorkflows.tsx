@@ -9,7 +9,7 @@ import {
   Users, Database, RefreshCw, CheckCircle, AlertCircle, 
   Zap, Settings, ArrowRight, ArrowLeft, 
   UserPlus, Mail, Phone, Calendar, FileText, 
-  TrendingUp, BarChart3, Target, Shield
+  TrendingUp, BarChart3, Target, Shield, DollarSign
 } from 'lucide-react';
 import { sensayAPI } from '@/services/api/sensay';
 import { propGuardAPI } from '@/services/api/propguard';
