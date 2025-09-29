@@ -233,3 +233,4 @@ export const AdaptiveText: React.FC<AdaptiveTextProps> = ({
     </span>
   );
 };
+

@@ -412,3 +412,4 @@ export const MagneticHover: React.FC<MagneticHoverProps> = ({
     </motion.div>
   );
 };
+
