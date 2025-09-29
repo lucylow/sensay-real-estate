@@ -262,7 +262,7 @@ What specific area would you like to explore?`;
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col p-0">
-        <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
+        <ScrollArea className="flex-1 px-4 h-[400px] overflow-hidden" ref={scrollAreaRef}>
           <div className="space-y-4 pb-4">
             {messages.map((message) => (
               <div key={message.id} className="space-y-2">

@@ -1,0 +1,49 @@
+/* Chat scrolling utilities */
+
+/* Ensure chat containers have proper height constraints */
+.chat-container {
+  @apply flex flex-col h-full;
+}
+
+.chat-messages-area {
+  @apply flex-1 overflow-hidden;
+}
+
+.chat-scroll-area {
+  @apply h-full overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400;
+}
+
+/* Custom scrollbar for webkit browsers */
+.chat-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scroll-area::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.chat-scroll-area::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.chat-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Firefox scrollbar */
+.chat-scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Auto-scroll indicator */
+.chat-scroll-indicator {
+  @apply animate-bounce;
+}
+
+.chat-scroll-indicator::after {
+  content: '↓';
+  @apply text-blue-500 text-xl;
+}

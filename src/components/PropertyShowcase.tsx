@@ -31,7 +31,8 @@ import {
   Users,
   Zap,
   Target,
-  BarChart3
+  BarChart3,
+  X
 } from 'lucide-react';
 
 interface Property {

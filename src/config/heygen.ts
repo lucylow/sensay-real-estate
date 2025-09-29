@@ -1,10 +1,11 @@
 /**
  * HeyGen API Configuration and Service
- * Provides interactive avatar functionality for Sensay real estate
+ * Uses Supabase Edge Functions for secure API key management
  */
 
+import { supabaseAPIService, type SupabaseHeyGenRequest, type SupabaseHeyGenResponse } from '@/services/supabaseAPI';
+
 export interface HeyGenConfig {
-  apiKey: string;
   avatarId: string;
   baseUrl: string;
 }
@@ -27,70 +28,37 @@ export class HeyGenService {
 
   constructor() {
     this.config = {
-      apiKey: import.meta.env.VITE_HEYGEN_API_KEY || localStorage.getItem('heygen_api_key') || '',
-      avatarId: import.meta.env.VITE_HEYGEN_AVATAR_ID || localStorage.getItem('heygen_avatar_id') || 'Marianne_CasualLook_public',
+      avatarId: 'Marianne_CasualLook_public',
       baseUrl: 'https://api.heygen.com/v1'
     };
   }
 
   /**
-   * Update API configuration dynamically
+   * Check if HeyGen is properly configured through Supabase
    */
-  updateConfig(apiKey: string, avatarId: string) {
-    this.config.apiKey = apiKey;
-    this.config.avatarId = avatarId;
-    localStorage.setItem('heygen_api_key', apiKey);
-    localStorage.setItem('heygen_avatar_id', avatarId);
+  async isConfigured(): Promise<boolean> {
+    try {
+      const config = await supabaseAPIService.checkAPIConfiguration();
+      return config.heygen;
+    } catch (error) {
+      console.error('Error checking HeyGen configuration:', error);
+      return false;
+    }
   }
 
   /**
-   * Check if HeyGen is properly configured
-   */
-  isConfigured(): boolean {
-    return !!(this.config.apiKey && this.config.avatarId);
-  }
-
-  /**
-   * Generate interactive avatar video
+   * Generate interactive avatar video using Supabase Edge Function
    */
   async generateAvatarVideo(text: string, voice?: string): Promise<HeyGenAvatarResponse> {
-    if (!this.isConfigured()) {
-      return {
-        success: false,
-        error: 'HeyGen API not configured. Please set VITE_HEYGEN_API_KEY and VITE_HEYGEN_AVATAR_ID environment variables.'
-      };
-    }
-
     try {
-      const response = await fetch(`${this.config.baseUrl}/video/generate`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text,
-          voice: voice || 'en_us_female_001',
-          avatar_id: this.config.avatarId,
-          quality: 'high',
-          ratio: '16:9'
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        return {
-          success: false,
-          error: errorData.message || `HTTP ${response.status}: ${response.statusText}`
-        };
-      }
-
-      const data = await response.json();
-      return {
-        success: true,
-        video_url: data.video_url,
-        task_id: data.task_id
+      const request: SupabaseHeyGenRequest = {
+        text,
+        voice: voice || 'en_us_female_001',
+        avatar_id: this.config.avatarId
       };
+
+      const result = await supabaseAPIService.generateAvatarVideo(request);
+      return result;
     } catch (error) {
       console.error('HeyGen API Error:', error);
       return {
@@ -101,86 +69,40 @@ export class HeyGenService {
   }
 
   /**
-   * Get avatar task status
+   * Get avatar task status (placeholder - Supabase handles this)
    */
   async getTaskStatus(taskId: string): Promise<HeyGenAvatarResponse> {
-    if (!this.isConfigured()) {
-      return {
-        success: false,
-        error: 'HeyGen API not configured'
-      };
-    }
-
-    try {
-      const response = await fetch(`${this.config.baseUrl}/video/status/${taskId}`, {
-        headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-        }
-      });
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: `HTTP ${response.status}: ${response.statusText}`
-        };
-      }
-
-      const data = await response.json();
-      return {
-        success: true,
-        video_url: data.video_url,
-        task_id: taskId
-      };
-    } catch (error) {
-      console.error('HeyGen Status Check Error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred'
-      };
-    }
+    // Supabase handles task status, return placeholder
+    return {
+      success: false,
+      error: 'Task status checking not implemented in Supabase version'
+    };
   }
 
   /**
-   * Get available avatars
+   * Get available avatars (returns empty array as Supabase handles this)
    */
   async getAvailableAvatars(): Promise<Record<string, unknown>[]> {
-    if (!this.isConfigured()) {
-      return [];
-    }
-
-    try {
-      const response = await fetch(`${this.config.baseUrl}/avatar.list`, {
-        headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-        }
-      });
-
-      if (!response.ok) {
-        console.error('Failed to fetch avatars:', response.statusText);
-        return [];
-      }
-
-      const data = await response.json();
-      return data.avatars || [];
-    } catch (error) {
-      console.error('HeyGen Avatar List Error:', error);
-      return [];
-    }
+    // Supabase handles avatar management, return empty array
+    return [];
   }
 
   /**
    * Get configuration status
    */
-  getConfigStatus(): { configured: boolean; missing: string[] } {
-    const missing: string[] = [];
-    
-    if (!this.config.apiKey) missing.push('VITE_HEYGEN_API_KEY');
-    if (!this.config.avatarId) missing.push('VITE_HEYGEN_AVATAR_ID');
-    
-    return {
-      configured: missing.length === 0,
-      missing
-    };
+  async getConfigStatus(): Promise<{ configured: boolean; missing: string[] }> {
+    try {
+      const config = await supabaseAPIService.checkAPIConfiguration();
+      return {
+        configured: config.heygen,
+        missing: config.heygen ? [] : ['HEYGEN_API_KEY in Supabase']
+      };
+    } catch (error) {
+      return {
+        configured: false,
+        missing: ['HEYGEN_API_KEY in Supabase']
+      };
+    }
   }
 }
 

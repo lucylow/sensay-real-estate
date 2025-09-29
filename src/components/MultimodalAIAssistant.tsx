@@ -101,13 +101,21 @@ export const MultimodalAIAssistant: React.FC<MultimodalAIAssistantProps> = ({
   }, []);
 
   const checkConfiguration = async () => {
-    const heygenStatus = heyGenService.isConfigured();
-    const elevenlabsStatus = elevenLabsService.isConfigured();
-    
-    setConfigStatus({
-      heygen: heygenStatus,
-      elevenlabs: elevenlabsStatus
-    });
+    try {
+      const heygenStatus = await heyGenService.isConfigured();
+      const elevenlabsStatus = await elevenLabsService.isConfigured();
+      
+      setConfigStatus({
+        heygen: heygenStatus,
+        elevenlabs: elevenlabsStatus
+      });
+    } catch (error) {
+      console.error('Error checking API configuration:', error);
+      setConfigStatus({
+        heygen: false,
+        elevenlabs: false
+      });
+    }
   };
 
   const handleSendMessage = async (message: string) => {
@@ -339,7 +347,7 @@ export const MultimodalAIAssistant: React.FC<MultimodalAIAssistantProps> = ({
           </TabsList>
           
           <TabsContent value="chat" className="flex-1 flex flex-col mt-0">
-            <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
+            <ScrollArea className="flex-1 px-4 h-[400px] overflow-hidden" ref={scrollAreaRef}>
               <div className="space-y-4 pb-4">
                 {messages.map((message) => (
                   <div key={message.id} className="space-y-2">

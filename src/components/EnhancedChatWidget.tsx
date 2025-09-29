@@ -326,7 +326,7 @@ export const EnhancedChatWidget: React.FC = () => {
             )}
 
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+            <ScrollArea className="flex-1 p-4 h-[400px] overflow-hidden" ref={scrollAreaRef}>
               <div className="space-y-4">
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>

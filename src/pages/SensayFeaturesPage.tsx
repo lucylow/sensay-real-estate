@@ -52,7 +52,7 @@ export const SensayFeaturesPage: React.FC = () => {
       </section>
 
       {/* Virtual Tour Booking */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -61,9 +61,11 @@ export const SensayFeaturesPage: React.FC = () => {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Schedule personalized virtual property tours with live agents in your preferred language.
             </p>
-            </div>
-          <VirtualTourBooking />
-            </div>
+          </div>
+          <div className="w-full overflow-visible">
+            <VirtualTourBooking />
+          </div>
+        </div>
       </section>
 
       {/* Sensay Chatbot Demo */}

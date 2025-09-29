@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Progress } from '@/components/ui/progress';
 import SensayWisdomChatbot from '@/components/SensayWisdomChatbot';
 import { 
   Bot, 
@@ -50,7 +55,6 @@ import {
   MicOff,
   Play,
   Pause,
-  Stop,
   SkipForward,
   SkipBack,
   Volume1,
@@ -92,24 +96,7 @@ import {
   UserCog,
   UserMinus,
   UserSearch,
-  UserCheck2,
-  UserX2,
-  UserPlus2,
-  UserCog2,
-  UserMinus2,
-  UserSearch2,
-  UserCheck3,
-  UserX3,
-  UserPlus3,
-  UserCog3,
-  UserMinus3,
-  UserSearch3,
-  UserCheck4,
-  UserX4,
-  UserPlus4,
-  UserCog4,
-  UserMinus4,
-  UserSearch4
+  Brain
 } from 'lucide-react';
 import { MultimodalAIAssistant } from '@/components/MultimodalAIAssistant';
 import { EnhancedChatWidget } from '@/components/EnhancedChatWidget';
@@ -233,15 +220,52 @@ export const PropGuardAIChatbot: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Bot className="h-6 w-6 text-primary" />
-        <h1 className="text-3xl font-bold">PropGuard AI Chatbot</h1>
-        <Badge variant="secondary" className="ml-auto">
-          <Zap className="h-3 w-3 mr-1" />
-          Real Estate Automation
-        </Badge>
-      </div>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="container mx-auto p-6 space-y-6"
+    >
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-8"
+      >
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          >
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-full p-3">
+              <Bot className="h-8 w-8 text-white" />
+            </div>
+          </motion.div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            PropGuard AI Chatbot
+          </h1>
+        </div>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-4">
+          Your intelligent real estate assistant powered by advanced AI personality and emotional intelligence
+        </p>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex items-center justify-center gap-2"
+        >
+          <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2">
+            <Zap className="h-4 w-4 mr-2" />
+            Real Estate Automation
+          </Badge>
+          <Badge variant="outline" className="px-4 py-2">
+            <Heart className="h-4 w-4 mr-2" />
+            Emotional Intelligence
+          </Badge>
+          <Badge variant="outline" className="px-4 py-2">
+            <Target className="h-4 w-4 mr-2" />
+            Lead Generation
+          </Badge>
+        </motion.div>
+      </motion.div>
 
       {/* Metrics Overview */}
       {metrics && (
@@ -349,122 +373,241 @@ export const PropGuardAIChatbot: React.FC = () => {
       </Card>
 
       {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="chat">AI Chat</TabsTrigger>
-          <TabsTrigger value="sensay-wisdom">Sensay Wisdom</TabsTrigger>
-          <TabsTrigger value="properties">Properties</TabsTrigger>
-          <TabsTrigger value="faq">Smart FAQ</TabsTrigger>
-          <TabsTrigger value="tours">Virtual Tours</TabsTrigger>
-          <TabsTrigger value="leads">Lead Management</TabsTrigger>
-          <TabsTrigger value="appointments">Appointments</TabsTrigger>
-        </TabsList>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-7 bg-gray-100 p-1 rounded-xl">
+            <TabsTrigger value="chat" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Bot className="h-4 w-4 mr-2" />
+              AI Chat
+            </TabsTrigger>
+            <TabsTrigger value="sensay-wisdom" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Brain className="h-4 w-4 mr-2" />
+              Sensay Wisdom
+            </TabsTrigger>
+            <TabsTrigger value="properties" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Home className="h-4 w-4 mr-2" />
+              Properties
+            </TabsTrigger>
+            <TabsTrigger value="faq" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Smart FAQ
+            </TabsTrigger>
+            <TabsTrigger value="tours" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Video className="h-4 w-4 mr-2" />
+              Virtual Tours
+            </TabsTrigger>
+            <TabsTrigger value="leads" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Users className="h-4 w-4 mr-2" />
+              Lead Management
+            </TabsTrigger>
+            <TabsTrigger value="appointments" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Calendar className="h-4 w-4 mr-2" />
+              Appointments
+            </TabsTrigger>
+          </TabsList>
 
         <TabsContent value="chat" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bot className="h-5 w-5" />
-                Multimodal AI Assistant
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Interact with Alex, your AI-powered real estate expert with voice and video capabilities
-              </p>
-            </CardHeader>
-            <CardContent>
-              <MultimodalAIAssistant
-                className="w-full h-[600px]"
-                persona="alex"
-              />
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50">
+              <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-white/20 text-white">
+                      <Bot className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  Multimodal AI Assistant
+                  <Badge className="bg-white/20 text-white border-white/30">
+                    Alex
+                  </Badge>
+                </CardTitle>
+                <p className="text-blue-100">
+                  Interact with Alex, your AI-powered real estate expert with voice and video capabilities
+                </p>
+              </CardHeader>
+              <CardContent className="p-0">
+                <MultimodalAIAssistant
+                  className="w-full h-[600px]"
+                  persona="alex"
+                />
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Top Questions */}
           {metrics && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5" />
-                  Top Questions
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {metrics.topQuestions.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center">
-                          <span className="text-xs font-medium text-primary">{index + 1}</span>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-purple-50">
+                <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <MessageCircle className="h-5 w-5" />
+                    Top Questions
+                    <Badge className="bg-white/20 text-white border-white/30">
+                      {metrics.topQuestions.length} questions
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {metrics.topQuestions.map((item, index) => (
+                      <motion.div 
+                        key={index} 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-bold text-white">{index + 1}</span>
+                          </div>
+                          <span className="text-sm font-medium">{item.question}</span>
                         </div>
-                        <span className="text-sm">{item.question}</span>
-                      </div>
-                      <Badge variant="outline">{item.count} times</Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                        <div className="flex items-center gap-3">
+                          <Badge className="bg-purple-100 text-purple-800">
+                            {item.count} times
+                          </Badge>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Button variant="outline" size="sm" className="rounded-full">
+                                <Send className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Ask this question</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           )}
         </TabsContent>
 
         <TabsContent value="sensay-wisdom" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-500" />
-                Sensay Wisdom Engine
-                <Badge className="bg-blue-100 text-blue-800 text-xs">
-                  Organization ID: E0b1218c-e817-4994-a45b-43e092bd6d4b
-                </Badge>
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Advanced AI-powered property analysis with Sensay's Wisdom Engine for sophisticated insights and risk assessments
-              </p>
-            </CardHeader>
-            <CardContent>
-              <SensayWisdomChatbot className="w-full h-[600px]" />
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-yellow-50">
+              <CardHeader className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-white/20 text-white">
+                      <Star className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  Sensay Wisdom Engine
+                  <Badge className="bg-white/20 text-white border-white/30">
+                    Enhanced AI
+                  </Badge>
+                </CardTitle>
+                <p className="text-yellow-100">
+                  Advanced AI-powered property analysis with Sensay's Wisdom Engine for sophisticated insights and risk assessments
+                </p>
+                <div className="mt-2">
+                  <Badge className="bg-white/20 text-white border-white/30 text-xs">
+                    Organization ID: E0b1218c-e817-4994-a45b-43e092bd6d4b
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <SensayWisdomChatbot className="w-full h-[600px]" />
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Sensay Features Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Bot className="h-5 w-5 text-blue-600" />
-                  <span className="font-semibold text-sm">Enhanced AI</span>
-                </div>
-                <p className="text-xs text-gray-600">Advanced conversation engine with context awareness</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <TrendingUp className="h-5 w-5 text-green-600" />
-                  <span className="font-semibold text-sm">Market Intelligence</span>
-                </div>
-                <p className="text-xs text-gray-600">Real-time market analysis and trend predictions</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Shield className="h-5 w-5 text-red-600" />
-                  <span className="font-semibold text-sm">Risk Assessment</span>
-                </div>
-                <p className="text-xs text-gray-600">Comprehensive risk analysis with mitigation strategies</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <FileText className="h-5 w-5 text-purple-600" />
-                  <span className="font-semibold text-sm">Smart Reports</span>
-                </div>
-                <p className="text-xs text-gray-600">Automated property analysis reports with insights</p>
-              </CardContent>
-            </Card>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-4 gap-4"
+          >
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-blue-50 to-blue-100">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                      <Bot className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="font-semibold text-sm text-blue-900">Enhanced AI</span>
+                  </div>
+                  <p className="text-xs text-blue-700">Advanced conversation engine with context awareness</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-green-50 to-green-100">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="font-semibold text-sm text-green-900">Market Intelligence</span>
+                  </div>
+                  <p className="text-xs text-green-700">Real-time market analysis and trend predictions</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-red-50 to-red-100">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                      <Shield className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="font-semibold text-sm text-red-900">Risk Assessment</span>
+                  </div>
+                  <p className="text-xs text-red-700">Comprehensive risk analysis with mitigation strategies</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-purple-50 to-purple-100">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <FileText className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="font-semibold text-sm text-purple-900">Smart Reports</span>
+                  </div>
+                  <p className="text-xs text-purple-700">Automated property analysis reports with insights</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
         </TabsContent>
 
         <TabsContent value="properties" className="space-y-6">
@@ -486,7 +629,8 @@ export const PropGuardAIChatbot: React.FC = () => {
         <TabsContent value="appointments" className="space-y-6">
           <AppointmentManager />
         </TabsContent>
-      </Tabs>
+        </Tabs>
+        </motion.div>
 
       {/* Performance Analytics */}
       {metrics && (
@@ -606,9 +750,9 @@ export const PropGuardAIChatbot: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Enhanced Chat Widget - Available on all pages */}
-      <EnhancedChatWidget />
-    </div>
+        {/* Enhanced Chat Widget - Available on all pages */}
+        <EnhancedChatWidget />
+    </motion.div>
   );
 };
 

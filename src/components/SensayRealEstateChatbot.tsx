@@ -34,7 +34,9 @@ import {
   Meh,
   Brain,
   Target,
-  BarChart3
+  BarChart3,
+  Bot,
+  User
 } from 'lucide-react';
 import { SensayAPI } from '@/services/api/sensay';
 import { aiRiskPredictionEngine } from '@/services/aiRiskPredictionEngine';
@@ -1083,9 +1085,9 @@ This helps me match you with the perfect properties and agent!`;
                 <TabsTrigger value="properties">Properties</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="chat" className="flex-1 flex flex-col m-0">
+              <TabsContent value="chat" className="flex-1 flex flex-col m-0 h-full">
                 {/* Conversation Area */}
-                <ScrollArea className="flex-1 p-4">
+                <ScrollArea className="flex-1 p-4 h-[400px] overflow-hidden">
                   <div className="space-y-4">
                     <AnimatePresence>
                       {conversationHistory.map((message, index) => (

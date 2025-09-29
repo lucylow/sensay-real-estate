@@ -92,14 +92,22 @@ export const QuickActionsSidebar: React.FC<QuickActionsSidebarProps> = ({
       href: '/sensay',
       color: 'from-indigo-500 to-indigo-600'
     },
-    {
-      id: 'lead-analysis',
-      label: 'Lead Analytics',
-      description: 'Track conversation metrics',
-      icon: BarChart3,
-      href: '/sensay-analytics',
-      color: 'from-teal-500 to-teal-600'
-    }
+        {
+          id: 'lead-analysis',
+          label: 'Lead Analytics',
+          description: 'Track conversation metrics',
+          icon: BarChart3,
+          href: '/sensay-analytics',
+          color: 'from-teal-500 to-teal-600'
+        },
+        {
+          id: 'knowledge-monitoring',
+          label: 'Knowledge Monitoring',
+          description: 'AI knowledge base oversight',
+          icon: BookOpen,
+          href: '/knowledge-dashboard',
+          color: 'from-purple-500 to-purple-600'
+        }
   ];
 
   const filteredActions = quickActions.filter(action =>

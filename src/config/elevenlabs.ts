@@ -1,10 +1,11 @@
 /**
  * Eleven Labs API Configuration and Service
- * Provides text-to-speech functionality for PropGuard AI's Alex persona
+ * Uses Supabase Edge Functions for secure API key management
  */
 
+import { supabaseAPIService, type SupabaseElevenLabsRequest, type SupabaseElevenLabsResponse } from '@/services/supabaseAPI';
+
 export interface ElevenLabsConfig {
-  apiKey: string;
   baseUrl: string;
   defaultVoiceId: string;
 }
@@ -13,21 +14,15 @@ export interface ElevenLabsVoiceRequest {
   text: string;
   voice_id?: string;
   model_id?: string;
-  voice_settings?: {
-    stability: number;
-    similarity_boost: number;
-    style?: number;
-    use_speaker_boost?: boolean;
-  };
+  persona?: 'alex' | 'default';
 }
 
 export interface ElevenLabsVoiceResponse {
   success: boolean;
   audio_url?: string;
-  audio_data?: ArrayBuffer;
   error?: string;
   voice_id?: string;
-  duration?: number;
+  persona?: string;
 }
 
 export interface ElevenLabsVoice {
@@ -52,115 +47,63 @@ export class ElevenLabsService {
 
   constructor() {
     this.config = {
-      apiKey: import.meta.env.VITE_ELEVENLABS_API_KEY || localStorage.getItem('elevenlabs_api_key') || '',
       baseUrl: 'https://api.elevenlabs.io/v1',
-      defaultVoiceId: import.meta.env.VITE_ELEVENLABS_VOICE_ID || 'alex-professional-australian'
+      defaultVoiceId: 'alex-professional-australian'
     };
   }
 
   /**
-   * Update API key dynamically
+   * Check if Eleven Labs is properly configured through Supabase
    */
-  updateApiKey(apiKey: string) {
-    this.config.apiKey = apiKey;
-    localStorage.setItem('elevenlabs_api_key', apiKey);
+  async isConfigured(): Promise<boolean> {
+    try {
+      const config = await supabaseAPIService.checkAPIConfiguration();
+      return config.elevenlabs;
+    } catch (error) {
+      console.error('Error checking ElevenLabs configuration:', error);
+      return false;
+    }
   }
 
   /**
-   * Check if Eleven Labs is properly configured
-   */
-  isConfigured(): boolean {
-    return !!(this.config.apiKey && this.config.apiKey !== '');
-  }
-
-  /**
-   * Get available voices
+   * Get available voices (returns empty array as Supabase handles this)
    */
   async getAvailableVoices(): Promise<ElevenLabsVoice[]> {
-    if (!this.isConfigured()) {
-      return [];
-    }
-
-    try {
-      const response = await fetch(`${this.config.baseUrl}/voices`, {
-        headers: {
-          'xi-api-key': this.config.apiKey,
-        }
-      });
-
-      if (!response.ok) {
-        console.error('Failed to fetch voices:', response.statusText);
-        return [];
-      }
-
-      const data = await response.json();
-      return data.voices || [];
-    } catch (error) {
-      console.error('Eleven Labs voices error:', error);
-      return [];
-    }
+    // Supabase handles voice management, return empty array
+    return [];
   }
 
   /**
-   * Generate speech from text using Alex persona
+   * Generate speech from text using Supabase Edge Function
    */
   async generateSpeech(
     text: string, 
     voiceId?: string,
     options?: Partial<ElevenLabsVoiceRequest>
   ): Promise<ElevenLabsVoiceResponse> {
-    if (!this.isConfigured()) {
-      return {
-        success: false,
-        error: 'Eleven Labs API not configured. Please set VITE_ELEVENLABS_API_KEY environment variable.'
-      };
-    }
-
     try {
-      const requestBody: ElevenLabsVoiceRequest = {
+      const request: SupabaseElevenLabsRequest = {
         text,
         voice_id: voiceId || this.config.defaultVoiceId,
         model_id: options?.model_id || 'eleven_multilingual_v2',
-        voice_settings: {
-          stability: 0.75,
-          similarity_boost: 0.85,
-          style: 0.25,
-          use_speaker_boost: true,
-          ...options?.voice_settings
-        }
+        persona: options?.persona || 'alex'
       };
 
-      const response = await fetch(
-        `${this.config.baseUrl}/text-to-speech/${requestBody.voice_id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Accept': 'audio/mpeg',
-            'Content-Type': 'application/json',
-            'xi-api-key': this.config.apiKey,
-          },
-          body: JSON.stringify(requestBody)
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
+      const result = await supabaseAPIService.generateSpeech(request);
+      
+      if (result.success && result.audio_data) {
+        const audioUrl = supabaseAPIService.createAudioBlob(result.audio_data);
         return {
-          success: false,
-          error: `Eleven Labs API error: ${response.status} - ${errorText}`
+          success: true,
+          audio_url: audioUrl,
+          voice_id: result.voice_id,
+          persona: result.persona
         };
       }
 
-      const audioData = await response.arrayBuffer();
-      const audioBlob = new Blob([audioData], { type: 'audio/mpeg' });
-      const audioUrl = URL.createObjectURL(audioBlob);
-
       return {
-        success: true,
-        audio_url: audioUrl,
-        audio_data: audioData,
-        voice_id: requestBody.voice_id,
-        duration: audioData.byteLength / 16000 // Rough estimate
+        success: false,
+        error: result.error || 'Speech generation failed'
       };
     } catch (error) {
       console.error('Eleven Labs TTS error:', error);
@@ -176,71 +119,48 @@ export class ElevenLabsService {
    */
   async generateAlexSpeech(text: string): Promise<ElevenLabsVoiceResponse> {
     return this.generateSpeech(text, this.config.defaultVoiceId, {
-      voice_settings: {
-        stability: 0.8,        // More stable for professional tone
-        similarity_boost: 0.9, // Higher similarity for consistent persona
-        style: 0.2,           // Subtle style for professional delivery
-        use_speaker_boost: true
-      }
+      persona: 'alex'
     });
   }
 
   /**
-   * Get voice by name (case-insensitive)
+   * Get voice by name (returns null as Supabase handles this)
    */
   async getVoiceByName(name: string): Promise<ElevenLabsVoice | null> {
-    const voices = await this.getAvailableVoices();
-    return voices.find(voice => 
-      voice.name.toLowerCase().includes(name.toLowerCase())
-    ) || null;
+    // Supabase handles voice management
+    return null;
   }
 
   /**
    * Get configuration status
    */
-  getConfigStatus(): { configured: boolean; missing: string[] } {
-    const missing: string[] = [];
-    
-    if (!this.config.apiKey) missing.push('VITE_ELEVENLABS_API_KEY');
-    
-    return {
-      configured: missing.length === 0,
-      missing
-    };
+  async getConfigStatus(): Promise<{ configured: boolean; missing: string[] }> {
+    try {
+      const config = await supabaseAPIService.checkAPIConfiguration();
+      return {
+        configured: config.elevenlabs,
+        missing: config.elevenlabs ? [] : ['ELEVENLABS_API_KEY in Supabase']
+      };
+    } catch (error) {
+      return {
+        configured: false,
+        missing: ['ELEVENLABS_API_KEY in Supabase']
+      };
+    }
   }
 
   /**
    * Create audio element and play speech
    */
   async playSpeech(audioUrl: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const audio = new Audio(audioUrl);
-      
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl); // Clean up
-        resolve();
-      };
-      
-      audio.onerror = () => {
-        URL.revokeObjectURL(audioUrl); // Clean up
-        reject(new Error('Audio playback failed'));
-      };
-      
-      audio.play().catch(reject);
-    });
+    return supabaseAPIService.playAudio(audioUrl);
   }
 
   /**
    * Generate and play speech in one call
    */
   async speak(text: string, voiceId?: string): Promise<void> {
-    const result = await this.generateSpeech(text, voiceId);
-    
-    if (result.success && result.audio_url) {
-      await this.playSpeech(result.audio_url);
-    } else {
-      throw new Error(result.error || 'Speech generation failed');
-    }
+    return supabaseAPIService.speak(text, 'alex');
   }
 }
 

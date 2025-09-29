@@ -286,7 +286,7 @@ export const SensayWisdomChatbot: React.FC<SensayWisdomChatbotProps> = ({ classN
 
       {/* Messages */}
       <Card className="flex-1 flex flex-col">
-        <ScrollArea className="flex-1 p-4">
+        <ScrollArea className="flex-1 p-4 h-[500px] overflow-hidden">
           <div className="space-y-4">
             {messages.map((message) => (
               <div

@@ -17,7 +17,21 @@ import {
   MessageCircle,
   Globe,
   Menu as MenuIcon,
-  Command
+  Command,
+  Camera,
+  Calendar,
+  Play,
+  FileText,
+  Map,
+  Users,
+  Wallet,
+  Zap,
+  BookOpen,
+  Monitor,
+  Video,
+  Layers,
+  Activity,
+  PieChart
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -25,6 +39,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Sparkles } from 'lucide-react';
 
 interface GlobalNavigationProps {
   user?: {
@@ -44,58 +59,190 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Nav items with grouping
-  const navigationItems = [
+  // Comprehensive page structure
+  const navigationCategories = [
     {
-      label: 'Dashboard',
-      href: '/dashboard',
-      icon: BarChart3,
-      description: 'Overview & Analytics'
+      title: 'Core Platform',
+      items: [
+        {
+          label: 'Dashboard',
+          href: '/dashboard',
+          icon: BarChart3,
+          description: 'Overview & Analytics',
+          featured: true
+        },
+        {
+          label: 'Property Search',
+          href: '/search',
+          icon: Search,
+          description: 'Find Properties',
+          featured: true
+        },
+        {
+          label: 'Market Analysis',
+          href: '/market-analysis',
+          icon: TrendingUp,
+          description: 'Market Insights',
+          featured: true
+        },
+        {
+          label: 'Valuation Reports',
+          href: '/reports',
+          icon: FileText,
+          description: 'Property Reports'
+        }
+      ]
     },
     {
-      label: 'Property Search',
-      href: '/search',
-      icon: Search,
-      description: 'Find Properties'
+      title: 'AI & Sensay Features',
+      items: [
+        {
+          label: 'AI Assistant',
+          href: '/sensay-chatbot',
+          icon: Bot,
+          description: 'Chat with PropGuard AI',
+          featured: true,
+          badge: 'Popular'
+        },
+        {
+          label: 'Lead Generation',
+          href: '/sensay-leads',
+          icon: MessageCircle,
+          description: 'Automated lead capture'
+        },
+        {
+          label: 'Analytics',
+          href: '/sensay-analytics',
+          icon: Activity,
+          description: 'Conversation insights'
+        },
+        {
+          label: 'Multi-Channel',
+          href: '/sensay',
+          icon: Globe,
+          description: 'Deploy everywhere',
+          featured: true
+        },
+        {
+          label: 'Wisdom Engine',
+          href: '/sensay-wisdom',
+          icon: BookOpen,
+          description: 'Advanced AI capabilities'
+        },
+        {
+          label: 'Showcase',
+          href: '/sensay-showcase',
+          icon: Zap,
+          description: 'See Sensay in action'
+        }
+      ]
+      },
+    {
+      title: 'Property Experiences',
+      items: [
+        {
+          label: 'Virtual Tours',
+          href: '/virtual-tours',
+          icon: Camera,
+          description: 'Interactive property tours',
+          featured: true,
+          badge: 'New'
+        },
+        {
+          label: 'Property Showcase',
+          href: '/property-showcase',
+          icon: Monitor,
+          description: 'Present properties beautifully'
+        },
+        {
+          label: 'Appointments',
+          href: '/appointments',
+          icon: Calendar,
+          description: 'Schedule viewings'
+        },
+        {
+          label: 'Property Details',
+          href: '/property/showcase',
+          icon: Building,
+          description: 'Detailed property views'
+        }
+      ]
     },
     {
-      label: 'Market Analysis',
-      href: '/market-analysis',
-      icon: TrendingUp,
-      description: 'Market Insights'
+      title: 'Business Tools',
+      items: [
+        {
+          label: 'Lead Management',
+          href: '/leads',
+          icon: Users,
+          description: 'Track prospects'
+        },
+        {
+          label: 'Smart FAQ',
+          href: '/smart-faq',
+          icon: HelpCircle,
+          description: 'AI-powered support'
+        },
+        {
+          label: 'Platform Demos',
+          href: '/platform-demos',
+          icon: Play,
+          description: 'Feature demonstrations'
+        },
+        {
+          label: 'Knowledge Dashboard',
+          href: '/knowledge-dashboard',
+          icon: PieChart,
+          description: 'Monitor AI knowledge base'
+        }
+      ]
     },
     {
-      label: 'Reports',
-      href: '/reports',
-      icon: Building,
-      description: 'Valuation Reports'
+      title: 'Advanced Features',
+      items: [
+        {
+          label: 'Blockchain Integration',
+          href: '/blockchain',
+          icon: Wallet,
+          description: 'NFT property certificates'
+        },
+        {
+          label: 'Risk Analysis',
+          href: '/risk-analysis',
+          icon: Shield,
+          description: 'Property risk assessment'
+        },
+        {
+          label: 'Compliance',
+          href: '/compliance',
+          icon: Layers,
+          description: 'Regulatory compliance'
+        }
+      ]
     }
   ];
 
-  const sensayFeatures = [
+  // Main navigation items (simplified for desktop)
+  const primaryNavItems = [
+    {
+      label: 'Dashboard',
+      href: '/dashboard',
+      icon: BarChart3
+    },
+    {
+      label: 'Search',
+      href: '/search',
+      icon: Search
+    },
     {
       label: 'AI Assistant',
       href: '/sensay-chatbot',
-      icon: Bot,
-      description: 'Sensay-powered chatbot'
+      icon: Bot
     },
     {
-      label: 'Lead Generation',
-      href: '/sensay-leads',
-      icon: MessageCircle,
-      description: 'Automated lead capture'
-    },
-    {
-      label: 'Analytics',
-      href: '/sensay-analytics',
-      icon: BarChart3,
-      description: 'Conversation insights'
-    },
-    {
-      label: 'Integration',
-      href: '/sensay',
-      icon: Globe,
-      description: 'Multi-channel deployment'
+      label: 'Virtual Tours',
+      href: '/virtual-tours',
+       icon: Camera
     }
   ];
 
@@ -169,8 +316,8 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {/* Main Navigation */}
-            {navigationItems.map((item) => (
+            {/* Primary Navigation */}
+            {primaryNavItems.map((item) => (
               <Tooltip key={item.href}>
                 <TooltipTrigger asChild>
                   <Link
@@ -186,45 +333,94 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{item.description}</p>
+                  <p>{item.label}</p>
                 </TooltipContent>
               </Tooltip>
             ))}
 
-            {/* Sensay Features Dropdown */}
+            {/* All Pages Mega Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-                  <Bot className="h-4 w-4" />
-                  <span>AI Features</span>
+                  <MenuIcon className="h-4 w-4" />
+                  <span>All Pages</span>
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64" align="start">
-                <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sensay Integration
+              <DropdownMenuContent className="w-[800px] p-6" align="start">
+                {/* Header */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Explore All Features?</h3>
+                  <p className="text-sm text-gray-600">Access every page and feature in PropGuard AI</p>
                 </div>
-                {sensayFeatures.map((feature) => (
-                  <DropdownMenuItem key={feature.href} asChild>
-                    <Link to={feature.href} className="flex items-center space-x-3 px-3 py-2">
-                      <feature.icon className="h-4 w-4 text-blue-500" />
-                      <div>
-                        <div className="font-medium text-sm">{feature.label}</div>
-                        <div className="text-xs text-gray-500">{feature.description}</div>
+
+                {/* Categories Grid */}
+                <div className="grid grid-cols-5 gap-6">
+                  {navigationCategories.map((category, index) => (
+                    <motion.div
+                      key={category.title}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="space-y-3"
+                    >
+                      <h4 className="font-medium text-gray-900 text-sm border-b border-gray-200 pb-1">
+                        {category.title}
+                      </h4>
+                      <div className="space-y-1">
+                        {category.items.map((item) => (
+                          <DropdownMenuItem key={item.href} asChild className="p-0">
+                            <Link 
+                              to={item.href} 
+                              className="flex items-center space-x-2 px-2 py-1 rounded hover:bg-gray-50 group"
+                            >
+                              <item.icon className="h-3 w-3 text-gray-500 group-hover:text-blue-500" />
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-1">
+                                  <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900">
+                                    {item.label}
+                                  </span>
+                                  {item.badge && (
+                                    <Badge variant="secondary" className="text-xs px-1 py-0">
+                                      {item.badge}
+                                    </Badge>
+                                  )}
+                                  {item.featured && (
+                                    <span className="text-blue-500 text-xs">★</span>
+                                  )}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-0.5">
+                                  {item.description}
+                                </div>
+                              </div>
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
                       </div>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/sensay-showcase" className="flex items-center space-x-3 px-3 py-2">
-                    <Sparkles className="h-4 w-4 text-purple-500" />
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Footer */}
+                <div className="mt-6 border-t border-gray-200 pt-4">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-medium text-sm">View Showcase</div>
-                      <div className="text-xs text-gray-500">See all features</div>
+                      <div className="flex items-center space-x-2 mb-1">
+                        <Badge className="bg-green-100 text-green-700">Active</Badge>
+                        <span className="text-xs text-gray-500">
+                          {navigationCategories.reduce((acc, cat) => acc + cat.items.length, 0)} pages available
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500">Use search or �+K for quick access</p>
                     </div>
-                  </Link>
-                </DropdownMenuItem>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/platform-demos">
+                        <Play className="h-3 w-3 mr-1" />
+                        Demo All
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -390,10 +586,16 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-gray-200"
+              className="lg:hidden border-t border-gray-200 max-h-[80vh] overflow-y-auto"
             >
-              <div className="py-4 space-y-2">
-                {navigationItems.map((item) => (
+              <div className="py-4 space-y-4">
+                {/* Quick Access */}
+                <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                  Quick Access
+                </div>
+                
+                {/* Featured Items */}
+                {navigationCategories.flatMap(cat => cat.items.filter(item => item.featured)).slice(0, 6).map((item) => (
                   <Link
                     key={item.href}
                     to={item.href}
@@ -406,24 +608,58 @@ export const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user, classN
                   >
                     <item.icon className="h-5 w-5" />
                     <span>{item.label}</span>
+                    {item.badge && (
+                      <Badge variant="secondary" className="text-xs ml-auto">
+                        {item.badge}
+                      </Badge>
+                    )}
                   </Link>
                 ))}
-                
-                <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  AI Features
+
+                {/* All Categories */}
+                {navigationCategories.map((category) => (
+                  <div key={category.title} className="space-y-2">
+                    <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                      {category.title}
+                    </div>
+                    
+                    {category.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center space-x-3 px-6 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
+                      >
+                        <item.icon className="h-4 w-4 text-gray-400" />
+                        <span>{item.label}</span>
+                        {item.badge && (
+                          <Badge variant="secondary" className="text-xs ml-auto">
+                            {item.badge}
+                          </Badge>
+                        )}
+                        {item.featured && (
+                          <span className="text-blue-500 text-xs ml-auto">★</span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+
+                {/* Footer */}
+                <div className="border-t border-gray-200 pt-4 px-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-gray-500">All pages accessible</p>
+                      <p className="text-xs text-gray-400">Use search for quick access</p>
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/platform-demos" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Play className="h-3 w-3 mr-1" />
+                        Demos
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
-                
-                {sensayFeatures.map((feature) => (
-                  <Link
-                    key={feature.href}
-                    to={feature.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50"
-                  >
-                    <feature.icon className="h-5 w-5 text-blue-500" />
-                    <span>{feature.label}</span>
-                  </Link>
-                ))}
               </div>
             </motion.div>
           )}
