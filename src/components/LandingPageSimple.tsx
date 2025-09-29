@@ -81,7 +81,7 @@ const LandingPageSimple = () => {
             </div>
             
             <div className="relative">
-              <div className="bg-white rounded-2xl shadow--xl p-6 border border-gray-200">
+              <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-gray-900">Live Property Analysis</h3>
                   <div className="flex gap-2">
