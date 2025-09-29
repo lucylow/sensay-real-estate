@@ -1,6 +1,6 @@
 # PropGuard AI - Sensay Real Estate Platform
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-blue?logo=vercel)](https://propguard-ai-sensay.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-blue?logo=vercel)](https://sensay-real-estate.lovable.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black?logo=github)](https://github.com/your-username/sensay-real-estate)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Sensay Hackathon](https://img.shields.io/badge/Sensay-Hackathon%202024-purple?logo=sensay)](https://sensay.io/hackathon)
@@ -9,7 +9,7 @@ Complete AI-powered real estate platform integrating Sensay's conversational AI 
 
 ## 📋 Submission Requirements Completed
 
-- [x] **🎥 Demo video & live app URL** - [Live Demo: PropGuard AI Sensay Platform](https://propguard-ai-sensay.vercel.app)
+- [x] **🎥 Demo video & live app URL** - [Live Demo: PropGuard AI Sensay Platform](https://sensay-real-estate.lovable.app/)
 - [x] **📂 GitHub repo** - Complete source code repository
 - [x] **📑 README with setup** - Comprehensive documentation
 - [x] **🧬 Chatbot description** - Technical architecture documented
@@ -17,7 +17,7 @@ Complete AI-powered real estate platform integrating Sensay's conversational AI 
 
 ## 🌐 Live Platform
 
-🔗 **[https://propguard-ai-sensay.vercel.app](https://propguard-ai-sensay.vercel.app)**
+🔗 **[https://sensay-real-estate.lovable.app/](https://sensay-real-estate.lovable.app/)**
 
 ### Key Demo Pages
 - **Dashboard**: Complete PropGuard AI platform
@@ -217,15 +217,15 @@ Our platform leverages Sensay's comprehensive API ecosystem to deliver:
 #### Organization ID: `E0b1218c-e817-4994-a45b-43e092bd6d4b`
 
 #### Access Points:
-- **Live Demo**: [Sensay Integration Platform](https://propguard-ai-sensay.vercel.app/ai-services)
-- **Analytics Dashboard**: [Conversation Analytics](https://propguard-ai-sensay.vercel.app/sensay-analytics)
+- **Live Demo**: [Sensay Integration Platform](https://sensay-real-estate.lovable.app//ai-services)
+- **Analytics Dashboard**: [Conversation Analytics](https://sensay-real-estate.lovable.app//sensay-analytics)
 - **Local Development**: `http://localhost:8082/ai-services`
 
 ## 📞 Contact & Support
 
 - **GitHub Issues**: [Open Issue](https://github.com/your-username/sensay-real-estate/issues)
 - **Documentation**: [Complete Documentation](docs/README.md)
-- **Live Demo**: [PropGuard AI Sensay Platform](https://propguard-ai-sensay.vercel.app)
+- **Live Demo**: [PropGuard AI Sensay Platform](https://sensay-real-estate.lovable.app/)
 - **Hackathon Submission**: [Complete Submission Details](docs/README_SUBMISSION.md)
 
 ## 🧠 Sensay Wisdom Engine
@@ -260,4 +260,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**🏆 Built for Sensay Hackathon 2024** | **[Demo](https://propguard-ai-sensay.vercel.app)** | **[Source Code](https://github.com/your-username/sensay-real-estate)**
+**🏆 Built for Sensay Hackathon 2024** | **[Demo](https://sensay-real-estate.lovable.app/)** | **[Source Code](https://github.com/your-username/sensay-real-estate)**
