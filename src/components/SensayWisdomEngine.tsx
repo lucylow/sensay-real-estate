@@ -204,7 +204,7 @@ export const SensayWisdomEngine: React.FC = () => {
       step: 2,
       title: 'Search',
       description: 'Enable personalized property search',
-      icon: <Search className="h-5 w-5" />,
+      icon: <SearchIcon className="h-5 w-5" />,
       status: 'completed',
       component: 'PersonalizedSearchEngine'
     },
@@ -212,7 +212,7 @@ export const SensayWisdomEngine: React.FC = () => {
       step: 3,
       title: 'Live Data',
       description: 'Integrate real-time market data',
-      icon: <Database className="h-5 w-5" />,
+      icon: <Server className="h-5 w-5" />,
       status: 'completed',
       component: 'RealTimeDataIntegration'
     },

@@ -28,7 +28,7 @@ export const SystemHealth: React.FC<SystemHealthProps> = ({ className }) => {
   const checkSystemHealth = async () => {
     try {
       const health = await propGuardAPI.checkSystemHealth();
-      setSystemHealth(health);
+      setSystemHealth(health as Record<string, Record<string, unknown>>);
     } catch (error) {
       console.error('Failed to check system health:', error);
     } finally {

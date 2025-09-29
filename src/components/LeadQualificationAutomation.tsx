@@ -187,10 +187,7 @@ export const LeadQualificationAutomation: React.FC<LeadQualificationProps> = ({
       // Use Sensay API for personalized nurture messages
       const response = await sensayAPI.chat(
         `Send a ${messageType} message to this lead: ${lead.name}. Their profile: ${JSON.stringify(lead)}`,
-        {
-          conversationFlow: 'lead_qualification',
-          leadData: { contactInfo: lead }
-        }
+        {}
       );
 
       // Update lead interaction
@@ -347,7 +344,7 @@ export const LeadQualificationAutomation: React.FC<LeadQualificationProps> = ({
               variant="outline"
               onClick={() => handleSendNurtureMessage(lead.id, 'investment guide')}
             >
-              <FileText className="h-3 w-3 mr-1" />
+              <File className="h-3 w-3 mr-1" />
               Investment Guide
             </Button>
             <Button 
