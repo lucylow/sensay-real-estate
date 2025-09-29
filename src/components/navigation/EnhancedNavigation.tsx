@@ -251,7 +251,7 @@ const navigationStructure: NavigationItem[] = [
 
     return (
       <div className={`enhanced-navigation ${className}`}>
-        {/* Quick Access Bar */}
+        {/* Single Top Navigation Bar */}
         <div className="glass-card border-0 border-b border-border/50 shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between py-4">
@@ -285,149 +285,7 @@ const navigationStructure: NavigationItem[] = [
             </div>
           </div>
         </div>
-
-        {/* Main Navigation */}
-        <nav className="glass-card border-0 border-b border-border/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Featured Quick Access */}
-            <div className="py-6 border-b border-border/30">
-              <div className="flex items-center gap-2 mb-4">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <h3 className="text-sm font-medium text-muted-foreground">Quick Access</h3>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-                {featuredItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.href;
-                  
-                  return (
-                    <motion.div
-                      key={item.href}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Link
-                        to={item.href}
-                        className={`flex flex-col items-center gap-2 p-3 rounded-lg transition-all text-center ${
-                          isActive
-                            ? 'bg-primary text-primary-foreground shadow-md'
-                            : 'bg-background hover:bg-muted hover:shadow-sm border border-border/50'
-                        }`}
-                      >
-                        <Icon className="h-5 w-5" />
-                        <span className="text-xs font-medium">{item.label}</span>
-                        {item.hotkey && (
-                          <kbd className="text-xs opacity-60">⌘{item.hotkey.toUpperCase()}</kbd>
-                        )}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Category Navigation */}
-            <div className="py-4">
-              <div className="flex flex-wrap gap-3">
-                {Object.entries(categories).map(([categoryKey, categoryInfo]) => {
-                  const items = groupedNavigation[categoryKey] || [];
-                  const Icon = categoryInfo.icon;
-                  const isExpanded = expandedCategory === categoryKey;
-                  
-                  return (
-                    <motion.div
-                      key={categoryKey}
-                      className="relative"
-                      initial={false}
-                      animate={{ 
-                        width: isExpanded ? 'auto' : 'auto',
-                        height: 'auto'
-                      }}
-                    >
-                      <Button
-                        variant={isExpanded ? "default" : "ghost"}
-                        className="flex items-center gap-2 h-9"
-                        onClick={() => setExpandedCategory(isExpanded ? null : categoryKey)}
-                      >
-                        <Icon className={`h-4 w-4 ${categoryInfo.color}`} />
-                        <span>{categoryInfo.label}</span>
-                        <ChevronDown 
-                          className={`h-4 w-4 transition-transform ${
-                            isExpanded ? 'rotate-180' : ''
-                          }`} 
-                        />
-                        <Badge variant="secondary" className="ml-1 text-xs">
-                          {items.length}
-                        </Badge>
-                      </Button>
-
-                      <AnimatePresence>
-                        {isExpanded && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="absolute top-full left-0 mt-2 w-80 z-50"
-                          >
-                            <Card className="shadow-lg border">
-                              <CardContent className="p-4">
-                                <div className="space-y-3">
-                                  <div className="flex items-center gap-2 mb-3">
-                                    <Icon className={`h-4 w-4 ${categoryInfo.color}`} />
-                                    <h4 className="font-medium">{categoryInfo.label}</h4>
-                                  </div>
-                                  <Separator />
-                                  <div className="grid gap-2">
-                                    {items.map((item) => {
-                                      const ItemIcon = item.icon;
-                                      const isActive = location.pathname === item.href;
-                                      
-                                      return (
-                                        <Link
-                                          key={item.href}
-                                          to={item.href}
-                                          className={`flex items-center gap-3 p-2 rounded-md transition-all ${
-                                            isActive
-                                              ? 'bg-primary text-primary-foreground'
-                                              : 'hover:bg-muted'
-                                          }`}
-                                        >
-                                          <ItemIcon className="h-4 w-4" />
-                                          <div className="flex-1 min-w-0">
-                                            <div className="font-medium">{item.label}</div>
-                                            <div className="text-xs text-muted-foreground truncate">
-                                              {item.description}
-                                            </div>
-                                          </div>
-                                          <div className="flex gap-1">
-                                            {item.beta && (
-                                              <Badge variant="secondary" className="text-xs px-1">
-                                                Beta
-                                              </Badge>
-                                            )}
-                                            {item.hotkey && (
-                                              <kbd className="text-xs opacity-60">
-                                                ⌘{item.hotkey.toUpperCase()}
-                                              </kbd>
-                                            )}
-                                          </div>
-                                        </Link>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </nav>
+        {/* Note: Removed secondary navigation sections to avoid double menus */}
 
         {/* Command Menu */}
         {/*<CommandMenu
