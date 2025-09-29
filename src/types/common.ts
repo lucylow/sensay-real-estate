@@ -60,11 +60,11 @@ export interface SensayMessage {
       tone?: 'professional' | 'friendly' | 'technical' | 'casual';
       userType?: 'investor' | 'agent' | 'buyer' | 'seller' | 'analyst';
       language?: string;
-      emotionalState?: 'confident' | 'concerned' | 'excited' | 'neutral' | 'undecided';
+      emotionalState?: 'confident' | 'concerned' | 'excited' | 'neutral' | 'undecided' | 'stressed' | 'frustrated' | 'uncertain';
     };
     analytics?: {
       userType?: string;
-      emotionalState?: 'confident' | 'concerned' | 'excited' | 'neutral' | 'undecided';
+      emotionalState?: 'confident' | 'concerned' | 'excited' | 'neutral' | 'undecided' | 'stressed' | 'frustrated' | 'uncertain';
       conversationStage?: string;
       satisfactionPrediction?: number;
     };
