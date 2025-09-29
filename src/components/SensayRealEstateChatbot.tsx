@@ -90,7 +90,15 @@ interface ConversationMessage {
   };
 }
 
-const SensayRealEstateChatbot: React.FC = () => {
+interface SensayRealEstateChatbotProps {
+  className?: string;
+  context?: 'dashboard' | 'risk-analysis' | 'blockchain' | 'compliance' | 'reports' | 'pricing' | 'property-search';
+}
+
+const SensayRealEstateChatbot: React.FC<SensayRealEstateChatbotProps> = ({ 
+  className = '',
+  context = 'dashboard'
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);

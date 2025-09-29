@@ -31,13 +31,15 @@ interface EnhancedSensayAssistantProps {
   analysis?: any;
   className?: string;
   initialFlow?: 'property_search' | 'valuation' | 'booking' | 'faq' | 'lead_qualification';
+  context?: 'dashboard' | 'risk-analysis' | 'blockchain' | 'compliance' | 'reports' | 'pricing' | 'property-search';
 }
 
 export const EnhancedSensayAssistant: React.FC<EnhancedSensayAssistantProps> = ({ 
   property, 
   analysis, 
   className = '',
-  initialFlow = 'property_search'
+  initialFlow = 'property_search',
+  context = 'dashboard'
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -49,32 +51,70 @@ export const EnhancedSensayAssistant: React.FC<EnhancedSensayAssistantProps> = (
   const [detectedLanguage, setDetectedLanguage] = useState<string>('en');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  // Initialize with welcome message based on flow
+  // Initialize with welcome message based on context and flow
   useEffect(() => {
-    const welcomeMessages = {
+    const contextMessages = {
+      dashboard: {
+        content: '🏠 Welcome to PropGuard AI Dashboard! I can help you analyze properties, assess risks, and provide market insights. What would you like to explore?',
+        suggestions: ['Analyze a property', 'Check market trends', 'Assess investment risks', 'Get property recommendations']
+      },
+      'risk-analysis': {
+        content: '⚠️ Welcome to Risk Analysis! I can help you understand climate risks, market volatility, and property vulnerabilities. Which property would you like me to assess?',
+        suggestions: ['Assess flood risk', 'Check fire risk', 'Analyze market volatility', 'Get risk mitigation advice']
+      },
+      blockchain: {
+        content: '🔗 Welcome to Blockchain Dashboard! I can help you mint NFT certificates, verify property data, and manage blockchain transactions. What would you like to do?',
+        suggestions: ['Mint property NFT', 'Verify certificate', 'Check blockchain status', 'View audit trail']
+      },
+      compliance: {
+        content: '🛡️ Welcome to APRA Compliance! I can help you understand regulatory requirements, compliance scores, and reporting obligations. What compliance question do you have?',
+        suggestions: ['Check compliance status', 'Explain APRA requirements', 'Generate compliance report', 'Review LVR analysis']
+      },
+      reports: {
+        content: '📊 Welcome to Reports Center! I can help you generate property reports, analyze data, and create comprehensive documentation. What type of report do you need?',
+        suggestions: ['Generate valuation report', 'Create risk assessment', 'Export compliance data', 'Analyze market trends']
+      },
+      pricing: {
+        content: '💰 Welcome to Pricing Center! I can help you understand our plans, compare features, and choose the right subscription for your needs. What pricing question do you have?',
+        suggestions: ['Compare plans', 'Explain features', 'Calculate costs', 'Get custom quote']
+      },
+      'property-search': {
+        content: '🔍 Welcome to Property Search! I can help you find properties, filter results, and provide market insights. What are you looking for?',
+        suggestions: ['Find properties by location', 'Filter by price range', 'Search by property type', 'Get market insights']
+      }
+    };
+
+    const flowMessages = {
       property_search: {
-        content: '🏠 Welcome to PropGuard AI Property Search! I can help you find the perfect property based on your preferences. What type of property are you looking for?',
+        content: '🏠 I can help you find the perfect property based on your preferences. What type of property are you looking for?',
         suggestions: ['Find houses under $500K', 'Search apartments in Melbourne', 'Show investment properties', 'Help me choose location']
       },
       valuation: {
-        content: '📊 Welcome to PropGuard AI Valuation! I can provide comprehensive property valuations with AI-powered risk assessment. What property would you like me to analyze?',
+        content: '📊 I can provide comprehensive property valuations with AI-powered risk assessment. What property would you like me to analyze?',
         suggestions: ['Value my property', 'Compare property values', 'Get market analysis', 'Risk assessment report']
       },
       booking: {
-        content: '📅 Welcome to PropGuard AI Booking! I can help you schedule property viewings and manage appointments. Which property would you like to view?',
+        content: '📅 I can help you schedule property viewings and manage appointments. Which property would you like to view?',
         suggestions: ['Book a viewing', 'Check availability', 'Schedule virtual tour', 'Contact agent']
       },
       faq: {
-        content: '❓ Welcome to PropGuard AI FAQ! I can answer questions about real estate processes, risks, regulations, and PropGuard technology. What would you like to know?',
+        content: '❓ I can answer questions about real estate processes, risks, regulations, and PropGuard technology. What would you like to know?',
         suggestions: ['How does PropGuard work?', 'What are property risks?', 'Explain LVR certificates', 'Market trends explained']
       },
       lead_qualification: {
-        content: '👥 Welcome to PropGuard AI Lead Qualification! I can help assess your investment goals and qualify leads. Tell me about your property investment experience.',
+        content: '👥 I can help assess your investment goals and qualify leads. Tell me about your property investment experience.',
         suggestions: ['I\'m a first-time buyer', 'I\'m an experienced investor', 'I\'m a property professional', 'Help me understand options']
       }
     };
 
-    const welcome = welcomeMessages[currentFlow];
+    const contextMessage = contextMessages[context] || contextMessages.dashboard;
+    const flowMessage = flowMessages[currentFlow];
+    
+    const welcome = {
+      content: `${contextMessage.content} ${flowMessage.content}`,
+      suggestions: [...contextMessage.suggestions, ...flowMessage.suggestions].slice(0, 4)
+    };
+
     setMessages([{
       id: '1',
       type: 'assistant',
@@ -84,7 +124,7 @@ export const EnhancedSensayAssistant: React.FC<EnhancedSensayAssistantProps> = (
       confidence: 95,
       conversationFlow: currentFlow
     }]);
-  }, [currentFlow]);
+  }, [currentFlow, context]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -162,7 +202,8 @@ export const EnhancedSensayAssistant: React.FC<EnhancedSensayAssistantProps> = (
                 analysis,
                 sessionId: `propguard_${Date.now()}`,
                 conversationFlow: currentFlow,
-                userProfile
+                userProfile,
+                context
               });
           }
           
@@ -307,12 +348,25 @@ export const EnhancedSensayAssistant: React.FC<EnhancedSensayAssistantProps> = (
     }
   };
 
+  const getContextTitle = () => {
+    switch (context) {
+      case 'dashboard': return 'Dashboard Assistant';
+      case 'risk-analysis': return 'Risk Analysis Assistant';
+      case 'blockchain': return 'Blockchain Assistant';
+      case 'compliance': return 'Compliance Assistant';
+      case 'reports': return 'Reports Assistant';
+      case 'pricing': return 'Pricing Assistant';
+      case 'property-search': return 'Search Assistant';
+      default: return 'AI Assistant';
+    }
+  };
+
   return (
     <Card className={`flex flex-col h-[700px] ${className}`}>
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2">
           <Bot className="h-5 w-5 text-primary" />
-          PropGuard AI Real Estate Assistant
+          {getContextTitle()}
           {getStatusBadge()}
         </CardTitle>
         
